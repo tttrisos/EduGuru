@@ -1,30 +1,44 @@
 # EduGuru
 
-Plataforma Web para gerenciamento e acompanhamento de diferentes jornadas de aprendizagem.
+Plataforma Web acadêmica gamificada para gerenciamento, acompanhamento e personalização da jornada de aprendizagem.
 
 ## Sobre o projeto
 
-O EduGuru é um projeto desenvolvido como Projeto Final de Curso (PFC) do curso de Sistemas de Informação da Universidade de Mogi das Cruzes (UMC).
+O EduGuru é um projeto desenvolvido como Projeto Final de Curso (PFC/TCC) do curso de Sistemas de Informação da Universidade de Mogi das Cruzes (UMC).
 
-A plataforma tem como objetivo auxiliar usuários na organização e no acompanhamento de diferentes tipos de cursos e processos de aprendizagem, permitindo o gerenciamento de cursos, avaliações, notas, atividades, frequência e materiais.
+Diferente de sistemas acadêmicos tradicionais que funcionam apenas como repositórios passivos, o objetivo do EduGuru é combater o desengajamento através da gamificação. A plataforma centraliza o acompanhamento de notas e faltas, mas utiliza um **sistema de quizzes interativos** como principal mecanismo de engajamento. Ao estudar e responder aos quizzes, o aluno ganha pontos, participa de rankings e recebe recomendações direcionadas de materiais de estudo para suprir suas dificuldades.
 
-O sistema também contará com recursos de análise de desempenho e recomendações de conteúdos educacionais.
+## Público-Alvo
 
-## Escopo
+O escopo inicial da aplicação é voltado exclusivamente para estudantes da UMC dos seguintes cursos de tecnologia:
+- Sistemas de Informação
+- Análise e Desenvolvimento de Sistemas (ADS)
+- Engenharia de Software
 
-O projeto será desenvolvido inicialmente como uma aplicação Web responsiva, acessível por computadores, notebooks, tablets e smartphones através de navegadores.
+## Principais Funcionalidades
 
-O desenvolvimento de aplicativos nativos para Android, iOS ou desktop não faz parte do escopo inicial do PFC.
+- **Dashboard Acadêmico:** Registro manual e acompanhamento claro de notas (M1, M2, médias) e controle do limite de faltas.
+- **Quiz Gamificado:** Perguntas categorizadas por curso, disciplina, assunto e nível de dificuldade (iniciante, intermediário, avançado).
+- **Pontuação e Rankings:** Sistema de pontos por acerto, alimentando um Ranking Global e um Ranking de Amigos.
+- **O "Guru" (Recomendações):** Sistema leve de indicação de conteúdos de estudo com base nas lacunas de conhecimento identificadas nos quizzes.
+- **Gestão de Materiais:** Organização de PDFs, links e anotações.
 
-## Tecnologias
+## Escopo e Plataformas
 
-- React
-- TypeScript
-- Supabase
-- PostgreSQL
-- Git
-- GitHub
+O projeto será desenvolvido como uma aplicação Web responsiva, projetada para funcionar de forma fluida em computadores, notebooks, tablets e celulares através do navegador. 
 
-## Status
+O desenvolvimento de aplicativos mobile nativos (Android/iOS) ou aplicações desktop não faz parte do escopo atual de implementação deste PFC.
 
-Em desenvolvimento.
+## Tecnologias e Arquitetura
+
+O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-Service (BaaS):
+
+- **Front-end:** React, TypeScript, Tailwind CSS (Hospedado no GitHub Pages).
+- **Back-end e Autenticação:** Supabase (Auth e Data API nativa).
+- **Banco de Dados:** PostgreSQL (gerenciado pelo Supabase com Row Level Security).
+- **Controle de Versão:** Git e GitHub.
+
+## Status do Projeto
+
+Em desenvolvimento ativo. 
+(Fase atual: Configuração de arquitetura e estruturação do ambiente).
