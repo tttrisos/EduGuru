@@ -1,80 +1,53 @@
-import { useState, useEffect } from 'react'
-import { supabase } from './supabase'
-import './App.css'
+import { HashRouter, Routes, Route } from 'react-router-dom'
+import MainLayout from './layouts/MainLayout'
+import Inicio from './pages/Inicio'
+import Disciplinas from './pages/Disciplinas'
+import Materiais from './pages/Materiais'
+import Perguntas from './pages/Perguntas'
+import Logs from './pages/Logs'
+import Login from './pages/Login'
+import TermoDeAceite from './pages/TermoDeAceite'
+import Privacidade from './pages/Privacidade'
+import RotaProtegida from './components/RotaProtegida'
 
 function App() {
-  const [disciplinas, setDisciplinas] = useState<any[]>([])
-  const [nome, setNome] = useState('')
-  // Ajuste 1: O valor inicial agora é 'SI' para bater com o seu select
-  const [curso, setCurso] = useState('SI')
-
-  async function buscarDisciplinas() {
-    const { data, error } = await supabase.from('disciplinas').select('*')
-    if (data) setDisciplinas(data)
-  }
-
-  useEffect(() => {
-    buscarDisciplinas()
-  }, [])
-
-  async function adicionarDisciplina(e: React.FormEvent) {
-    e.preventDefault()
-    if (!nome) return alert('Digite o nome da disciplina!')
-
-    const { error } = await supabase
-      .from('disciplinas')
-      .insert([{ nome: nome, curso: curso }])
-
-    if (error) {
-      // Ajuste 2: Se der erro, ele vai mostrar no console para podermos investigar
-      console.error("Detalhes do erro do Supabase:", error)
-      alert(`Erro ao salvar: ${error.message}`)
-    } else {
-      setNome('')
-      buscarDisciplinas()
-    }
-  }
-
-  async function deletarDisciplina(id: number) {
-    const { error } = await supabase.from('disciplinas').delete().eq('id', id)
-    if (!error) buscarDisciplinas()
-  }
-
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>EduGuru - Gestão Acadêmica</h1>
-      <h2>Cadastro de Disciplinas</h2>
+    <HashRouter>
+      <Routes>
+        {/* Login, Termo de Aceite e Política de Privacidade ficam fora do
+            MainLayout — não fazem parte da área logada. */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/termos" element={<TermoDeAceite />} />
+        <Route path="/privacidade" element={<Privacidade />} />
 
-      <form onSubmit={adicionarDisciplina} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <input 
-          type="text" 
-          placeholder="Nome da matéria..." 
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          style={{ flex: 1, padding: '8px' }}
-        />
-        <select value={curso} onChange={(e) => setCurso(e.target.value)} style={{ padding: '8px' }}>
-          <option value="SI">Sistemas de Informação</option>
-          <option value="ADS">Análise e Desenvolvimento de Sistemas</option>
-          <option value="ES">Engenharia de Software</option>
-        </select>
-        <button type="submit" style={{ padding: '8px 16px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', border: 'none' }}>
-          Salvar
-        </button>
-      </form>
+        {/* A partir daqui exige login. "somenteAdmin" fica de fora nessa
+            rota-pai porque aluno também precisa ver disciplinas/perguntas
+            — quem não pode criar/excluir é controlado dentro de cada
+            página, além do RLS no banco. */}
+        <Route
+          path="/"
+          element={
+            <RotaProtegida>
+              <MainLayout />
+            </RotaProtegida>
+          }
+        >
+          <Route index element={<Inicio />} />
+          <Route path="disciplinas" element={<Disciplinas />} />
+          <Route path="materiais" element={<Materiais />} />
+          <Route path="perguntas" element={<Perguntas />} />
 
-      <h3>Minhas Disciplinas:</h3>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {disciplinas.map(disc => (
-          <li key={disc.id} style={{ borderBottom: '1px solid #ccc', padding: '10px 0', display: 'flex', justifyContent: 'space-between' }}>
-            <span><strong>{disc.nome}</strong> - {disc.curso}</span>
-            <button onClick={() => deletarDisciplina(disc.id)} style={{ color: 'white', backgroundColor: '#f44336', border: 'none', padding: '5px 10px', cursor: 'pointer' }}>
-              Excluir
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+          <Route
+            path="logs"
+            element={
+              <RotaProtegida somenteAdmin>
+                <Logs />
+              </RotaProtegida>
+            }
+          />
+        </Route>
+      </Routes>
+    </HashRouter>
   )
 }
 

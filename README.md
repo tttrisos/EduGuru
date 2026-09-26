@@ -41,7 +41,14 @@ O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-S
 ## 📈 Status do Projeto
 
 **Fase 1 Concluída (Setembro/2026):** Módulos iniciais de Cadastros (Disciplinas, Perguntas e Materiais) integrados ao Supabase e entregues com sucesso.
-**Fase Atual:** Implementação do Roteamento (React Router) e construção do novo layout da interface de usuário (UI/UX).
+
+**Fase 2 Concluída (Entrega 28/09/2026):**
+- Autenticação (login/cadastro), com perfis de aluno/admin e controle de acesso por papel (RLS no Supabase)
+- Logs de auditoria de login, logout e alterações em disciplinas/perguntas/materiais, com rotina de limpeza de registros antigos
+- Integração com a API externa ViaCEP (consulta opcional de cidade/estado no cadastro) — documentação em `INTEGRACAO_VIACEP.md`
+- Termo de Aceite e Política de Privacidade, acessíveis a qualquer momento pelo rodapé e pela barra lateral do sistema
+
+**Próxima fase:** Quiz gamificado (pontuação, ranking) e sistema de recomendação de materiais ("Guru").
 
 ## 🚀 Como rodar o projeto localmente
 
