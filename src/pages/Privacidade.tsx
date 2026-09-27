@@ -151,9 +151,10 @@ export default function Privacidade() {
         <ul>
           <li>Conta e perfil: mantidos enquanto a conta estiver ativa.</li>
           <li>
-            Logs de auditoria: <strong>90 dias</strong>, com exclusão automática via
-            rotina que pode ser executada por um administrador (função implementada no
-            banco de dados).
+            Logs de auditoria: <strong>90 dias</strong>. A exclusão é automática,
+            executada diariamente por uma tarefa agendada no próprio banco de dados
+            (pg_cron). Um administrador também pode acionar a limpeza manualmente a
+            qualquer momento pela tela de Logs, como reforço.
           </li>
           <li>
             Arquivos anexados em Materiais: mantidos até serem excluídos por quem os
