@@ -4,15 +4,17 @@
 -- Pode ser rodado mais de uma vez (idempotente).
 --
 -- ANTES DE RODAR: habilite a extensão "pg_cron" no painel do Supabase
--- (Database → Extensions → pg_cron → Enable). O comando abaixo também
--- tenta habilitar, mas pelo painel é o caminho garantido.
+-- (Database → Extensions → pg_cron → Enable). Este script NÃO tem
+-- "create extension pg_cron": quando a extensão já está habilitada, esse
+-- comando dispara de novo o script interno de permissões do Supabase,
+-- que falha com "dependent privileges exist". Se o pg_cron não estiver
+-- habilitado, o script para no primeiro uso de "cron." com erro de
+-- schema inexistente — aí é só habilitar no painel e rodar de novo.
 --
 -- Por quê: a Política de Privacidade promete reter logs por 90 dias.
 -- Até aqui isso dependia de um admin clicar no botão de limpeza; agora
 -- o próprio banco apaga sozinho, todo dia.
 -- ============================================================
-
-create extension if not exists pg_cron;
 
 
 -- ------------------------------------------------------------
