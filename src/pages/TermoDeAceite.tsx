@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-// Documento vivo, versão 1.0 (28/09/2026). Separado da Política de
+// Documento vivo, versão 1.1 (11/10/2026). Separado da Política de
 // Privacidade (Privacidade.tsx) por decisão do orientador e coorientador.
 export default function TermoDeAceite() {
   return (
@@ -11,7 +11,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.0 — 28/09/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.1 — 11/10/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -41,17 +41,28 @@ export default function TermoDeAceite() {
         <ul>
           <li>
             <strong>Aluno</strong> (padrão de qualquer cadastro): visualiza disciplinas,
-            perguntas e materiais, e pode anexar materiais próprios.
+            perguntas e materiais, e pode anexar materiais próprios — editando ou
+            excluindo apenas os que ele mesmo enviou.
           </li>
           <li>
             <strong>Administrador</strong> (atribuído manualmente pela equipe do
             projeto): além do que o aluno pode fazer, cadastra/edita/exclui disciplinas
-            e perguntas do quiz, e acessa o histórico de auditoria.
+            e perguntas do quiz, remove qualquer material, gerencia e exclui contas de
+            usuários e acessa o histórico de auditoria.
           </li>
         </ul>
         <p>
-          Você é responsável por manter sua senha em sigilo. Avise a equipe do projeto
-          imediatamente se suspeitar de acesso indevido à sua conta.
+          <strong>Verificação em duas etapas (obrigatória):</strong> além da senha, todo
+          acesso exige o código de 6 dígitos de um aplicativo autenticador (ex.: Google
+          Authenticator, Microsoft Authenticator), configurado no primeiro login. Você é
+          responsável por manter sua senha em sigilo e o aplicativo autenticador sob seu
+          controle. Se perder o acesso ao aplicativo, peça a um administrador para
+          redefinir a verificação. Avise a equipe do projeto imediatamente se suspeitar
+          de acesso indevido à sua conta.
+        </p>
+        <p>
+          Você pode excluir sua conta a qualquer momento, na tela <strong>Minha
+          conta</strong>. A exclusão é permanente.
         </p>
 
         <h2>4. Condutas proibidas</h2>
@@ -68,8 +79,10 @@ export default function TermoDeAceite() {
         <h2>5. Conteúdo enviado pelo usuário</h2>
         <p>
           Ao anexar um material (PDF/DOCX), você declara ter o direito de compartilhá-lo
-          com os demais usuários da plataforma. A equipe do EduGuru pode remover
-          qualquer conteúdo que viole este Termo, sem aviso prévio.
+          com os demais usuários da plataforma (todo usuário logado pode ver e baixar os
+          materiais enviados). A equipe do EduGuru pode remover qualquer conteúdo que
+          viole este Termo, sem aviso prévio. Ao excluir sua conta, os materiais que você
+          enviou também são excluídos.
         </p>
 
         <h2>6. Disponibilidade e encerramento</h2>
@@ -88,7 +101,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.0, 28/09/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.1, 11/10/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

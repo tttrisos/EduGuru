@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-// Documento vivo, versão 1.0 (28/09/2026). Separado do Termo de Aceite
+// Documento vivo, versão 1.1 (11/10/2026). Separado do Termo de Aceite
 // (TermoDeAceite.tsx) por decisão do orientador e coorientador.
 export default function Privacidade() {
   return (
@@ -11,7 +11,7 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.0 — 28/09/2026. Documento vivo: será atualizado conforme novas
+          Versão 1.1 — 11/10/2026. Documento vivo: será atualizado conforme novas
           funcionalidades (quiz, pontuação, ranking) entrarem no projeto. Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
@@ -43,6 +43,15 @@ export default function Privacidade() {
             de qualquer gravação).
           </li>
           <li>
+            <strong>Verificação em duas etapas (MFA):</strong> o registro do aplicativo
+            autenticador vinculado à sua conta (a chave secreta é guardada pelo Supabase
+            Auth; o EduGuru não vê nem armazena os códigos de 6 dígitos).
+          </li>
+          <li>
+            <strong>Registro do aceite:</strong> data, hora e versão do Termo de Aceite e
+            desta Política aceitos no cadastro.
+          </li>
+          <li>
             <strong>Acadêmicos:</strong> curso (Sistemas de Informação, ADS ou Engenharia
             de Software), escolhido no cadastro.
           </li>
@@ -53,14 +62,18 @@ export default function Privacidade() {
             se a pessoa preencher esse campo opcional.
           </li>
           <li>
-            <strong>Conteúdo da plataforma:</strong> disciplinas, perguntas de quiz e
-            materiais de estudo cadastrados por administradores, incluindo arquivos
-            (PDF/DOCX, até 5 MB) que os usuários decidam anexar.
+            <strong>Conteúdo da plataforma:</strong> disciplinas e perguntas de quiz
+            cadastradas por administradores, e materiais de estudo (links e arquivos
+            PDF/DOCX, até 5 MB) enviados por alunos ou administradores — cada material
+            guarda quem o enviou.
           </li>
           <li>
-            <strong>Registros de auditoria:</strong> login, tentativas de login malsucedidas,
-            logout, e criação/edição/exclusão de disciplinas, perguntas e materiais —
-            sempre associados a quem realizou a ação e quando.
+            <strong>Registros de auditoria:</strong> login concluído, tentativas de login
+            malsucedidas, códigos de verificação em duas etapas inválidos, ativação da
+            verificação, logout, criação/edição/exclusão de disciplinas, perguntas e
+            materiais, alterações no perfil (apenas <em>quais</em> campos mudaram, não os
+            valores) e exclusões de conta — sempre associados a quem realizou a ação e
+            quando.
           </li>
         </ul>
         <p>
@@ -89,6 +102,18 @@ export default function Privacidade() {
                 <td>Enquanto a conta existir</td>
               </tr>
               <tr>
+                <td>Fator de verificação em duas etapas (MFA)</td>
+                <td>Proteger a conta contra acesso com senha vazada ou descoberta</td>
+                <td>Execução de contrato (art. 7º, V), em atendimento ao dever de segurança (art. 46)</td>
+                <td>Enquanto a conta existir</td>
+              </tr>
+              <tr>
+                <td>Data e versão do aceite</td>
+                <td>Comprovar que o titular aceitou o Termo e a Política</td>
+                <td>Cumprimento de obrigação legal — comprovação do consentimento (art. 7º, II, e art. 8º, §2º)</td>
+                <td>Enquanto a conta existir</td>
+              </tr>
+              <tr>
                 <td>Curso</td>
                 <td>Mostrar conteúdo relevante ao curso do aluno</td>
                 <td>Execução de contrato</td>
@@ -101,10 +126,10 @@ export default function Privacidade() {
                 <td>Enquanto a conta existir, ou até o usuário remover a informação</td>
               </tr>
               <tr>
-                <td>Perguntas, disciplinas, materiais</td>
-                <td>Funcionamento do quiz e da biblioteca de materiais</td>
+                <td>Perguntas, disciplinas, materiais (e quem enviou cada material)</td>
+                <td>Funcionamento do quiz e da biblioteca de materiais; permitir que só o autor (ou um admin) altere/exclua o material</td>
                 <td>Execução de contrato / legítimo interesse educacional</td>
-                <td>Enquanto o conteúdo for mantido pela administração</td>
+                <td>Até ser excluído pelo autor ou por um administrador, ou até a exclusão da conta do autor</td>
               </tr>
               <tr>
                 <td>Logs de auditoria</td>
@@ -149,17 +174,41 @@ export default function Privacidade() {
 
         <h2>6. Retenção e descarte</h2>
         <ul>
-          <li>Conta e perfil: mantidos enquanto a conta estiver ativa.</li>
+          <li>
+            Conta, perfil, registro do aceite e fator MFA: mantidos enquanto a conta
+            existir. Apagados na hora quando o titular exclui a conta (tela Minha conta)
+            ou quando um administrador a exclui.
+          </li>
           <li>
             Logs de auditoria: <strong>90 dias</strong>. A exclusão é automática,
             executada diariamente às 03h (horário de Brasília) por uma tarefa agendada
-            no próprio banco de dados (pg_cron). Um administrador também pode acionar a limpeza manualmente a
-            qualquer momento pela tela de Logs, como reforço.
+            no próprio banco de dados (pg_cron). Um administrador também pode acionar a
+            limpeza manualmente pela tela de Logs, como reforço, mas nunca de registros
+            com menos de 90 dias. Se a conta for excluída antes disso, os registros já
+            feitos continuam até completar os 90 dias (segurança e investigação de
+            incidentes) e então são apagados pela mesma rotina.
           </li>
           <li>
             Arquivos anexados em Materiais: mantidos até serem excluídos por quem os
-            enviou ou por um administrador — a exclusão remove o arquivo também do
-            armazenamento, não só da lista.
+            enviou ou por um administrador, ou até a exclusão da conta de quem os
+            enviou — a exclusão remove o arquivo também do armazenamento, não só da
+            lista.
+          </li>
+        </ul>
+
+        <h3>Quem enxerga o quê</h3>
+        <ul>
+          <li>
+            <strong>Você:</strong> todos os seus dados, na tela Minha conta, incluindo seus
+            registros de atividade.
+          </li>
+          <li>
+            <strong>Outros alunos:</strong> não veem seu perfil (nome, e-mail, curso,
+            cidade). Veem apenas os materiais que você enviar (título, link e arquivo).
+          </li>
+          <li>
+            <strong>Administradores:</strong> veem os perfis de todos os usuários (para
+            gerenciar contas) e os logs de auditoria.
           </li>
         </ul>
 
@@ -204,16 +253,20 @@ export default function Privacidade() {
 
         <h2>8. Segurança e resposta a incidentes</h2>
         <p>
-          Senhas passam por hash (nunca texto puro). O acesso a cada funcionalidade é
-          controlado por regras de segurança no próprio banco de dados (Row Level
-          Security), não apenas pela interface. Ações relevantes ficam registradas em
+          Senhas passam por hash (nunca texto puro). Todo acesso exige verificação em
+          duas etapas (senha + código do aplicativo autenticador), e o próprio banco de
+          dados recusa sessões que não concluíram essa verificação. O acesso a cada
+          funcionalidade é controlado por regras de segurança no próprio banco de dados
+          (Row Level Security), não apenas pela interface. Arquivos anexados não são
+          públicos: só podem ser abertos por usuários logados, por links temporários
+          que expiram em 1 hora. Ações relevantes ficam registradas em
           log de auditoria. Em caso de incidente de segurança, a equipe irá: identificar
           o problema, conter o acesso indevido, avaliar quais contas foram afetadas, e
           comunicar o orientador e os usuários afetados assim que possível.
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.0, 28/09/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.1, 11/10/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

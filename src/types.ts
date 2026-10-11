@@ -46,7 +46,7 @@ export type Perfil = {
 // Versão vigente do Termo de Aceite + Política de Privacidade. Gravada no
 // perfil no momento do aceite (cadastro). Mudar aqui quando os documentos
 // mudarem de versão.
-export const VERSAO_TERMOS = '1.0'
+export const VERSAO_TERMOS = '1.1'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).
 export type UsuarioAdmin = {
