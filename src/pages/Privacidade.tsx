@@ -152,8 +152,8 @@ export default function Privacidade() {
           <li>Conta e perfil: mantidos enquanto a conta estiver ativa.</li>
           <li>
             Logs de auditoria: <strong>90 dias</strong>. A exclusão é automática,
-            executada diariamente por uma tarefa agendada no próprio banco de dados
-            (pg_cron). Um administrador também pode acionar a limpeza manualmente a
+            executada diariamente às 03h (horário de Brasília) por uma tarefa agendada
+            no próprio banco de dados (pg_cron). Um administrador também pode acionar a limpeza manualmente a
             qualquer momento pela tela de Logs, como reforço.
           </li>
           <li>

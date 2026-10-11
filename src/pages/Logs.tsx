@@ -8,6 +8,7 @@ const RODAPE_ACAO: Record<string, string> = {
   logout: 'Logout',
   mfa_ativado: 'MFA ativado',
   mfa_falhou: 'Código MFA inválido',
+  limpeza_automatica: 'Limpeza automática',
   criar: 'Criou',
   editar: 'Editou',
   excluir: 'Excluiu',
@@ -78,6 +79,10 @@ export default function Logs() {
           Últimos 200 eventos registrados no sistema (login, logout, criação/edição/exclusão de
           registros). Só administradores enxergam esta página — a regra está garantida no banco
           (RLS), não só aqui na tela.
+        </p>
+        <p>
+          Logs com mais de 90 dias são apagados automaticamente todo dia às 03h (horário de
+          Brasília), por uma tarefa agendada no banco. O botão abaixo é só um reforço manual.
         </p>
       </header>
 
