@@ -7,6 +7,21 @@ import { supabase } from '../supabase'
 //
 // O front NÃO insere direto na tabela de logs: chama funções do banco que
 // só aceitam estes eventos e usam sempre o usuário da sessão atual.
+// Nome amigável de cada "acao" gravada em logs_auditoria (tela de Logs do
+// admin e "Meus registros de atividade" do titular).
+export const ROTULO_ACAO: Record<string, string> = {
+  login: 'Login',
+  login_falhou: 'Login falhou',
+  logout: 'Logout',
+  mfa_ativado: 'MFA ativado',
+  mfa_falhou: 'Código MFA inválido',
+  limpeza_automatica: 'Limpeza automática',
+  conta_excluida: 'Conta excluída',
+  criar: 'Criou',
+  editar: 'Editou',
+  excluir: 'Excluiu',
+}
+
 export type EventoAuth = 'login' | 'logout' | 'mfa_ativado' | 'mfa_falhou'
 
 export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<string, unknown>) {

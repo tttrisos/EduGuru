@@ -1,18 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import type { LogAuditoria } from '../types'
-
-const RODAPE_ACAO: Record<string, string> = {
-  login: 'Login',
-  login_falhou: 'Login falhou',
-  logout: 'Logout',
-  mfa_ativado: 'MFA ativado',
-  mfa_falhou: 'Código MFA inválido',
-  limpeza_automatica: 'Limpeza automática',
-  criar: 'Criou',
-  editar: 'Editou',
-  excluir: 'Excluiu',
-}
+import { ROTULO_ACAO } from '../lib/log'
 
 function formatarData(iso: string) {
   return new Date(iso).toLocaleString('pt-BR')
@@ -105,7 +94,7 @@ export default function Logs() {
               <li key={log.id} className="item-lista">
                 <div>
                   <strong>
-                    {RODAPE_ACAO[log.acao] ?? log.acao}
+                    {ROTULO_ACAO[log.acao] ?? log.acao}
                     {log.tabela ? ` · ${log.tabela}` : ''}
                   </strong>
                   <span className="item-meta">

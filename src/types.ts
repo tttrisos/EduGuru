@@ -48,6 +48,16 @@ export type Perfil = {
 // mudarem de versão.
 export const VERSAO_TERMOS = '1.0'
 
+// Linha devolvida pela função listar_usuarios_admin() (só admin).
+export type UsuarioAdmin = {
+  id: string
+  nome: string
+  email: string
+  curso: string | null
+  papel: Papel
+  criado_em: string
+}
+
 export type LogAuditoria = {
   id: number
   usuario_id: string | null

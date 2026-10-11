@@ -9,6 +9,8 @@ import {
   LogOut,
   Menu,
   ShieldCheck,
+  UserCog,
+  Users,
   X,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -19,9 +21,13 @@ const itensBase = [
   { path: '/disciplinas', label: 'Disciplinas', icon: BookOpen },
   { path: '/perguntas', label: 'Perguntas', icon: HelpCircle },
   { path: '/materiais', label: 'Materiais', icon: FileText },
+  { path: '/minha-conta', label: 'Minha conta', icon: UserCog },
 ]
 
-const itemLogs = { path: '/logs', label: 'Logs', icon: ShieldCheck }
+const itensAdmin = [
+  { path: '/usuarios', label: 'Usuários', icon: Users },
+  { path: '/logs', label: 'Logs', icon: ShieldCheck },
+]
 
 export default function MainLayout() {
   const location = useLocation()
@@ -29,8 +35,8 @@ export default function MainLayout() {
   const { perfil, ehAdmin, sair } = useAuth()
   const [menuAberto, setMenuAberto] = useState(false)
 
-  // aluno não vê "Logs" no menu (rota e RLS já bloqueiam mesmo assim)
-  const itens = ehAdmin ? [...itensBase, itemLogs] : itensBase
+  // aluno não vê "Usuários" nem "Logs" no menu (rota e RLS já bloqueiam mesmo assim)
+  const itens = ehAdmin ? [...itensBase, ...itensAdmin] : itensBase
 
   async function aoSair() {
     await sair()

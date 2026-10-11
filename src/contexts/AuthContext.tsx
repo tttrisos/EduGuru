@@ -12,6 +12,8 @@ type AuthContextValor = {
   // true só quando a sessão passou pelo 2º fator (nível "aal2").
   mfaConcluido: boolean
   atualizarMfa: () => Promise<void>
+  // Relê o perfil do banco (ex.: depois de o titular corrigir os dados).
+  recarregarPerfil: () => Promise<void>
   entrar: (email: string, senha: string) => Promise<{ erro: string | null }>
   cadastrar: (
     nome: string,
@@ -137,6 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ehAdmin: perfil?.papel === 'admin',
     mfaConcluido,
     atualizarMfa,
+    recarregarPerfil: atualizarMfa,
     entrar,
     cadastrar,
     sair,

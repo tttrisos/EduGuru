@@ -5,6 +5,8 @@ import Disciplinas from './pages/Disciplinas'
 import Materiais from './pages/Materiais'
 import Perguntas from './pages/Perguntas'
 import Logs from './pages/Logs'
+import MinhaConta from './pages/MinhaConta'
+import Usuarios from './pages/Usuarios'
 import Login from './pages/Login'
 import Mfa from './pages/Mfa'
 import TermoDeAceite from './pages/TermoDeAceite'
@@ -40,6 +42,16 @@ function App() {
           <Route path="disciplinas" element={<Disciplinas />} />
           <Route path="materiais" element={<Materiais />} />
           <Route path="perguntas" element={<Perguntas />} />
+          <Route path="minha-conta" element={<MinhaConta />} />
+
+          <Route
+            path="usuarios"
+            element={
+              <RotaProtegida somenteAdmin>
+                <Usuarios />
+              </RotaProtegida>
+            }
+          />
 
           <Route
             path="logs"

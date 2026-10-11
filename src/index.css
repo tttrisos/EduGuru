@@ -673,3 +673,58 @@ a {
   letter-spacing: 6px;
   font-size: 20px;
 }
+
+/* ---------- Minha conta ---------- */
+.conta-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.conta-secao h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.conta-secao p,
+.conta-secao ul {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.conta-dados {
+  display: grid;
+  grid-template-columns: minmax(140px, max-content) 1fr;
+  gap: 8px 16px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.conta-dados dt {
+  color: var(--text-muted);
+}
+
+.conta-dados dd {
+  margin: 0;
+  word-break: break-word;
+}
+
+.conta-uf {
+  flex: 0 0 80px;
+  min-width: 80px;
+}
+
+.conta-perigo {
+  border-color: color-mix(in srgb, var(--perigo) 40%, transparent);
+}
+
+.conta-btn-excluir {
+  height: 44px;
+}
+
+@media (max-width: 600px) {
+  .conta-dados {
+    grid-template-columns: 1fr;
+  }
+}

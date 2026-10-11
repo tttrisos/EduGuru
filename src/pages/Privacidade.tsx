@@ -173,11 +173,32 @@ export default function Privacidade() {
           <li>Informações sobre com quem seus dados são compartilhados.</li>
         </ul>
         <p>
+          Você exerce esses direitos sozinho, dentro do site, na tela{' '}
+          <strong>Minha conta</strong> (menu lateral, depois de entrar):
+        </p>
+        <ul>
+          <li>
+            <strong>Acesso:</strong> ver todos os dados do seu perfil, a data e a versão do
+            aceite destes documentos, seus materiais enviados e seus registros de atividade,
+            e baixar tudo em um arquivo (JSON);
+          </li>
+          <li>
+            <strong>Correção:</strong> alterar nome, curso, cidade e estado;
+          </li>
+          <li>
+            <strong>Revogação do consentimento:</strong> apagar cidade/estado com um clique;
+          </li>
+          <li>
+            <strong>Eliminação:</strong> excluir a conta. Perfil, conta de acesso,
+            verificação em duas etapas e materiais enviados (com os arquivos) são apagados
+            na hora. Os registros de auditoria já existentes são mantidos até completar 90
+            dias, por segurança, e então apagados automaticamente.
+          </li>
+        </ul>
+        <p>
           <em>
-            Nesta fase acadêmica, essas solicitações são feitas diretamente aos
-            integrantes do grupo ou ao orientador. Uma tela própria para o usuário
-            exercer esses direitos sozinho, dentro do site, é um próximo passo do
-            projeto (ainda não implementada nesta entrega).
+            Outras solicitações (ex.: dúvidas sobre compartilhamento) são feitas
+            diretamente aos integrantes do grupo ou ao orientador.
           </em>
         </p>
 
