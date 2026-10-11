@@ -7,10 +7,12 @@ type Props = {
   somenteAdmin?: boolean
 }
 
-// Bloqueia acesso a quem não está logado (e, se somenteAdmin, a quem não
-// é admin). Isso é só UX — a segurança de verdade está no RLS do Supabase.
+// Bloqueia acesso a quem não está logado, a quem ainda não passou pelo
+// código do autenticador (MFA, nível "aal2") e, se somenteAdmin, a quem não
+// é admin. Isso é só UX — a segurança de verdade está no RLS do Supabase,
+// que também exige aal2 (supabase_atualizacao_5.sql).
 export default function RotaProtegida({ children, somenteAdmin = false }: Props) {
-  const { usuario, perfil, carregando, ehAdmin } = useAuth()
+  const { usuario, perfil, carregando, ehAdmin, mfaConcluido } = useAuth()
   const location = useLocation()
 
   if (carregando) {
@@ -19,6 +21,10 @@ export default function RotaProtegida({ children, somenteAdmin = false }: Props)
 
   if (!usuario) {
     return <Navigate to="/login" replace state={{ rotaOrigem: location.pathname }} />
+  }
+
+  if (!mfaConcluido) {
+    return <Navigate to="/mfa" replace state={{ rotaOrigem: location.pathname }} />
   }
 
   if (somenteAdmin && !ehAdmin) {

@@ -6,6 +6,8 @@ const RODAPE_ACAO: Record<string, string> = {
   login: 'Login',
   login_falhou: 'Login falhou',
   logout: 'Logout',
+  mfa_ativado: 'MFA ativado',
+  mfa_falhou: 'Código MFA inválido',
   criar: 'Criou',
   editar: 'Editou',
   excluir: 'Excluiu',

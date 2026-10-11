@@ -6,6 +6,7 @@ import Materiais from './pages/Materiais'
 import Perguntas from './pages/Perguntas'
 import Logs from './pages/Logs'
 import Login from './pages/Login'
+import Mfa from './pages/Mfa'
 import TermoDeAceite from './pages/TermoDeAceite'
 import Privacidade from './pages/Privacidade'
 import RotaProtegida from './components/RotaProtegida'
@@ -17,6 +18,9 @@ function App() {
         {/* Login, Termo de Aceite e Política de Privacidade ficam fora do
             MainLayout — não fazem parte da área logada. */}
         <Route path="/login" element={<Login />} />
+        {/* Código do autenticador (2º fator) — já logado com senha, mas
+            ainda sem acesso à área logada até concluir o MFA. */}
+        <Route path="/mfa" element={<Mfa />} />
         <Route path="/termos" element={<TermoDeAceite />} />
         <Route path="/privacidade" element={<Privacidade />} />
 

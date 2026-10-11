@@ -9,6 +9,9 @@ type AuthContextValor = {
   perfil: Perfil | null
   carregando: boolean
   ehAdmin: boolean
+  // true só quando a sessão passou pelo 2º fator (nível "aal2").
+  mfaConcluido: boolean
+  atualizarMfa: () => Promise<void>
   entrar: (email: string, senha: string) => Promise<{ erro: string | null }>
   cadastrar: (
     nome: string,
@@ -23,43 +26,73 @@ type AuthContextValor = {
 
 const AuthContext = createContext<AuthContextValor | null>(null)
 
+// Descobre se a sessão já passou pelo MFA. Antes disso o banco não
+// devolve nem o próprio perfil (regra "mfa_obrigatorio" no RLS), então
+// o perfil só é buscado depois do aal2.
+async function lerDadosSessao(
+  session: Session | null,
+): Promise<{ mfaConcluido: boolean; perfil: Perfil | null }> {
+  if (!session?.user) return { mfaConcluido: false, perfil: null }
+
+  const { data: nivel } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+  if (nivel?.currentLevel !== 'aal2') return { mfaConcluido: false, perfil: null }
+
+  const { data } = await supabase.from('perfis').select('*').eq('id', session.user.id).single()
+  return { mfaConcluido: true, perfil: (data as Perfil) ?? null }
+}
+
 // Guarda, em um lugar só, quem está logado e qual o papel dele.
 // Qualquer página consulta isso via useAuth() em vez de checar sozinha.
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null)
   const [perfil, setPerfil] = useState<Perfil | null>(null)
   const [carregando, setCarregando] = useState(true)
+  const [mfaConcluido, setMfaConcluido] = useState(false)
 
-  async function buscarPerfil(userId: string) {
-    const { data } = await supabase.from('perfis').select('*').eq('id', userId).single()
-    setPerfil((data as Perfil) ?? null)
+  async function carregarDadosSessao(session: Session | null) {
+    const dados = await lerDadosSessao(session)
+    setMfaConcluido(dados.mfaConcluido)
+    setPerfil(dados.perfil)
+  }
+
+  async function atualizarMfa() {
+    const { data } = await supabase.auth.getSession()
+    await carregarDadosSessao(data.session)
   }
 
   useEffect(() => {
     // Verifica se já existe sessão salva (o Supabase cuida disso sozinho).
-    supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
+      const dados = await lerDadosSessao(session)
       setUsuario(session?.user ?? null)
-      if (session?.user) buscarPerfil(session.user.id)
+      setMfaConcluido(dados.mfaConcluido)
+      setPerfil(dados.perfil)
       setCarregando(false)
     })
 
-    // Escuta login/logout/expiração de token e atualiza o estado.
+    // Escuta login/logout/expiração de token/MFA verificado e atualiza o
+    // estado. O setTimeout evita chamar o Supabase de dentro do próprio
+    // callback de auth (a biblioteca pode travar esperando a si mesma).
     const { data: assinatura } = supabase.auth.onAuthStateChange((_evento: string, session: Session | null) => {
       setUsuario(session?.user ?? null)
-      if (session?.user) buscarPerfil(session.user.id)
-      else setPerfil(null)
+      setTimeout(async () => {
+        const dados = await lerDadosSessao(session)
+        setMfaConcluido(dados.mfaConcluido)
+        setPerfil(dados.perfil)
+      }, 0)
     })
 
     return () => assinatura.subscription.unsubscribe()
   }, [])
 
+  // Só confere a senha. O login só é registrado como concluído depois do
+  // código do autenticador (tela /mfa).
   async function entrar(email: string, senha: string) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha })
     if (error || !data.user) {
       await registrarLoginFalhou(email)
       return { erro: 'E-mail ou senha inválidos.' }
     }
-    await registrarLogEvento('login')
     return { erro: null }
   }
 
@@ -102,6 +135,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     perfil,
     carregando,
     ehAdmin: perfil?.papel === 'admin',
+    mfaConcluido,
+    atualizarMfa,
     entrar,
     cadastrar,
     sair,

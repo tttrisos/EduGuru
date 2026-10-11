@@ -615,3 +615,61 @@ a {
   color: var(--text-muted);
   font-weight: 600;
 }
+
+/* ---------- Botão secundário ---------- */
+.btn-secundario {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secundario:hover {
+  background: var(--bg-hover);
+}
+
+/* ---------- MFA (verificação em duas etapas) ---------- */
+.mfa-passos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mfa-passos p,
+.mfa-passos ol {
+  margin: 0;
+}
+
+.mfa-passos ol {
+  padding-left: 20px;
+  color: var(--text-muted);
+}
+
+/* QR Code precisa de fundo branco para os apps conseguirem ler no tema escuro */
+.mfa-qr {
+  width: 200px;
+  height: 200px;
+  align-self: center;
+  background: #fff;
+  padding: 8px;
+  border-radius: var(--radius);
+}
+
+.mfa-segredo {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.mfa-segredo code {
+  display: block;
+  margin-top: 4px;
+  word-break: break-all;
+  color: var(--text);
+}
+
+.mfa-codigo {
+  text-align: center;
+  letter-spacing: 6px;
+  font-size: 20px;
+}
