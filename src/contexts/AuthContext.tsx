@@ -101,6 +101,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>
 }
 
+// Hook e Provider no mesmo arquivo é o padrão de Context do React; a regra
+// abaixo só afeta o hot-reload do Vite em desenvolvimento, não o build.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const contexto = useContext(AuthContext)
   if (!contexto) throw new Error('useAuth precisa ser usado dentro de <AuthProvider>')

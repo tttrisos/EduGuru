@@ -5,6 +5,10 @@ import { useAuth } from '../contexts/AuthContext'
 
 const NIVEIS = ['Fácil', 'Médio', 'Difícil']
 
+async function consultarPerguntas() {
+  return await supabase.from('perguntas').select('*').order('id', { ascending: false })
+}
+
 export default function Perguntas() {
   const { ehAdmin } = useAuth()
   const [lista, setLista] = useState<Pergunta[]>([])
@@ -16,10 +20,7 @@ export default function Perguntas() {
 
   async function buscar() {
     try {
-      const { data, error } = await supabase
-        .from('perguntas')
-        .select('*')
-        .order('id', { ascending: false })
+      const { data, error } = await consultarPerguntas()
 
       if (error) setErro(error.message)
       else {
@@ -33,8 +34,16 @@ export default function Perguntas() {
     }
   }
 
+  // Carga inicial: o setState fica dentro do .then (callback assíncrono),
+  // não no corpo do efeito — é o que pede a regra react-hooks/set-state-in-effect.
   useEffect(() => {
-    buscar()
+    consultarPerguntas()
+      .then(({ data, error }) => {
+        if (error) setErro(error.message)
+        else setLista((data as Pergunta[]) ?? [])
+      })
+      .catch(() => setErro('Não foi possível conectar ao banco.'))
+      .finally(() => setCarregando(false))
   }, [])
 
   async function salvar(e: React.FormEvent) {

@@ -19,6 +19,10 @@ function urlPublicaArquivo(path: string) {
   return supabase.storage.from('materiais').getPublicUrl(path).data.publicUrl
 }
 
+async function consultarMateriais() {
+  return await supabase.from('materiais').select('*').order('id', { ascending: false })
+}
+
 export default function Materiais() {
   const [lista, setLista] = useState<Material[]>([])
   const [titulo, setTitulo] = useState('')
@@ -30,10 +34,7 @@ export default function Materiais() {
 
   async function buscar() {
     try {
-      const { data, error } = await supabase
-        .from('materiais')
-        .select('*')
-        .order('id', { ascending: false })
+      const { data, error } = await consultarMateriais()
 
       if (error) setErro(error.message)
       else {
@@ -47,8 +48,16 @@ export default function Materiais() {
     }
   }
 
+  // Carga inicial: o setState fica dentro do .then (callback assíncrono),
+  // não no corpo do efeito — é o que pede a regra react-hooks/set-state-in-effect.
   useEffect(() => {
-    buscar()
+    consultarMateriais()
+      .then(({ data, error }) => {
+        if (error) setErro(error.message)
+        else setLista((data as Material[]) ?? [])
+      })
+      .catch(() => setErro('Não foi possível conectar ao banco.'))
+      .finally(() => setCarregando(false))
   }, [])
 
   function aoEscolherArquivo(e: React.ChangeEvent<HTMLInputElement>) {

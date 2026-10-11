@@ -15,6 +15,14 @@ function formatarData(iso: string) {
   return new Date(iso).toLocaleString('pt-BR')
 }
 
+async function consultarLogs() {
+  return await supabase
+    .from('logs_auditoria')
+    .select('*')
+    .order('criado_em', { ascending: false })
+    .limit(200)
+}
+
 export default function Logs() {
   const [lista, setLista] = useState<LogAuditoria[]>([])
   const [carregando, setCarregando] = useState(true)
@@ -24,11 +32,7 @@ export default function Logs() {
 
   async function buscar() {
     setCarregando(true)
-    const { data, error } = await supabase
-      .from('logs_auditoria')
-      .select('*')
-      .order('criado_em', { ascending: false })
-      .limit(200)
+    const { data, error } = await consultarLogs()
 
     if (error) setErro(error.message)
     else {
@@ -38,8 +42,14 @@ export default function Logs() {
     setCarregando(false)
   }
 
+  // Carga inicial: o setState fica dentro do .then (callback assíncrono),
+  // não no corpo do efeito — é o que pede a regra react-hooks/set-state-in-effect.
   useEffect(() => {
-    buscar()
+    consultarLogs().then(({ data, error }) => {
+      if (error) setErro(error.message)
+      else setLista((data as LogAuditoria[]) ?? [])
+      setCarregando(false)
+    })
   }, [])
 
   async function limparAntigos() {
