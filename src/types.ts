@@ -18,6 +18,7 @@ export type Material = {
   arquivo_path: string | null
   arquivo_nome: string | null
   arquivo_tamanho: number | null
+  enviado_por: string | null
 }
 
 export const CURSOS = [
@@ -36,8 +37,16 @@ export type Perfil = {
   curso: string | null
   cidade: string | null
   estado: string | null
+  consentimento_aceito: boolean
+  consentimento_em: string | null
+  versao_termos: string | null
   criado_em: string
 }
+
+// Versão vigente do Termo de Aceite + Política de Privacidade. Gravada no
+// perfil no momento do aceite (cadastro). Mudar aqui quando os documentos
+// mudarem de versão.
+export const VERSAO_TERMOS = '1.0'
 
 export type LogAuditoria = {
   id: number

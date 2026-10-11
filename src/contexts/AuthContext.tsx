@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../supabase'
-import type { Perfil } from '../types'
-import { registrarLogEvento } from '../lib/log'
+import { VERSAO_TERMOS, type Perfil } from '../types'
+import { registrarLogEvento, registrarLoginFalhou } from '../lib/log'
 
 type AuthContextValor = {
   usuario: User | null
@@ -55,11 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function entrar(email: string, senha: string) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha })
-    if (error) {
-      await registrarLogEvento('login_falhou', null, email, { motivo: error.message })
+    if (error || !data.user) {
+      await registrarLoginFalhou(email)
       return { erro: 'E-mail ou senha inválidos.' }
     }
-    await registrarLogEvento('login', data.user?.id ?? null, data.user?.email ?? email)
+    await registrarLogEvento('login')
     return { erro: null }
   }
 
@@ -71,20 +71,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     cidade: string | null,
     estado: string | null,
   ) {
-    const { data, error } = await supabase.auth.signUp({
+    // O cadastro só é enviado depois que o checkbox do Termo/Política foi
+    // marcado; o banco grava o aceite (data e versão) no perfil e o log de
+    // cadastro é feito pelo trigger da tabela perfis.
+    const { error } = await supabase.auth.signUp({
       email,
       password: senha,
-      options: { data: { nome, curso, cidade, estado } },
+      options: {
+        data: {
+          nome,
+          curso,
+          cidade,
+          estado,
+          consentimento_aceito: true,
+          versao_termos: VERSAO_TERMOS,
+        },
+      },
     })
     if (error) return { erro: error.message }
-    await registrarLogEvento('login', data.user?.id ?? null, data.user?.email ?? email, {
-      evento: 'cadastro_de_conta',
-    })
     return { erro: null }
   }
 
   async function sair() {
-    await registrarLogEvento('logout', usuario?.id ?? null, usuario?.email ?? null)
+    await registrarLogEvento('logout')
     await supabase.auth.signOut()
   }
 

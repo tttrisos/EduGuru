@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import type { Material } from '../types'
+import { useAuth } from '../contexts/AuthContext'
 
 const LIMITE_MB = 5
 const LIMITE_BYTES = LIMITE_MB * 1024 * 1024
@@ -15,16 +16,36 @@ function formatarTamanho(bytes: number | null) {
   return mb >= 1 ? `${mb.toFixed(1)} MB` : `${(bytes / 1024).toFixed(0)} KB`
 }
 
-function urlPublicaArquivo(path: string) {
-  return supabase.storage.from('materiais').getPublicUrl(path).data.publicUrl
-}
+// O bucket é privado: em vez de link público, geramos links assinados que
+// expiram em 1 hora, só para quem está logado.
+const VALIDADE_LINK_SEGUNDOS = 60 * 60
 
 async function consultarMateriais() {
-  return await supabase.from('materiais').select('*').order('id', { ascending: false })
+  const { data, error } = await supabase
+    .from('materiais')
+    .select('*')
+    .order('id', { ascending: false })
+  if (error) return { lista: [] as Material[], urls: {}, erro: error.message }
+
+  const lista = (data as Material[]) ?? []
+  const caminhos = lista.map((m) => m.arquivo_path).filter((p): p is string => !!p)
+  const urls: Record<string, string> = {}
+
+  if (caminhos.length > 0) {
+    const { data: assinadas } = await supabase.storage
+      .from('materiais')
+      .createSignedUrls(caminhos, VALIDADE_LINK_SEGUNDOS)
+    for (const item of assinadas ?? []) {
+      if (item.path && item.signedUrl) urls[item.path] = item.signedUrl
+    }
+  }
+  return { lista, urls, erro: null }
 }
 
 export default function Materiais() {
+  const { usuario, ehAdmin } = useAuth()
   const [lista, setLista] = useState<Material[]>([])
+  const [urlsArquivos, setUrlsArquivos] = useState<Record<string, string>>({})
   const [titulo, setTitulo] = useState('')
   const [link, setLink] = useState('')
   const [arquivo, setArquivo] = useState<File | null>(null)
@@ -34,11 +55,12 @@ export default function Materiais() {
 
   async function buscar() {
     try {
-      const { data, error } = await consultarMateriais()
+      const resultado = await consultarMateriais()
 
-      if (error) setErro(error.message)
+      if (resultado.erro) setErro(resultado.erro)
       else {
-        setLista((data as Material[]) ?? [])
+        setLista(resultado.lista)
+        setUrlsArquivos(resultado.urls)
         setErro('')
       }
     } catch {
@@ -52,9 +74,12 @@ export default function Materiais() {
   // não no corpo do efeito — é o que pede a regra react-hooks/set-state-in-effect.
   useEffect(() => {
     consultarMateriais()
-      .then(({ data, error }) => {
-        if (error) setErro(error.message)
-        else setLista((data as Material[]) ?? [])
+      .then((resultado) => {
+        if (resultado.erro) setErro(resultado.erro)
+        else {
+          setLista(resultado.lista)
+          setUrlsArquivos(resultado.urls)
+        }
       })
       .catch(() => setErro('Não foi possível conectar ao banco.'))
       .finally(() => setCarregando(false))
@@ -205,16 +230,19 @@ export default function Materiais() {
                         {item.link}
                       </a>
                     ) : null}
-                    {item.arquivo_path ? (
-                      <a href={urlPublicaArquivo(item.arquivo_path)} target="_blank" rel="noreferrer">
+                    {item.arquivo_path && urlsArquivos[item.arquivo_path] ? (
+                      <a href={urlsArquivos[item.arquivo_path]} target="_blank" rel="noreferrer">
                         📎 {item.arquivo_nome} ({formatarTamanho(item.arquivo_tamanho)})
                       </a>
                     ) : null}
                   </span>
                 </div>
-                <button type="button" className="btn btn-perigo" onClick={() => excluir(item)}>
-                  Excluir
-                </button>
+                {/* Só quem enviou (ou admin) pode excluir — o RLS garante isso no banco. */}
+                {ehAdmin || item.enviado_por === usuario?.id ? (
+                  <button type="button" className="btn btn-perigo" onClick={() => excluir(item)}>
+                    Excluir
+                  </button>
+                ) : null}
               </li>
             ))}
           </ul>
