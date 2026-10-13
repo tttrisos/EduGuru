@@ -728,3 +728,14 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* Botão com aparência de link (ações secundárias dentro de texto) */
+.link-botao {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--perigo);
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+}

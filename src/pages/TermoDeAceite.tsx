@@ -95,9 +95,10 @@ export default function TermoDeAceite() {
 
         <h2>7. Alterações deste Termo</h2>
         <p>
-          Este Termo pode ser atualizado conforme o projeto evolui. Mudanças relevantes
-          serão comunicadas na própria plataforma, com a data de versão atualizada
-          abaixo.
+          Este Termo pode ser atualizado conforme o projeto evolui. Quando o Termo ou a
+          Política de Privacidade mudarem de versão, a plataforma pede um novo aceite no
+          seu próximo acesso, antes de liberar a área logada. Se não concordar, você pode
+          excluir sua conta na mesma tela, sem precisar aceitar.
         </p>
 
         <p className="termos-rodape-nota">

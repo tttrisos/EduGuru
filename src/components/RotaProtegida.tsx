@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { VERSAO_TERMOS } from '../types'
 
 type Props = {
   children: ReactNode
@@ -25,6 +26,12 @@ export default function RotaProtegida({ children, somenteAdmin = false }: Props)
 
   if (!mfaConcluido) {
     return <Navigate to="/mfa" replace state={{ rotaOrigem: location.pathname }} />
+  }
+
+  // Conta sem aceite registrado, ou que aceitou uma versão antiga do
+  // Termo/Política: precisa aceitar a versão vigente antes de continuar.
+  if (perfil && perfil.versao_termos !== VERSAO_TERMOS) {
+    return <Navigate to="/aceite" replace state={{ rotaOrigem: location.pathname }} />
   }
 
   if (somenteAdmin && !ehAdmin) {

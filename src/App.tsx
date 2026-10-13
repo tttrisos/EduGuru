@@ -9,6 +9,7 @@ import MinhaConta from './pages/MinhaConta'
 import Usuarios from './pages/Usuarios'
 import Login from './pages/Login'
 import Mfa from './pages/Mfa'
+import NovoAceite from './pages/NovoAceite'
 import TermoDeAceite from './pages/TermoDeAceite'
 import Privacidade from './pages/Privacidade'
 import RotaProtegida from './components/RotaProtegida'
@@ -23,6 +24,9 @@ function App() {
         {/* Código do autenticador (2º fator) — já logado com senha, mas
             ainda sem acesso à área logada até concluir o MFA. */}
         <Route path="/mfa" element={<Mfa />} />
+        {/* Aceite da versão vigente do Termo/Política (contas antigas ou
+            quando os documentos mudam de versão). */}
+        <Route path="/aceite" element={<NovoAceite />} />
         <Route path="/termos" element={<TermoDeAceite />} />
         <Route path="/privacidade" element={<Privacidade />} />
 
