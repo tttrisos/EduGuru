@@ -83,6 +83,18 @@ aplicado), e nenhuma cidade/estado foi gravada entre 28/09 e a aplicação da
 atualização 4. Decidam se vale registrar isso como "lição aprendida"; o texto da seção
 pode ficar como está.
 
+### Finalidade de cidade/estado (Política seção 3 e Apêndice B) ⚠️
+A finalidade antiga ("enriquecer o perfil para funcionalidades sociais/regionais
+(ex.: ranking por região)") não correspondia a nenhum uso real. Texto novo, igual ao
+da Política 1.1:
+
+> Cidade/estado (via CEP, opcional): exibir a localização no perfil do próprio aluno
+> (tela Minha conta), como demonstração da integração com uma API externa (ViaCEP).
+> Não é mostrada a outros usuários nem usada em ranking, estatística ou qualquer outra
+> finalidade — consentimento (o próprio ato de preencher um campo opcional),
+> revogável a qualquer momento na tela Minha conta — enquanto a conta existir, ou até
+> o titular revogar o consentimento.
+
 ### 2.4 Adequação à LGPD
 Acrescentar ao final:
 

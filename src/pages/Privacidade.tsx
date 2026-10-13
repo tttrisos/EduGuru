@@ -121,9 +121,9 @@ export default function Privacidade() {
               </tr>
               <tr>
                 <td>Cidade/estado (via CEP, opcional)</td>
-                <td>Enriquecer o perfil para funcionalidades sociais/regionais (ex.: ranking por região)</td>
-                <td>Consentimento (o próprio ato de preencher um campo opcional)</td>
-                <td>Enquanto a conta existir, ou até o usuário remover a informação</td>
+                <td>Exibir a localização no perfil do próprio aluno (tela Minha conta), como demonstração da integração com uma API externa (ViaCEP). Não é mostrada a outros usuários nem usada em ranking, estatística ou qualquer outra finalidade.</td>
+                <td>Consentimento (o próprio ato de preencher um campo opcional), revogável a qualquer momento na tela Minha conta</td>
+                <td>Enquanto a conta existir, ou até o titular revogar o consentimento</td>
               </tr>
               <tr>
                 <td>Perguntas, disciplinas, materiais (e quem enviou cada material)</td>
