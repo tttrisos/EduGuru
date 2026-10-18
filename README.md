@@ -33,7 +33,7 @@ O desenvolvimento de aplicativos mobile nativos (Android/iOS) ou aplicações de
 ## 🛠️ Tecnologias e Arquitetura
 
 O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-Service (BaaS):
-- **Front-end:** React, TypeScript, Tailwind CSS (Hospedado no GitHub Pages).
+- **Front-end:** React e TypeScript, com CSS global (hospedado no GitHub Pages).
 - **Back-end e Autenticação:** Supabase (Auth e Data API nativa).
 - **Banco de Dados:** PostgreSQL (gerenciado pelo Supabase com Row Level Security).
 - **Controle de Versão:** Git e GitHub.
@@ -46,9 +46,27 @@ O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-S
 - Autenticação (login/cadastro), com perfis de aluno/admin e controle de acesso por papel (RLS no Supabase)
 - Logs de auditoria de login, logout e alterações em disciplinas/perguntas/materiais, com rotina de limpeza de registros antigos
 - Integração com a API externa ViaCEP (consulta opcional de cidade/estado no cadastro) — documentação em `INTEGRACAO_VIACEP.md`
-- Termo de Aceite e Política de Privacidade, acessíveis a qualquer momento pelo rodapé e pela barra lateral do sistema
+- Termo de Aceite e Política de Privacidade, acessíveis a qualquer momento pelo rodapé do sistema
 
-**Próxima fase:** Quiz gamificado (pontuação, ranking) e sistema de recomendação de materiais ("Guru").
+**Etapa 2 (em andamento, outubro/2026)** — já implementado:
+- Verificação em duas etapas (MFA/TOTP) obrigatória, exigida também pelo banco (RLS)
+- Exclusão automática diária dos logs com mais de 90 dias (pg_cron)
+- Tela "Minha conta" (direitos LGPD: acesso, correção, revogação, exclusão de conta) e exclusão de contas por admin
+- Novo aceite do Termo/Política quando a versão muda; "Esqueci minha senha"
+- Home pública, login novo e barra de navegação no topo
+
+**Próximas fases:** Quiz gamificado, ranking, recomendações do "Guru" e Dashboard Acadêmico.
+
+
+## 🌐 Site publicado
+
+https://tttrisos.github.io/EduGuru/ (publicado automaticamente pelo GitHub Actions a cada push na `main`).
+
+## 🗄️ Banco de dados (Supabase)
+
+Os scripts SQL ficam na raiz e devem ser rodados **em ordem** no SQL Editor do Supabase:
+`supabase_setup_auth_logs.sql`, `supabase_atualizacao_2.sql` … `supabase_atualizacao_9.sql`.
+Os testes automáticos do banco ficam em `testes/` (cada um termina com um erro proposital que mostra o relatório e desfaz tudo).
 
 ## 🚀 Como rodar o projeto localmente
 
