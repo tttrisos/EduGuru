@@ -6,7 +6,7 @@ export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
       <div className="termos-conteudo cartao">
-        <Link to="/login" className="termos-voltar">
+        <Link to="/" className="termos-voltar">
           ← Voltar
         </Link>
 

@@ -43,7 +43,7 @@ export default function Mfa() {
   const { usuario, carregando, mfaConcluido, atualizarMfa, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/'
+  const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/inicio'
 
   const [preparo, setPreparo] = useState<Preparo | null>(null)
   const [codigo, setCodigo] = useState('')

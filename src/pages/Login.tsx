@@ -11,7 +11,9 @@ export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [modo, setModo] = useState<'entrar' | 'cadastrar'>('entrar')
+  // Vindo do botão "Criar conta" da Home, a tela já abre no cadastro.
+  const estadoRota = location.state as { rotaOrigem?: string; modo?: 'cadastrar' } | null
+  const [modo, setModo] = useState<'entrar' | 'cadastrar'>(estadoRota?.modo ?? 'entrar')
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -27,7 +29,7 @@ export default function Login() {
   const [enviando, setEnviando] = useState(false)
   const [avisoCadastro, setAvisoCadastro] = useState('')
 
-  const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/'
+  const destino = estadoRota?.rotaOrigem ?? '/inicio'
 
   function limparCamposCadastro() {
     setConfirmarSenha('')
@@ -141,14 +143,29 @@ export default function Login() {
   }
 
   return (
-    <div className="login-tela">
-      <div className="login-cartao cartao">
+    // Duas colunas: formulário à esquerda, painel visual à direita (o painel
+    // some em telas pequenas).
+    <div className="login-split">
+      <div className="login-painel-form">
+        <Link to="/" className="termos-voltar">
+          ← Voltar ao início
+        </Link>
+
         <div className="login-marca">
           <GraduationCap size={32} color="#8257e5" />
           <div>
             <h1>EduGuru</h1>
             <small>PFC · UMC 2026</small>
           </div>
+        </div>
+
+        <div>
+          <h2 className="login-titulo">{modo === 'entrar' ? 'Entrar na conta' : 'Criar sua conta'}</h2>
+          <p className="login-subtitulo">
+            {modo === 'entrar'
+              ? 'Entre na sua conta e continue estudando.'
+              : 'Leva menos de um minuto. Depois é só ativar a verificação em duas etapas.'}
+          </p>
         </div>
 
         <div className="login-abas">
@@ -287,9 +304,17 @@ export default function Login() {
           A senha nunca é guardada como texto puro — o Supabase Auth já cuida do hash
           (criptografia) automaticamente antes de salvar no banco.
         </p>
+
+        <Rodape />
       </div>
 
-      <Rodape />
+      <div className="login-painel-arte" aria-hidden="true">
+        <div className="login-arte-caixa">
+          <GraduationCap size={56} color="#fff" />
+          <strong>EduGuru</strong>
+          <p>Estude, responda e acompanhe sua evolução.</p>
+        </div>
+      </div>
     </div>
   )
 }
