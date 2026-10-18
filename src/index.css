@@ -955,3 +955,14 @@ a.btn {
 .login-form .campo {
   flex: none;
 }
+
+/* Link "Esqueci minha senha" abaixo do botão Entrar */
+.login-esqueci {
+  align-self: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.login-esqueci:hover {
+  color: var(--text);
+}

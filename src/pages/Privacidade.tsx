@@ -70,7 +70,8 @@ export default function Privacidade() {
           <li>
             <strong>Registros de auditoria:</strong> login concluído, tentativas de login
             malsucedidas, códigos de verificação em duas etapas inválidos, ativação da
-            verificação, logout, criação/edição/exclusão de disciplinas, perguntas e
+            verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
+            criação/edição/exclusão de disciplinas, perguntas e
             materiais, alterações no perfil (apenas <em>quais</em> campos mudaram, não os
             valores) e exclusões de conta — sempre associados a quem realizou a ação e
             quando.
@@ -149,7 +150,8 @@ export default function Privacidade() {
         <ul>
           <li>
             <strong>Supabase</strong> (hospedagem em nuvem) — fornece o banco de dados, a
-            autenticação (login) e o armazenamento dos arquivos anexados em Materiais.
+            autenticação (login, inclusive o envio dos e-mails de confirmação de cadastro e de
+            redefinição de senha) e o armazenamento dos arquivos anexados em Materiais.
             É o único fornecedor que efetivamente armazena os dados pessoais do
             projeto.
           </li>
