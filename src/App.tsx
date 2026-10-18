@@ -9,6 +9,8 @@ import MinhaConta from './pages/MinhaConta'
 import Usuarios from './pages/Usuarios'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import EsqueciSenha from './pages/EsqueciSenha'
+import RedefinirSenha from './pages/RedefinirSenha'
 import Mfa from './pages/Mfa'
 import NovoAceite from './pages/NovoAceite'
 import TermoDeAceite from './pages/TermoDeAceite'
@@ -23,6 +25,10 @@ function App() {
             Privacidade ficam fora do MainLayout — não fazem parte da área logada. */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        {/* "Esqueci minha senha": pedido do link e tela de nova senha (aberta
+            pelo link do e-mail; ver main.tsx). */}
+        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
         {/* Código do autenticador (2º fator) — já logado com senha, mas
             ainda sem acesso à área logada até concluir o MFA. */}
         <Route path="/mfa" element={<Mfa />} />

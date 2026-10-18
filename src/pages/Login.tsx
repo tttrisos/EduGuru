@@ -12,7 +12,7 @@ export default function Login() {
   const location = useLocation()
 
   // Vindo do botão "Criar conta" da Home, a tela já abre no cadastro.
-  const estadoRota = location.state as { rotaOrigem?: string; modo?: 'cadastrar' } | null
+  const estadoRota = location.state as { rotaOrigem?: string; modo?: 'cadastrar'; aviso?: string } | null
   const [modo, setModo] = useState<'entrar' | 'cadastrar'>(estadoRota?.modo ?? 'entrar')
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
@@ -27,7 +27,8 @@ export default function Login() {
   const [aceitouTermos, setAceitouTermos] = useState(false)
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
-  const [avisoCadastro, setAvisoCadastro] = useState('')
+  // Também mostra avisos vindos de outras telas (ex.: senha redefinida).
+  const [avisoCadastro, setAvisoCadastro] = useState(estadoRota?.aviso ?? '')
 
   const destino = estadoRota?.rotaOrigem ?? '/inicio'
 
@@ -299,6 +300,12 @@ export default function Login() {
             {enviando ? 'Aguarde...' : modo === 'entrar' ? 'Entrar' : 'Criar conta'}
           </button>
         </form>
+
+        {modo === 'entrar' ? (
+          <Link to="/esqueci-senha" className="login-esqueci">
+            Esqueci minha senha
+          </Link>
+        ) : null}
 
         <p className="login-rodape">
           A senha nunca é guardada como texto puro — o Supabase Auth já cuida do hash

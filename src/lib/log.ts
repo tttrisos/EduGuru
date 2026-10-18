@@ -16,13 +16,15 @@ export const ROTULO_ACAO: Record<string, string> = {
   mfa_ativado: 'MFA ativado',
   mfa_falhou: 'Código MFA inválido',
   limpeza_automatica: 'Limpeza automática',
+  redefinicao_senha_solicitada: 'Pediu redefinição de senha',
+  senha_redefinida: 'Senha redefinida',
   conta_excluida: 'Conta excluída',
   criar: 'Criou',
   editar: 'Editou',
   excluir: 'Excluiu',
 }
 
-export type EventoAuth = 'login' | 'logout' | 'mfa_ativado' | 'mfa_falhou'
+export type EventoAuth = 'login' | 'logout' | 'mfa_ativado' | 'mfa_falhou' | 'senha_redefinida'
 
 export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<string, unknown>) {
   try {
@@ -37,6 +39,16 @@ export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<str
 export async function registrarLoginFalhou(email: string) {
   try {
     await supabase.rpc('registrar_login_falhou', { email })
+  } catch {
+    // idem
+  }
+}
+
+// Pedido de "esqueci minha senha" também acontece sem sessão; mesma ideia do
+// login_falhou (função do banco com limite por e-mail).
+export async function registrarPedidoRedefinicao(email: string) {
+  try {
+    await supabase.rpc('registrar_pedido_redefinicao', { email })
   } catch {
     // idem
   }
