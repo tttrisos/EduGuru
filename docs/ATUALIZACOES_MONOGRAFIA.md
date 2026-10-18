@@ -267,6 +267,51 @@ menu lateral quanto pelo rodapé" por:
 ### RNF05 – Portabilidade e responsividade
 Acrescentar ao final: "No celular, o menu da barra superior é recolhido em um botão."
 
+---
+
+## Esqueci minha senha
+
+### 2.1 Autenticação, Autorização e Criptografia
+Acrescentar parágrafo:
+
+> A recuperação de acesso ("esqueci minha senha") usa o recurso nativo do Supabase
+> Auth: o usuário informa o e-mail e recebe um link que abre a tela de nova senha. A
+> resposta exibida é sempre a mesma, exista ou não conta com aquele e-mail, para não
+> revelar quem está cadastrado. Se a conta possui verificação em duas etapas, o código
+> do aplicativo autenticador é exigido antes da troca — o acesso apenas ao e-mail não
+> basta. Concluída a troca, todas as sessões abertas da conta são encerradas. Para
+> compatibilizar o link do e-mail com o roteamento por hash (HashRouter), o cliente
+> Supabase usa o fluxo PKCE, em que o link retorna com um código de uso único que só
+> pode ser trocado por uma sessão no mesmo navegador em que o pedido foi feito.
+
+### 2.2 Logs
+Na lista de eventos registrados por função, acrescentar "pedidos de redefinição de
+senha (limitados a 5 por e-mail a cada 10 minutos) e senhas redefinidas".
+
+### Novo RF24 – Redefinir senha esquecida 🟡
+- Descrição: o sistema deverá permitir que o usuário que esqueceu a senha receba por
+  e-mail um link para cadastrar uma nova senha.
+- Atores: Visitante (com conta).
+- Fluxo: 1. Na tela de login, o usuário escolhe "Esqueci minha senha" e informa o
+  e-mail. 2. O sistema solicita ao Supabase Auth o envio do link e exibe mensagem
+  genérica. 3. O usuário abre o link no mesmo navegador. 4. Se a conta tem MFA, informa
+  o código do autenticador. 5. Informa e confirma a nova senha (mesmas regras do
+  cadastro). 6. O sistema troca a senha, registra no log, encerra todas as sessões e
+  volta ao login.
+- RN01 – A mensagem não revela se o e-mail possui conta.
+- RN02 – Contas com MFA exigem o código do autenticador antes da troca.
+- RN03 – A nova senha segue as regras do RF02 e não pode ser igual à anterior.
+- RN04 – Após a troca, todas as sessões da conta são encerradas.
+- CA01 – Dado um link válido aberto no mesmo navegador, quando o usuário informar
+  código (se houver MFA) e nova senha válida, então a senha deverá ser trocada e o
+  login com a senha antiga deverá falhar.
+- CA02 – Dado um link expirado ou aberto em outro navegador, então o sistema deverá
+  informar que o link é inválido e oferecer novo pedido.
+
+### Apêndice B (Política)
+Seção 2 (registros de auditoria) e seção 4 (Supabase envia os e-mails de confirmação e
+de redefinição) foram atualizadas — usar o texto da página `/privacidade`.
+
 ### Testes manuais que faltam para trocar 🟡 por ✅
 1. Primeiro login → QR Code → código → entra (RF03).
 2. Login seguinte → só código; código errado gera `mfa_falhou` nos Logs (RF04).
@@ -277,3 +322,7 @@ Acrescentar ao final: "No celular, o menu da barra superior é recolhido em um b
 7. Materiais: aluno envia, outro aluno não vê "Excluir", link expira em 1 h (RF08).
 8. Barra superior logada: links, "Minha conta", "Sair" e menu recolhido no celular
    (RF23/RNF05). Home e Login já foram conferidos por captura de tela em 18/10/2026.
+9. Esqueci minha senha (RF24): pedir link → e-mail chega → abrir no mesmo navegador →
+   código MFA → nova senha → login com a nova funciona e com a antiga falha; link
+   aberto em outro navegador mostra "link inválido". Rodar também
+   `testes/teste_redefinicao_senha.sql`.
