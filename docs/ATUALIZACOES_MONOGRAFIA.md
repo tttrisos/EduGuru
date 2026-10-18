@@ -226,6 +226,47 @@ cheia e remover a legenda "previsto". Ajustes no fluxo:
 
   Remover o parágrafo "A escolha por retenção manual dos logs nesta etapa..."
 
+---
+
+## Interface — Home pública, novo Login e barra superior
+
+O que mudou: página inicial pública (`/`) apresentando o sistema (como funciona,
+recursos, cursos atendidos), Login em duas colunas, e a barra lateral da área logada
+substituída por uma barra horizontal no topo. A área logada passou a começar em
+`/inicio`. Nenhum dado novo é coletado (sem impacto na Política/Termo, exceto a
+menção ao "menu", já ajustada).
+
+### 1.3 Tecnologias / Figura 1
+Na caixa "Front-end / Web" da Figura 1, acrescentar "Home pública (apresentação)".
+
+### 2.4 Adequação à LGPD
+Trocar "disponíveis em páginas acessíveis a qualquer momento pelo sistema, tanto pelo
+menu lateral quanto pelo rodapé" por:
+
+> disponíveis em páginas acessíveis a qualquer momento pelo rodapé de todas as telas
+> do sistema — inclusive na página inicial pública e na tela de login —,
+> independentemente de o usuário estar ou não autenticado
+
+### RF11 e RF12
+- Descrição: trocar "por meio de links fixos no menu e no rodapé" por "por meio de
+  links no rodapé de todas as telas".
+- Fluxo, passo 1: trocar "disponível no menu lateral e no rodapé" por "disponível no
+  rodapé".
+
+### Novo RF23 – Apresentar a plataforma a visitantes (Home pública)
+- Descrição: o sistema deverá exibir, sem login, uma página inicial que apresenta o
+  EduGuru (como funciona, recursos e cursos atendidos), com acesso ao login e ao
+  cadastro.
+- Atores: Visitante.
+- RN01 – A página não coleta nenhum dado pessoal.
+- RN02 – Recursos ainda não entregues são marcados como "Em breve" (a página não
+  anuncia funcionalidade inexistente).
+- CA01 – Dado um visitante não autenticado, quando acessar o endereço do sistema,
+  então deverá ver a página inicial com os botões "Entrar" e "Criar conta".
+
+### RNF05 – Portabilidade e responsividade
+Acrescentar ao final: "No celular, o menu da barra superior é recolhido em um botão."
+
 ### Testes manuais que faltam para trocar 🟡 por ✅
 1. Primeiro login → QR Code → código → entra (RF03).
 2. Login seguinte → só código; código errado gera `mfa_falhou` nos Logs (RF04).
@@ -234,3 +275,5 @@ cheia e remover a legenda "previsto". Ajustes no fluxo:
 5. Minha conta: corrigir cidade, revogar localização, baixar JSON (RF21).
 6. Excluir conta de teste com material anexado (RF15) — titular e admin.
 7. Materiais: aluno envia, outro aluno não vê "Excluir", link expira em 1 h (RF08).
+8. Barra superior logada: links, "Minha conta", "Sair" e menu recolhido no celular
+   (RF23/RNF05). Home e Login já foram conferidos por captura de tela em 18/10/2026.
