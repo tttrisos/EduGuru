@@ -312,6 +312,24 @@ senha (limitados a 5 por e-mail a cada 10 minutos) e senhas redefinidas".
 Seção 2 (registros de auditoria) e seção 4 (Supabase envia os e-mails de confirmação e
 de redefinição) foram atualizadas — usar o texto da página `/privacidade`.
 
+---
+
+## Publicação (GitHub Pages + GitHub Actions)
+
+### 1.3 Tecnologias, Ferramentas e Arquitetura
+No item "Front-end", trocar "O front-end será hospedado no GitHub Pages." por:
+
+> O front-end é publicado no GitHub Pages (https://tttrisos.github.io/EduGuru/) por um
+> fluxo de integração e entrega contínuas (GitHub Actions): a cada atualização da
+> branch principal, o código passa por verificação estática (ESLint), é compilado e
+> publicado automaticamente, sem passos manuais.
+
+Na Figura 1, se quiser, acrescentar a caixa "GitHub Actions → GitHub Pages" entre o
+repositório e o Front-end.
+
+### RNF05
+O texto já cita GitHub Pages e HashRouter — continua correto.
+
 ### Testes manuais que faltam para trocar 🟡 por ✅
 1. Primeiro login → QR Code → código → entra (RF03).
 2. Login seguinte → só código; código errado gera `mfa_falhou` nos Logs (RF04).
