@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Navigate, Routes, Route } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Inicio from './pages/Inicio'
 import Disciplinas from './pages/Disciplinas'
@@ -7,6 +7,7 @@ import Perguntas from './pages/Perguntas'
 import Logs from './pages/Logs'
 import MinhaConta from './pages/MinhaConta'
 import Usuarios from './pages/Usuarios'
+import Home from './pages/Home'
 import Login from './pages/Login'
 import Mfa from './pages/Mfa'
 import NovoAceite from './pages/NovoAceite'
@@ -18,8 +19,9 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* Login, Termo de Aceite e Política de Privacidade ficam fora do
-            MainLayout — não fazem parte da área logada. */}
+        {/* Home pública (apresentação), Login, Termo de Aceite e Política de
+            Privacidade ficam fora do MainLayout — não fazem parte da área logada. */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         {/* Código do autenticador (2º fator) — já logado com senha, mas
             ainda sem acesso à área logada até concluir o MFA. */}
@@ -35,21 +37,20 @@ function App() {
             — quem não pode criar/excluir é controlado dentro de cada
             página, além do RLS no banco. */}
         <Route
-          path="/"
           element={
             <RotaProtegida>
               <MainLayout />
             </RotaProtegida>
           }
         >
-          <Route index element={<Inicio />} />
-          <Route path="disciplinas" element={<Disciplinas />} />
-          <Route path="materiais" element={<Materiais />} />
-          <Route path="perguntas" element={<Perguntas />} />
-          <Route path="minha-conta" element={<MinhaConta />} />
+          <Route path="/inicio" element={<Inicio />} />
+          <Route path="/disciplinas" element={<Disciplinas />} />
+          <Route path="/materiais" element={<Materiais />} />
+          <Route path="/perguntas" element={<Perguntas />} />
+          <Route path="/minha-conta" element={<MinhaConta />} />
 
           <Route
-            path="usuarios"
+            path="/usuarios"
             element={
               <RotaProtegida somenteAdmin>
                 <Usuarios />
@@ -58,7 +59,7 @@ function App() {
           />
 
           <Route
-            path="logs"
+            path="/logs"
             element={
               <RotaProtegida somenteAdmin>
                 <Logs />
@@ -66,6 +67,9 @@ function App() {
             }
           />
         </Route>
+
+        {/* Endereço desconhecido (ou link antigo) volta para a Home. */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
   )

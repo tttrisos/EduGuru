@@ -14,7 +14,7 @@ export default function NovoAceite() {
   const { usuario, perfil, carregando, mfaConcluido, recarregarPerfil, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/'
+  const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/inicio'
 
   const [marcado, setMarcado] = useState(false)
   const [enviando, setEnviando] = useState(false)

@@ -6,7 +6,7 @@ export default function Privacidade() {
   return (
     <div className="termos-tela">
       <div className="termos-conteudo cartao">
-        <Link to="/login" className="termos-voltar">
+        <Link to="/" className="termos-voltar">
           ← Voltar
         </Link>
 
@@ -223,7 +223,7 @@ export default function Privacidade() {
         </ul>
         <p>
           Você exerce esses direitos sozinho, dentro do site, na tela{' '}
-          <strong>Minha conta</strong> (menu lateral, depois de entrar):
+          <strong>Minha conta</strong> (menu no topo do site, depois de entrar):
         </p>
         <ul>
           <li>

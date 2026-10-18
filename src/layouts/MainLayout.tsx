@@ -1,34 +1,24 @@
 import { useState } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
-import {
-  BookOpen,
-  FileText,
-  GraduationCap,
-  HelpCircle,
-  Home,
-  LogOut,
-  Menu,
-  ShieldCheck,
-  UserCog,
-  Users,
-  X,
-} from 'lucide-react'
+import { GraduationCap, LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import Rodape from '../components/Rodape'
 
 const itensBase = [
-  { path: '/', label: 'Início', icon: Home },
-  { path: '/disciplinas', label: 'Disciplinas', icon: BookOpen },
-  { path: '/perguntas', label: 'Perguntas', icon: HelpCircle },
-  { path: '/materiais', label: 'Materiais', icon: FileText },
-  { path: '/minha-conta', label: 'Minha conta', icon: UserCog },
+  { path: '/inicio', label: 'Início' },
+  { path: '/disciplinas', label: 'Disciplinas' },
+  { path: '/perguntas', label: 'Perguntas' },
+  { path: '/materiais', label: 'Materiais' },
 ]
 
 const itensAdmin = [
-  { path: '/usuarios', label: 'Usuários', icon: Users },
-  { path: '/logs', label: 'Logs', icon: ShieldCheck },
+  { path: '/usuarios', label: 'Usuários' },
+  { path: '/logs', label: 'Logs' },
 ]
 
+// Área logada: barra horizontal no topo (marca, menu e usuário) e o
+// conteúdo da página logo abaixo. No celular o menu vira um botão que abre
+// a lista de links. Termo e Política ficam no rodapé de todas as páginas.
 export default function MainLayout() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -44,78 +34,59 @@ export default function MainLayout() {
   }
 
   function rotaAtiva(path: string) {
-    if (path === '/') return location.pathname === '/'
     return location.pathname.startsWith(path)
   }
 
   return (
     <div className="layout">
-      <button
-        type="button"
-        className="menu-btn"
-        aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
-        onClick={() => setMenuAberto((v) => !v)}
-      >
-        {menuAberto ? <X size={20} /> : <Menu size={20} />}
-      </button>
+      <header className="topo">
+        <div className="topo-conteudo">
+          <Link to="/inicio" className="marca" onClick={() => setMenuAberto(false)}>
+            <GraduationCap size={26} color="#8257e5" />
+            <span>EduGuru</span>
+          </Link>
 
-      {menuAberto ? (
-        <button
-          type="button"
-          className="sidebar-backdrop"
-          aria-label="Fechar menu"
-          onClick={() => setMenuAberto(false)}
-        />
-      ) : null}
+          <button
+            type="button"
+            className="topo-menu-btn"
+            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+            onClick={() => setMenuAberto((v) => !v)}
+          >
+            {menuAberto ? <X size={20} /> : <Menu size={20} />}
+          </button>
 
-      <aside className={`sidebar${menuAberto ? ' aberta' : ''}`}>
-        <Link to="/" className="brand" onClick={() => setMenuAberto(false)}>
-          <GraduationCap size={28} color="#8257e5" />
-          <div>
-            <h1>EduGuru</h1>
-            <small>PFC · UMC 2026</small>
-          </div>
-        </Link>
-
-        <nav className="nav">
-          {itens.map((item) => {
-            const Icon = item.icon
-            return (
+          <nav className={`topo-nav${menuAberto ? ' aberto' : ''}`}>
+            {itens.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`nav-item${rotaAtiva(item.path) ? ' ativo' : ''}`}
+                className={`topo-link${rotaAtiva(item.path) ? ' ativo' : ''}`}
                 onClick={() => setMenuAberto(false)}
               >
-                <Icon size={18} />
                 {item.label}
               </Link>
-            )
-          })}
-        </nav>
+            ))}
 
-        <div className="usuario-caixa">
-          <div className="usuario-info">
-            <strong>{perfil?.nome ?? 'Carregando...'}</strong>
-            <span className={`selo${perfil?.papel === 'admin' ? ' selo-admin' : ''}`}>
-              {perfil?.papel === 'admin' ? 'Administrador' : 'Aluno'}
-            </span>
-          </div>
-          <button type="button" className="btn btn-perigo usuario-sair" onClick={aoSair}>
-            <LogOut size={16} />
-            Sair
-          </button>
+            <div className="topo-usuario">
+              <Link
+                to="/minha-conta"
+                className={`topo-link${rotaAtiva('/minha-conta') ? ' ativo' : ''}`}
+                onClick={() => setMenuAberto(false)}
+                title="Minha conta"
+              >
+                {perfil?.nome ?? 'Minha conta'}
+                <span className={`selo${perfil?.papel === 'admin' ? ' selo-admin' : ''}`}>
+                  {perfil?.papel === 'admin' ? 'Admin' : 'Aluno'}
+                </span>
+              </Link>
+              <button type="button" className="btn btn-secundario topo-sair" onClick={aoSair}>
+                <LogOut size={16} />
+                Sair
+              </button>
+            </div>
+          </nav>
         </div>
-
-        <div className="sidebar-links">
-          <Link to="/termos" onClick={() => setMenuAberto(false)}>
-            Termo de Aceite
-          </Link>
-          <Link to="/privacidade" onClick={() => setMenuAberto(false)}>
-            Política de Privacidade
-          </Link>
-        </div>
-      </aside>
+      </header>
 
       <main className="content">
         <Outlet />
