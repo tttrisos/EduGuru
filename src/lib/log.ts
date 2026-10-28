@@ -15,7 +15,11 @@ export const ROTULO_ACAO: Record<string, string> = {
   logout: 'Logout',
   mfa_ativado: 'MFA ativado',
   mfa_falhou: 'Código MFA inválido',
+  mfa_bloqueado: 'MFA bloqueado (muitas tentativas)',
+  mfa_redefinido: 'MFA redefinido pelo admin',
   limpeza_automatica: 'Limpeza automática',
+  limpeza_manual: 'Limpeza manual de logs',
+  quiz_finalizado: 'Quiz finalizado',
   redefinicao_senha_solicitada: 'Pediu redefinição de senha',
   senha_redefinida: 'Senha redefinida',
   conta_excluida: 'Conta excluída',
@@ -24,7 +28,13 @@ export const ROTULO_ACAO: Record<string, string> = {
   excluir: 'Excluiu',
 }
 
-export type EventoAuth = 'login' | 'logout' | 'mfa_ativado' | 'mfa_falhou' | 'senha_redefinida'
+export type EventoAuth =
+  | 'login'
+  | 'logout'
+  | 'mfa_ativado'
+  | 'mfa_falhou'
+  | 'mfa_bloqueado'
+  | 'senha_redefinida'
 
 export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<string, unknown>) {
   try {

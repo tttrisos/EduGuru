@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { CURSOS, type LogAuditoria, type Material } from '../types'
+import { CURSOS, type LogAuditoria, type Material, type Nota, type TentativaQuiz } from '../types'
 import { removerArquivosDoUsuario } from '../lib/conta'
 import { ROTULO_ACAO } from '../lib/log'
 
@@ -15,11 +15,13 @@ const TEXTO_CONFIRMACAO = 'EXCLUIR'
 type DadosExtras = {
   logs: LogAuditoria[]
   materiais: Material[]
+  notas: Nota[]
+  tentativas: TentativaQuiz[]
   mfaAtivoDesde: string | null
 }
 
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
-  const [logs, materiais, fatores] = await Promise.all([
+  const [logs, materiais, notas, tentativas, fatores] = await Promise.all([
     supabase
       .from('logs_auditoria')
       .select('*')
@@ -27,11 +29,15 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
       .order('criado_em', { ascending: false })
       .limit(100),
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId),
+    supabase.from('notas').select('*'),
+    supabase.from('tentativas_quiz').select('*').order('iniciada_em', { ascending: false }),
     supabase.auth.mfa.listFactors(),
   ])
   return {
     logs: (logs.data as LogAuditoria[]) ?? [],
     materiais: (materiais.data as Material[]) ?? [],
+    notas: (notas.data as Nota[]) ?? [],
+    tentativas: (tentativas.data as TentativaQuiz[]) ?? [],
     mfaAtivoDesde: fatores.data?.totp[0]?.created_at ?? null,
   }
 }
@@ -101,6 +107,23 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
+  // Direito de oposição: o aluno escolhe se o nome (abreviado) aparece no
+  // ranking. Desmarcado, os outros veem "Aluno anônimo" na posição dele.
+  async function mudarRanking(aparecer: boolean) {
+    setErro('')
+    setMensagem('')
+    const { error } = await supabase
+      .from('perfis')
+      .update({ aparecer_no_ranking: aparecer })
+      .eq('id', usuario!.id)
+    if (error) {
+      setErro(error.message)
+      return
+    }
+    setMensagem(aparecer ? 'Seu nome voltou a aparecer no ranking.' : 'Você aparece como "Aluno anônimo" no ranking.')
+    await recarregarPerfil()
+  }
+
   async function revogarLocalizacao() {
     setErro('')
     setMensagem('')
@@ -127,6 +150,8 @@ export default function MinhaConta() {
       perfil,
       mfa: { ativo_desde: extras?.mfaAtivoDesde ?? null },
       materiais_enviados: extras?.materiais ?? [],
+      notas_e_faltas: extras?.notas ?? [],
+      rodadas_de_quiz: extras?.tentativas ?? [],
       registros_de_atividade: extras?.logs ?? [],
     }
     const blob = new Blob([JSON.stringify(conteudo, null, 2)], { type: 'application/json' })
@@ -201,6 +226,10 @@ export default function MinhaConta() {
           <dd>{extras?.mfaAtivoDesde ? `Ativa desde ${formatarData(extras.mfaAtivoDesde)}` : '—'}</dd>
           <dt>Materiais enviados</dt>
           <dd>{extras ? extras.materiais.length : '...'}</dd>
+          <dt>Rodadas de quiz</dt>
+          <dd>{extras ? extras.tentativas.length : '...'}</dd>
+          <dt>Disciplinas com notas registradas</dt>
+          <dd>{extras ? extras.notas.length : '...'}</dd>
         </dl>
         <button type="button" className="btn btn-secundario" onClick={baixarMeusDados} disabled={!extras}>
           Baixar meus dados (JSON)
@@ -243,6 +272,24 @@ export default function MinhaConta() {
         {erro ? <p className="aviso erro">{erro}</p> : null}
         {mensagem ? <p className="aviso sucesso">{mensagem}</p> : null}
       </div>
+
+      {perfil.papel === 'aluno' ? (
+        <div className="cartao conta-secao">
+          <h3>Ranking</h3>
+          <p>
+            No ranking aparecem só o primeiro nome e a inicial do sobrenome (ex.: "Maria S.") e os
+            pontos. Se preferir, apareça como "Aluno anônimo" — seus pontos continuam contando.
+          </p>
+          <label className="conta-opcao">
+            <input
+              type="checkbox"
+              checked={perfil.aparecer_no_ranking}
+              onChange={(e) => mudarRanking(e.target.checked)}
+            />
+            Mostrar meu nome no ranking
+          </label>
+        </div>
+      ) : null}
 
       <div className="cartao conta-secao">
         <h3>Revogar consentimento de localização</h3>
@@ -291,6 +338,7 @@ export default function MinhaConta() {
         <ul>
           <li>seu perfil, sua conta de acesso e a verificação em duas etapas são apagados;</li>
           <li>os materiais que você enviou (e os arquivos anexados) são apagados;</li>
+          <li>suas notas, faltas, rodadas de quiz e pontos do ranking são apagados;</li>
           <li>
             os registros de auditoria já feitos ficam guardados até completar 90 dias, por
             segurança, e depois são apagados automaticamente.

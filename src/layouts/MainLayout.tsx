@@ -4,14 +4,23 @@ import { GraduationCap, LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import Rodape from '../components/Rodape'
 
-const itensBase = [
-  { path: '/inicio', label: 'Início' },
-  { path: '/disciplinas', label: 'Disciplinas' },
-  { path: '/perguntas', label: 'Perguntas' },
+// Cada papel tem o seu menu. O aluno joga o quiz e registra notas; o admin
+// cadastra o conteúdo e gerencia contas. (Rotas e RLS bloqueiam mesmo assim.)
+const itensAluno = [
+  { path: '/inicio', label: 'Painel' },
+  { path: '/quiz', label: 'Quiz' },
+  { path: '/ranking', label: 'Ranking' },
+  { path: '/notas', label: 'Notas' },
   { path: '/materiais', label: 'Materiais' },
+  { path: '/disciplinas', label: 'Disciplinas' },
 ]
 
 const itensAdmin = [
+  { path: '/inicio', label: 'Painel' },
+  { path: '/disciplinas', label: 'Disciplinas' },
+  { path: '/perguntas', label: 'Perguntas' },
+  { path: '/materiais', label: 'Materiais' },
+  { path: '/ranking', label: 'Ranking' },
   { path: '/usuarios', label: 'Usuários' },
   { path: '/logs', label: 'Logs' },
 ]
@@ -25,8 +34,7 @@ export default function MainLayout() {
   const { perfil, ehAdmin, sair } = useAuth()
   const [menuAberto, setMenuAberto] = useState(false)
 
-  // aluno não vê "Usuários" nem "Logs" no menu (rota e RLS já bloqueiam mesmo assim)
-  const itens = ehAdmin ? [...itensBase, ...itensAdmin] : itensBase
+  const itens = ehAdmin ? itensAdmin : itensAluno
 
   async function aoSair() {
     await sair()

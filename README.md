@@ -21,7 +21,7 @@ O escopo inicial da aplicação é voltado exclusivamente para estudantes da UMC
 
 - **Dashboard Acadêmico:** Registro manual e acompanhamento claro de notas (M1, M2, médias) e controle do limite de faltas.
 - **Quiz Gamificado:** Perguntas categorizadas por curso, disciplina, assunto e nível de dificuldade (iniciante, intermediário, avançado).
-- **Pontuação e Rankings:** Sistema de pontos por acerto, alimentando um Ranking Global e um Ranking de Amigos.
+- **Pontuação e Rankings:** Pontos por acerto conforme o nível (Fácil 10, Médio 20, Difícil 30), alimentando um Ranking Geral e um Ranking por Disciplina.
 - **O "Guru" (Recomendações):** Sistema leve de indicação de conteúdos de estudo com base nas lacunas de conhecimento identificadas nos quizzes.
 - **Gestão de Materiais e Disciplinas:** Organização de PDFs, links e anotações atreladas às grades curriculares.
 
@@ -55,7 +55,15 @@ O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-S
 - Novo aceite do Termo/Política quando a versão muda; "Esqueci minha senha"
 - Home pública, login novo e barra de navegação no topo
 
-**Próximas fases:** Quiz gamificado, ranking, recomendações do "Guru" e Dashboard Acadêmico.
+**Etapa 3 (entrega 09/11/2026)** — já implementado:
+- Quiz por disciplina (até 10 perguntas), com correção e pontuação feitas no banco; o aluno nunca lê o gabarito
+- Ranking geral e por disciplina (nome abreviado, com opção de aparecer como "Aluno anônimo")
+- Guru: indica materiais da disciplina quando o aproveitamento fica abaixo de 60%
+- Notas e faltas (M1, M2, ND, Exame, limite de 25% de faltas) e Painel com indicadores e gráficos (aluno e admin)
+- Ajustes de segurança da validação de 05/10 (limpeza de logs com prazo fixo, recuperação do MFA, limite de tentativas)
+- Testes unitários (`npm test`) e testes de banco em `testes/`
+
+O andamento das entregas está em `docs/CHECKLIST_ENTREGAS.md`.
 
 O que muda no texto da monografia a cada entrega fica em `docs/ATUALIZACOES_MONOGRAFIA.md`.
 
@@ -66,8 +74,12 @@ https://tttrisos.github.io/EduGuru/ (publicado automaticamente pelo GitHub Actio
 ## 🗄️ Banco de dados (Supabase)
 
 Os scripts SQL ficam na raiz e devem ser rodados **em ordem** no SQL Editor do Supabase:
-`supabase_setup_auth_logs.sql`, `supabase_atualizacao_2.sql` … `supabase_atualizacao_9.sql`.
+`supabase_00_tabelas_base.sql`, `supabase_setup_auth_logs.sql`, `supabase_atualizacao_2.sql` … `supabase_atualizacao_12.sql`.
 Os testes automáticos do banco ficam em `testes/` (cada um termina com um erro proposital que mostra o relatório e desfaz tudo).
+
+Testes unitários do front-end: `npm test` (cobertura: `npm run test:cobertura`).
+
+Diagramas (classes e BPMN) para a monografia: `docs/diagramas/`.
 
 ## 🚀 Como rodar o projeto localmente
 

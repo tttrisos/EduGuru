@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-// Documento vivo, versão 1.1 (11/10/2026). Separado da Política de
+// Documento vivo, versão 1.2 (27/10/2026: quiz, ranking, notas e faltas). Separado da Política de
 // Privacidade (Privacidade.tsx) por decisão do orientador e coorientador.
 export default function TermoDeAceite() {
   return (
@@ -11,7 +11,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.1 — 11/10/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.2 — 27/10/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -40,15 +40,17 @@ export default function TermoDeAceite() {
         <p>Existem dois tipos de conta:</p>
         <ul>
           <li>
-            <strong>Aluno</strong> (padrão de qualquer cadastro): visualiza disciplinas,
-            perguntas e materiais, e pode anexar materiais próprios — editando ou
-            excluindo apenas os que ele mesmo enviou.
+            <strong>Aluno</strong> (padrão de qualquer cadastro): responde quizzes, ganha
+            pontos e participa do ranking, recebe indicações do Guru, registra as próprias
+            notas e faltas, visualiza disciplinas e materiais e pode anexar materiais
+            próprios — editando ou excluindo apenas os que ele mesmo enviou.
           </li>
           <li>
             <strong>Administrador</strong> (atribuído manualmente pela equipe do
             projeto): além do que o aluno pode fazer, cadastra/edita/exclui disciplinas
-            e perguntas do quiz, remove qualquer material, gerencia e exclui contas de
-            usuários e acessa o histórico de auditoria.
+            e perguntas do quiz (com o gabarito), remove qualquer material, gerencia e
+            exclui contas de usuários, redefine a verificação em duas etapas de quem
+            perdeu o celular e acessa o histórico de auditoria.
           </li>
         </ul>
         <p>
@@ -73,7 +75,11 @@ export default function TermoDeAceite() {
             Enviar, como material, arquivos com conteúdo ilegal, ofensivo ou que viole
             direitos autorais de terceiros;
           </li>
-          <li>Tentar sobrecarregar, invadir ou interromper o funcionamento da plataforma.</li>
+          <li>Tentar sobrecarregar, invadir ou interromper o funcionamento da plataforma;</li>
+          <li>
+            Tentar burlar a pontuação do quiz ou do ranking (ex.: usar contas extras ou
+            chamar a API diretamente para obter pontos).
+          </li>
         </ul>
 
         <h2>5. Conteúdo enviado pelo usuário</h2>
@@ -102,7 +108,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.1, 11/10/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.2, 27/10/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

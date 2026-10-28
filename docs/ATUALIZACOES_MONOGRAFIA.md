@@ -1,4 +1,4 @@
-# Atualizações da monografia — Etapa 2
+# Atualizações da monografia — Etapas 2 e 3
 
 Lista do que precisa mudar em `[MONOGRAFIA]EduGuru.pdf` para o texto continuar
 igual ao sistema. Organizado por seção da monografia. Atualizado a cada fase.
@@ -344,3 +344,366 @@ O texto já cita GitHub Pages e HashRouter — continua correto.
    código MFA → nova senha → login com a nova funciona e com a antiga falha; link
    aberto em outro navegador mostra "link inválido". Rodar também
    `testes/teste_redefinicao_senha.sql`.
+
+---
+
+# Etapa 3 — Feedback do orientador (05/10) e entrega de 09/11
+
+Esta parte cobre o feedback da validação de 05/10 e a entrega de 09/11 (75% dos RFs,
+dashboard, validações, branch `entrega0911`). O andamento item a item está em
+`docs/CHECKLIST_ENTREGAS.md`.
+
+Scripts novos (rodar **em ordem** no SQL Editor, depois do 9):
+`supabase_atualizacao_10.sql` → `_11.sql` → `_12.sql`. O `supabase_00_tabelas_base.sql`
+não muda nada no banco atual (só registra a criação original das tabelas).
+Testes de banco: `testes/teste_gamificacao.sql` (novo) e `testes/teste_fase_a.sql`
+(ajustado à atualização 10). Testes unitários: `npm test` (16 testes, regras de notas e senha).
+
+## ⚠️ Antes de tudo: o código precisa estar no GitHub
+O orientador não encontrou MFA, pg_cron, exclusão de contas, gatilho de perfis e registro
+do consentimento porque **nada disso foi enviado**: o `origin/main` só tinha o README e o
+`origin/entrega2809` parava em 27/09. Tudo estava implementado localmente (atualizações 4 a
+9). Com o push da branch `entrega0911`, o texto da Fase A (acima) passa a ser verdadeiro
+**sem marcar nada como "Previsto"**.
+
+Sugestão de resposta ao orientador sobre o item 1 do feedback:
+
+> Professor, os itens do tópico 1 (MFA/TOTP, limpeza diária via pg_cron com função própria
+> sem exigir admin, exclusão de contas pelo admin, gatilho de auditoria em perfis e
+> registro do consentimento) estavam implementados localmente e não tinham sido enviados ao
+> repositório. Eles estão agora na branch entrega0911 (scripts supabase_atualizacao_4 a 9 e
+> telas Mfa, Usuarios, MinhaConta e NovoAceite).
+
+## Item 2 do feedback — Materiais (RF08 × RLS)
+Decisão do grupo: **ajustar o RF** (alunos enviam material, é a proposta da biblioteca
+colaborativa) e **corrigir a política**, que já não é mais "qualquer logado escreve":
+desde a atualização 4, a política `materiais_autenticado_escreve` foi apagada e trocada por
+três: inserir só como autor (`enviado_por = auth.uid()`), editar/excluir só o autor ou o
+admin (`eh_admin()`). O texto do RF08 está na seção "3.1 Requisitos" da Fase A, acima.
+Acrescentar ao RF08 nesta etapa:
+- Fluxo: "o usuário pode escolher a disciplina do material (opcional)".
+- RN06 – O link precisa começar com http:// ou https://.
+- RN07 – Materiais com disciplina são os indicados pelo Guru (RF28).
+
+## Resumo / Abstract
+Além da troca de "Tailwind CSS" por CSS global (Fase A), atualizar a frase das
+funcionalidades. Sugestão para o Resumo:
+
+> O sistema permite ao aluno responder quizzes por disciplina, corrigidos e pontuados no
+> próprio banco de dados, acompanhar sua posição em um ranking, receber indicações de
+> materiais de estudo quando apresenta baixo desempenho (Guru) e registrar notas e faltas
+> para acompanhar sua situação acadêmica em um painel com indicadores e gráficos.
+
+## Objetivos, Justificativa e "Dashboard Acadêmico" (item 3 do feedback)
+- **Notas, faltas e M1/M2/ND/Exame**: agora têm RF (RF29) e estão implementados (tela
+  Notas). Nenhuma alteração de escopo; só referenciar o RF29 onde aparecem.
+- **Ranking "de amigos"**: **retirar do escopo** (decisão tomada nesta etapa — se o grupo
+  preferir manter, marcar como "Previsto"). Motivo para a banca: exigiria uma
+  funcionalidade social (convites, lista de amigos) que aumenta o tratamento de dados
+  pessoais sem ganho para o objetivo do projeto. O ranking geral e o ranking por disciplina
+  atendem à gamificação. Apagar "Ranking de Amigos" dos objetivos, da justificativa e do
+  README (já apagado no README).
+- **Gamificação**: RFs criados (RF25 a RF28), com as regras definidas — ver 3.1.
+
+## Nova seção — Fundamentação teórica (pedido do orientador)
+Sugestão: criar a seção **2.5 Gamificação na educação** (ou um capítulo próprio, se o
+modelo da UMC pedir "Fundamentação Teórica" separada). Texto-base para adaptar:
+
+> Gamificação é definida por Deterding et al. (2011) como o uso de elementos de design de
+> jogos em contextos que não são jogos. Os autores diferenciam a gamificação dos jogos
+> sérios: não se cria um jogo completo, mas se incorporam elementos como pontos, níveis,
+> classificações e feedback imediato a uma atividade já existente. Kapp (2012) aplica o
+> conceito à aprendizagem e defende que esses elementos, quando ligados a objetivos
+> instrucionais claros, aumentam o engajamento e a motivação do aluno, sobretudo pelo
+> feedback rápido e pela possibilidade de errar e tentar de novo sem penalidade.
+>
+> Werbach e Hunter (2012) organizam os elementos de jogo em três níveis — dinâmicas,
+> mecânicas e componentes — e alertam que componentes como pontos e placares (o chamado
+> modelo PBL: points, badges e leaderboards) não produzem engajamento sozinhos: precisam
+> estar a serviço de um objetivo. Na revisão de estudos empíricos de Hamari, Koivisto e
+> Sarsa (2014), a gamificação apresentou efeitos majoritariamente positivos, mas
+> dependentes do contexto e do perfil dos usuários.
+>
+> O EduGuru adota esses fundamentos da seguinte forma: (i) **pontos** por acerto, com peso
+> por nível de dificuldade, como feedback imediato do desempenho; (ii) **classificação**
+> (ranking geral e por disciplina) como elemento de comparação social, exibindo apenas o
+> nome abreviado e permitindo ao aluno ocultar o próprio nome; (iii) **feedback corretivo**
+> ao fim de cada rodada, com a alternativa correta de cada pergunta errada; e (iv) o
+> **Guru**, que transforma o baixo desempenho em indicação de material de estudo, ligando a
+> mecânica de jogo ao objetivo de aprendizagem, como recomendam Kapp (2012) e Werbach e
+> Hunter (2012). Para evitar que a pontuação vire um fim em si mesma, cada pergunta só
+> pontua na primeira vez em que é acertada: repetir o quiz serve para revisar, não para
+> acumular pontos.
+
+**Conferir as citações nas obras antes de entregar** (página, edição): o texto acima
+resume as ideias centrais de cada autor, mas citação direta exige a página.
+
+## 1.3 Tecnologias, Ferramentas e Arquitetura / Figura 1 (item "Arquitetura" do feedback)
+Refazer a Figura 1 com estas caixas (substitui as orientações anteriores sobre a figura):
+- **Usuário (navegador)** → **Front-end**: React + TypeScript + Vite, CSS global próprio
+  (sem Tailwind), roteamento HashRouter. Telas: Home pública, Login/MFA, Painel, Quiz,
+  Ranking, Notas, Disciplinas, Perguntas, Materiais, Usuários, Logs, Minha conta.
+- **GitHub (repositório)** → **GitHub Actions** (lint, testes, build) → **GitHub Pages**
+  (hospedagem do front-end).
+- **Supabase**, com quatro caixas internas: **Auth** (login, MFA/TOTP, e-mails de
+  redefinição), **Banco PostgreSQL** (tabelas + RLS + funções `security definer`),
+  **Storage** (arquivos de materiais, bucket privado), **pg_cron** (limpeza diária de logs).
+- **ViaCEP** (API externa, chamada direto do navegador só com o CEP).
+- Setas: Front-end ↔ Supabase (HTTPS, chave pública + JWT do usuário); Front-end → ViaCEP
+  (HTTPS, só o CEP).
+
+Acrescentar parágrafo de **decisões técnicas** (pedido do coorientador: "decisões técnicas
+adotadas"):
+
+> As regras que não podem depender do navegador foram implementadas no banco de dados:
+> o sorteio, a correção e a pontuação do quiz são feitos por funções PostgreSQL
+> (`iniciar_quiz` e `finalizar_quiz`), e o aluno não tem permissão de gravar diretamente
+> nas tabelas de rodadas e respostas, o que impede alterar a própria pontuação pela API.
+> O gabarito das perguntas fica em uma tabela separada, legível apenas por
+> administradores, de modo que o aluno nunca recebe a resposta correta antes de finalizar
+> a rodada. O ranking também é uma função do banco, que expõe apenas posição, nome
+> abreviado e pontos, já que o perfil dos demais alunos não é legível. Já as regras de
+> cálculo das notas (nota de desempenho, exame e limite de faltas) ficam em um módulo
+> TypeScript sem dependência de tela ou banco (`src/lib/notas.ts`), o que permite
+> testá-las com testes unitários automatizados (Vitest), executados a cada publicação.
+
+## 2.1 Autenticação — acrescentar (recuperação do MFA e limite de tentativas)
+> Para o caso de perda do aparelho com o aplicativo autenticador, um administrador pode
+> redefinir a verificação em duas etapas do usuário pela tela Usuários. A operação é feita
+> por uma função do banco que verifica se quem a chamou é administrador com sessão aal2,
+> remove o fator cadastrado e registra a ação no log de auditoria; a senha continua sendo
+> exigida, e no acesso seguinte o usuário cadastra o aplicativo novamente. Além disso,
+> após cinco códigos inválidos consecutivos a sessão é encerrada e o usuário precisa
+> informar a senha de novo; cada código inválido e o bloqueio ficam registrados no log.
+
+Limitação a registrar (honestidade com a banca): o limite de 5 tentativas é controlado na
+tela, por sessão; o próprio Supabase Auth também limita as verificações por IP. Um bloqueio
+por conta no servidor exigiria o *hook* de verificação de MFA, disponível apenas em planos
+pagos do Supabase.
+
+## 2.2 Logs — acrescentar/ajustar (itens "Segurança e código" do feedback)
+- **Limpeza manual**: trocar "a função do banco recusa qualquer prazo inferior a 90 dias"
+  por: "a função de limpeza manual não recebe parâmetro: o prazo de 90 dias é fixo dentro
+  da função, e cada limpeza manual também é registrada no log (quem fez e quantos registros
+  foram removidos)".
+- **Log anônimo de login falho**: acrescentar: "O registro só é feito quando o e-mail
+  pertence a uma conta existente, o que impede a criação de registros com e-mails
+  inventados; a função não retorna nenhuma informação, de modo que quem a chama não
+  descobre se o e-mail está cadastrado. Como limitação, um terceiro que conheça o e-mail de
+  um usuário ainda pode gerar até 20 registros de falha a cada 10 minutos para esse e-mail."
+- **Novos eventos**: "quiz finalizado (acertos e pontos), bloqueio do MFA por tentativas,
+  redefinição do MFA pelo administrador e limpeza manual".
+- **Notas**: "As alterações de notas e faltas são registradas sem os valores (apenas ação,
+  tabela e registro), porque o administrador lê os logs e não deve ver as notas dos alunos."
+
+## 2.4 LGPD — acrescentar
+> Na terceira etapa, o Termo de Aceite e a Política de Privacidade passaram à versão 1.2,
+> para incluir os dados do quiz, do ranking e das notas. A exibição no ranking usa apenas o
+> primeiro nome e a inicial do sobrenome, com base no legítimo interesse educacional, e o
+> aluno pode se opor desmarcando a opção "Mostrar meu nome no ranking" em Minha conta,
+> passando a aparecer como "Aluno anônimo". As notas e faltas são opcionais, informadas pelo
+> próprio aluno com base no consentimento, visíveis apenas para ele (nem o administrador as
+> lê) e podem ser apagadas a qualquer momento. O arquivo de dados pessoais baixado em Minha
+> conta passou a incluir notas, faltas e rodadas de quiz.
+
+Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é o **RF15**
+(fluxo do titular, tela Minha conta). Basta citar no RF15: "atende ao direito de eliminação
+(LGPD, art. 18, VI)".
+
+## 3.1 Requisitos — ajustes e RFs novos
+
+### RF de cadastro de Perguntas (o RF atual de Perguntas) — reescrever
+- Descrição: "O sistema deverá permitir que o administrador cadastre perguntas do quiz,
+  cada uma ligada a uma disciplina, com enunciado, nível (Fácil, Médio ou Difícil), quatro
+  alternativas e a indicação da alternativa correta."
+- RN01 – Somente administradores cadastram e excluem perguntas (RLS e função do banco).
+- RN02 – Enunciado com 10 a 500 caracteres; as quatro alternativas são obrigatórias e
+  diferentes entre si; uma alternativa deve ser marcada como correta.
+- RN03 – O gabarito é guardado separado da pergunta e não pode ser lido por alunos.
+- RN04 – Perguntas sem disciplina ou sem gabarito não entram no quiz (marcadas como
+  "Incompleta").
+- CA01 – Dado um aluno, quando tentar ler o gabarito pela API, então o banco deverá
+  retornar vazio.
+
+### RF de Disciplinas — acrescentar
+- Campo "total de aulas" (1 a 400, padrão 80), base do limite de faltas (RF29).
+- RN: não pode haver duas disciplinas com o mesmo nome no mesmo curso (validado na tela).
+- Excluir uma disciplina exclui as perguntas e as notas ligadas a ela (pede confirmação).
+
+### RF04 — acrescentar
+- RN04 – Após 5 códigos inválidos consecutivos, a sessão é encerrada e o usuário volta ao
+  login; o bloqueio é registrado no log ("mfa_bloqueado").
+- Exceção (fluxo alternativo): "5 códigos inválidos → encerrar sessão → voltar ao login".
+
+### RF10 — substitui o CA02 sugerido na Fase A
+- RN02 – O prazo de 90 dias é fixo dentro da função (não é parâmetro).
+- CA02 – "Dado um administrador, quando acionar a limpeza manual, então somente registros
+  com mais de 90 dias deverão ser removidos e a limpeza deverá ser registrada no log."
+
+### Novo RF25 – Responder quiz
+- Descrição: "O sistema deverá permitir que o aluno responda a uma rodada de quiz de uma
+  disciplina escolhida, com até 10 perguntas sorteadas, e veja a correção ao final."
+- Atores: Aluno.
+- Pré-condições: autenticado com MFA (aal2); a disciplina possui perguntas completas.
+- Fluxo: 1. O aluno escolhe a disciplina. 2. O sistema sorteia até 10 perguntas com gabarito
+  e as exibe sem a resposta correta. 3. O aluno marca uma alternativa em cada pergunta.
+  4. O sistema envia as respostas; o banco corrige e devolve, para cada pergunta, a resposta
+  dada, a correta e os pontos. 5. O sistema exibe acertos, aproveitamento e pontos.
+- Fluxos alternativos: disciplina sem perguntas → mensagem; pergunta sem resposta → aviso
+  "falta responder N pergunta(s)"; rodada com mais de 30 minutos → recusada.
+- RN01 – Até 10 perguntas por rodada, sorteadas da disciplina escolhida.
+- RN02 – O gabarito só é revelado depois de a rodada ser finalizada.
+- RN03 – Só uma rodada aberta por aluno; iniciar outra descarta a anterior não finalizada.
+- RN04 – A rodada deve ser finalizada em até 30 minutos e não pode ser finalizada duas vezes.
+- RN05 – O aluno não grava rodadas nem respostas diretamente: só pelas funções do banco.
+- CA01 – Dado um aluno com MFA, quando finalizar a rodada, então deverá ver os acertos e a
+  alternativa correta de cada pergunta errada.
+- CA02 – Dado um aluno, quando tentar finalizar a rodada de outro aluno, então o banco
+  deverá recusar.
+
+### Novo RF26 – Pontuar acertos
+- Descrição: "O sistema deverá atribuir pontos aos acertos do quiz conforme o nível de
+  dificuldade da pergunta."
+- RN01 – Fácil = 10 pontos, Médio = 20, Difícil = 30. Erro ou pergunta sem resposta = 0.
+- RN02 – Cada pergunta só pontua na primeira vez em que o aluno a acerta.
+- RN03 – A pontuação é calculada no banco de dados; o aluno não consegue alterá-la pela API.
+- CA01 – Dado um aluno que acerta uma pergunta Difícil pela primeira vez, então deverá
+  ganhar 30 pontos; ao acertá-la de novo em outra rodada, 0 ponto.
+
+### Novo RF27 – Consultar ranking
+- Descrição: "O sistema deverá exibir a classificação dos alunos pela soma dos pontos,
+  geral ou filtrada por disciplina."
+- Atores: Aluno, Administrador.
+- RN01 – Participam apenas alunos com pontos (administradores não aparecem).
+- RN02 – São exibidos os 10 primeiros e, se o aluno estiver fora deles, também a posição dele.
+- RN03 – Exibe apenas posição, primeiro nome com a inicial do sobrenome e pontos.
+- RN04 – Empates ficam na mesma posição.
+- RN05 – O aluno pode ocultar o nome (aparece "Aluno anônimo"), sem perder os pontos.
+- CA01 – Dado um aluno que desmarcou "Mostrar meu nome no ranking", quando outro aluno
+  consultar o ranking, então deverá ver "Aluno anônimo" na posição dele.
+
+### Novo RF28 – Receber indicações do Guru
+- Descrição: "O sistema deverá indicar materiais de estudo das disciplinas em que o aluno
+  apresenta baixo desempenho."
+- Critério de **baixo desempenho**: aproveitamento (acertos ÷ respostas) **abaixo de 60%**
+  em uma disciplina, considerando todas as rodadas finalizadas, **com pelo menos 5
+  respostas** nessa disciplina. No resultado de uma rodada, o Guru aparece quando o
+  aproveitamento da própria rodada fica abaixo de 60%.
+- Fluxo: 1. O aluno abre o Painel (ou termina uma rodada). 2. O sistema calcula o
+  aproveitamento por disciplina. 3. Para cada disciplina com baixo desempenho, lista os
+  materiais ligados a ela.
+- RN01 – Só são indicados materiais com disciplina definida (RF08).
+- RN02 – Sem material na disciplina, o Guru informa que ainda não há material.
+- CA01 – Dado um aluno com 0 de 6 acertos em uma disciplina com um material cadastrado,
+  então o Guru deverá indicar esse material.
+
+### Novo RF29 – Registrar notas e faltas
+- Descrição: "O sistema deverá permitir que o aluno registre suas notas (M1, M2 e Exame) e
+  faltas por disciplina e calcular a situação."
+- Regras de cálculo (**confirmar com o regulamento do curso**; se mudar, só
+  `src/lib/notas.ts` muda):
+  - ND = (M1 + M2) ÷ 2. ND ≥ 6 → Aprovado.
+  - ND < 6 → Em exame. Média final = (ND + Exame) ÷ 2; ≥ 5 → Aprovado no exame; < 5 → Reprovado.
+  - Limite de faltas = 25% do total de aulas da disciplina (arredondado para baixo).
+    Acima do limite → Reprovado por falta, independentemente da nota.
+  - Alerta quando as faltas atingem 75% do limite.
+- RN01 – Notas de 0 a 10 (vírgula ou ponto), podendo ficar em branco; faltas inteiras,
+  de 0 até o total de aulas.
+- RN02 – Um registro por aluno e disciplina (salvar de novo atualiza).
+- RN03 – Somente o próprio aluno lê e altera suas notas (nem o administrador).
+- RN04 – O log registra a alteração sem os valores.
+- CA01 – Dado M1 = 7 e M2 = 5, então ND = 6 e situação "Aprovado".
+- CA02 – Dado nota 11, então o sistema deverá recusar.
+
+### Novo RF30 – Visualizar painel (Dashboard)
+- Descrição: "O sistema deverá exibir um painel com indicadores e gráficos."
+- Aluno — indicadores: pontos, posição no ranking, quizzes feitos, % de acertos, média
+  geral (ND) e disciplinas em alerta. Gráficos: acertos por disciplina e acertos nas
+  últimas 10 rodadas. Inclui o quadro do Guru (RF28).
+- Administrador — indicadores: alunos, disciplinas, perguntas prontas, materiais, quizzes
+  realizados e % de acertos geral. Gráficos: quizzes nos últimos 7 dias e acertos da turma
+  por disciplina.
+- RN01 – O administrador vê apenas números agregados, nunca dados de um aluno.
+- RN02 – Todos os números vêm do banco no momento da consulta.
+
+### Novo RF31 – Redefinir verificação em duas etapas
+- Descrição: "O sistema deverá permitir que um administrador redefina o MFA de um usuário
+  que perdeu o acesso ao aplicativo autenticador."
+- RN01 – Só administrador com aal2; não pode redefinir o próprio.
+- RN02 – A senha continua exigida; no próximo acesso o usuário cadastra o app novamente (RF03).
+- RN03 – A ação fica no log ("mfa_redefinido").
+
+### RNF — tornar mensuráveis (feedback) e RNF de desempenho
+- **RNF05 (Portabilidade/responsividade)**: "Todas as telas devem funcionar sem rolagem
+  horizontal da página em larguras de 360 px a 1920 px, nos navegadores Chrome, Edge e
+  Firefox em suas versões atuais; tabelas largas rolam dentro do próprio quadro."
+- **RNF06**: reescrever o critério atual com um número verificável. Modelo: "...medido por
+  [o quê], com meta de [valor]". Exemplo, se o RNF06 for de usabilidade: "um usuário novo
+  deve conseguir iniciar uma rodada de quiz em até 3 cliques a partir do Painel, e toda
+  mensagem de erro de formulário deve indicar o campo e a correção esperada".
+- **Novo RNF09 – Desempenho**: "Em conexão 4G, o Painel deve carregar em até 3 segundos e a
+  correção de uma rodada de quiz deve ser exibida em até 2 segundos após o envio."
+
+## 3.2 Diagrama de Classes (Figura 2 e Figura 3)
+Substituir pela versão em `docs/diagramas/diagrama_classes.md` (tem a tabela "o que mudou",
+que responde ponto a ponto ao item 4 do feedback, e o passo a passo para exportar em alta
+resolução). **Isso substitui as orientações da Fase A sobre a Figura 2.**
+A **Figura 3** (reexportar em alta resolução, tirar o "\n" e corrigir a acentuação) é uma
+figura feita por vocês; o arquivo original não está no repositório. Reexportem em PNG
+300 dpi ou SVG.
+
+## 3.3 BPMN (Figura 4 e figura nova)
+Seguir `docs/diagramas/bpmn.md`: correção da Figura 4 (fluxos contínuos, sem cruzamentos,
+log das falhas, exceção de limite de tentativas, gateway do novo aceite) e a **figura nova
+do processo central** (quiz → pontuação → ranking → Guru). **Substitui as orientações da
+Fase A sobre a Figura 4.**
+
+## Apêndices (feedback: "citados mas não existem")
+- **Apêndice A – Termo de Aceite**: copiar o texto da página `/termos` (versão 1.2).
+- **Apêndice B – Política de Privacidade**: copiar o texto da página `/privacidade` (versão 1.2).
+- **Apêndice C – Tabela de retenção**: usar a tabela da Fase A e acrescentar as linhas:
+
+| Dado pessoal | Retenção | Forma de descarte |
+|---|---|---|
+| Rodadas de quiz, respostas e pontos | Enquanto a conta existir | Junto com a exclusão da conta |
+| Preferência de exibição no ranking | Enquanto a conta existir | Junto com a exclusão da conta |
+| Notas e faltas | Até o aluno apagar o registro ou excluir a conta | Exclusão na tela Notas ou junto com a conta |
+
+## Formatação da monografia (itens do feedback)
+- Remover todas as marcações amarelas.
+- Usar o **tempo presente** para o que está implementado ("o sistema exibe", não "o sistema
+  exibirá"). Após esta etapa, praticamente tudo está implementado.
+- **REFERÊNCIAS**: título sem numeração, ordem alfabética, ABNT (NBR 6023). Entradas novas:
+
+> DETERDING, Sebastian; DIXON, Dan; KHALED, Rilla; NACKE, Lennart. From game design elements
+> to gamefulness: defining "gamification". In: INTERNATIONAL ACADEMIC MINDTREK CONFERENCE, 15.,
+> 2011, Tampere. **Proceedings** [...]. New York: ACM, 2011. p. 9-15.
+>
+> HAMARI, Juho; KOIVISTO, Jonna; SARSA, Harri. Does gamification work? A literature review of
+> empirical studies on gamification. In: HAWAII INTERNATIONAL CONFERENCE ON SYSTEM SCIENCES,
+> 47., 2014, Waikoloa. **Proceedings** [...]. Washington: IEEE, 2014. p. 3025-3034.
+>
+> KAPP, Karl M. **The gamification of learning and instruction**: game-based methods and
+> strategies for training and education. San Francisco: Pfeiffer, 2012.
+>
+> WERBACH, Kevin; HUNTER, Dan. **For the win**: how game thinking can revolutionize your
+> business. Philadelphia: Wharton Digital Press, 2012.
+
+  Conferir também se BRASIL (Lei nº 13.709/2018 — LGPD), a documentação do Supabase e do
+  ViaCEP estão completas (autor, título, URL e "Acesso em:").
+
+## Testes manuais da Etapa 3 (fazer antes do vídeo)
+10. Admin cadastra disciplina com total de aulas; tenta salvar com 0 aulas → erro.
+11. Admin cadastra pergunta: sem alternativa correta → erro; alternativas repetidas → erro;
+    completa → aparece "Correta: X".
+12. Aluno faz quiz: tenta finalizar com pergunta em branco → aviso; finaliza → resultado
+    com pontos; refaz → 0 ponto nas já acertadas.
+13. Aluno vai mal (< 60%) → Guru aparece no resultado e no Painel (com 5+ respostas).
+14. Ranking geral e por disciplina; desmarcar "Mostrar meu nome" em Minha conta → outro
+    aluno vê "Aluno anônimo".
+15. Notas: nota 11 → erro; M1 7 e M2 5 → Aprovado; faltas acima de 25% → Reprovado por falta.
+16. Painel do aluno e do admin com números e gráficos.
+17. Admin redefine o MFA de um aluno → no login seguinte o aluno vê o QR Code de novo.
+18. MFA: errar o código 5 vezes → volta ao login com aviso; log "mfa_bloqueado".
+19. Logs: botão de limpeza manual funciona e gera "Limpeza manual de logs".
+20. Conta com aceite 1.1 → tela de novo aceite (versão 1.2).

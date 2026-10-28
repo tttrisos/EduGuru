@@ -966,3 +966,352 @@ a.btn {
 .login-esqueci:hover {
   color: var(--text);
 }
+
+/* ======================================================================
+   Etapa 3 — Painel, Quiz, Ranking, Notas (mesmas cores do tema)
+   ====================================================================== */
+
+.pagina-larga {
+  max-width: 1100px;
+}
+
+.btn-pequeno {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.campo-curto {
+  flex: 0 1 110px;
+  min-width: 90px;
+}
+
+.campo-texto {
+  width: 100%;
+  height: auto;
+  min-height: 80px;
+  padding: 12px 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.selo-alerta {
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  color: #fcd34d;
+}
+
+/* ---------- Painel: big numbers e gráficos ---------- */
+.grade-big-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.big-number {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+}
+
+.big-number strong {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.big-number span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.big-number small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.grade-graficos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.grafico {
+  margin: 0;
+}
+
+.grafico-titulo {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.grafico-linhas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grafico-linha {
+  display: grid;
+  grid-template-columns: minmax(80px, 34%) 1fr 48px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.grafico-rotulo {
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Trilho recessivo + barra fina na cor da marca, ponta arredondada. */
+.grafico-trilho {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.grafico-barra {
+  display: block;
+  height: 100%;
+  background: var(--roxo);
+  border-radius: 0 4px 4px 0;
+}
+
+.grafico-linha:hover .grafico-barra {
+  background: var(--roxo-hover);
+}
+
+.grafico-valor {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+/* ---------- Guru ---------- */
+.guru {
+  margin-bottom: 16px;
+  border-color: color-mix(in srgb, var(--roxo) 50%, var(--border));
+}
+
+.guru h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.guru p,
+.guru ul {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.guru a {
+  color: #c4b5fd;
+}
+
+.guru-disciplina + .guru-disciplina {
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+/* ---------- Tabelas (Ranking e Notas) ---------- */
+.tabela-rolagem {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.tabela-rolagem .tabela {
+  margin-top: 0;
+}
+
+.tabela th,
+.tabela td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabela th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tabela .numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking tr.voce td {
+  background: color-mix(in srgb, var(--roxo) 14%, transparent);
+  font-weight: 600;
+}
+
+/* Situação: sempre texto + cor (nunca só a cor). */
+.selo-situacao {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.situacao-ok {
+  color: #4ade80;
+  background: color-mix(in srgb, #4ade80 14%, transparent);
+}
+
+.situacao-atencao {
+  color: #fcd34d;
+  background: color-mix(in srgb, #f59e0b 14%, transparent);
+}
+
+.situacao-ruim {
+  color: #f87171;
+  background: color-mix(in srgb, #f87171 14%, transparent);
+}
+
+td.situacao-atencao {
+  background: none;
+}
+
+/* ---------- Quiz ---------- */
+.quiz-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quiz-questao {
+  border: 1px solid var(--border);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-questao legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.quiz-alternativa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.quiz-alternativa:hover {
+  border-color: var(--roxo);
+}
+
+.quiz-alternativa.marcada {
+  border-color: var(--roxo);
+  background: color-mix(in srgb, var(--roxo) 14%, var(--bg));
+}
+
+.quiz-alternativa input {
+  accent-color: var(--roxo);
+}
+
+.quiz-correcao.acerto {
+  border-color: color-mix(in srgb, #4ade80 40%, var(--border));
+}
+
+.quiz-correcao.erro {
+  border-color: color-mix(in srgb, #f87171 40%, var(--border));
+}
+
+.quiz-acoes {
+  margin-top: 16px;
+}
+
+/* ---------- Cadastro de perguntas ---------- */
+.pergunta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.pergunta-alternativa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pergunta-alternativa input[type='radio'] {
+  accent-color: var(--roxo);
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- Minha conta ---------- */
+.conta-opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.conta-opcao input {
+  accent-color: var(--roxo);
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 820px) {
+  .grade-graficos {
+    grid-template-columns: 1fr;
+  }
+
+  .big-number strong {
+    font-size: 26px;
+  }
+
+  .acoes {
+    justify-content: flex-start;
+  }
+}

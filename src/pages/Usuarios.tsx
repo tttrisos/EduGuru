@@ -4,7 +4,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { CURSOS, type UsuarioAdmin } from '../types'
 import { removerArquivosDoUsuario } from '../lib/conta'
 
-// Gestão de contas pelo administrador (RF15: exclusão de conta por admin).
+// Gestão de contas pelo administrador (RF15: exclusão de conta por admin;
+// RF31: redefinir a verificação em duas etapas de quem perdeu o celular).
 // A lista vem de uma função do banco que só responde para admin com MFA
 // e não traz cidade/estado (minimização).
 
@@ -39,6 +40,27 @@ export default function Usuarios() {
       setCarregando(false)
     })
   }, [])
+
+  // Recuperação do MFA: o usuário perdeu o celular. O fator é apagado e, no
+  // próximo login (com senha), a pessoa cadastra o autenticador de novo.
+  async function redefinirMfa(alvo: UsuarioAdmin) {
+    setErro('')
+    setMensagem('')
+    const confirmou = window.confirm(
+      `Redefinir a verificação em duas etapas de ${alvo.nome}?\n\n` +
+        'Faça isso só se a própria pessoa pediu (ex.: perdeu o celular). No próximo login ela ' +
+        'precisará cadastrar o aplicativo autenticador de novo.',
+    )
+    if (!confirmou) return
+
+    const { error } = await supabase.rpc('redefinir_mfa_usuario', { alvo: alvo.id })
+    if (error) {
+      setErro(error.message)
+      return
+    }
+    setMensagem(`Verificação em duas etapas de ${alvo.nome} redefinida.`)
+    buscar()
+  }
 
   async function excluir(alvo: UsuarioAdmin) {
     setErro('')
@@ -99,18 +121,25 @@ export default function Usuarios() {
                   </strong>
                   <span className="item-meta">
                     {u.email} · {CURSOS.find((c) => c.valor === u.curso)?.label ?? u.curso ?? 'sem curso'} ·
-                    desde {formatarData(u.criado_em)}
+                    desde {formatarData(u.criado_em)} · MFA {u.mfa_ativo ? 'ativo' : 'não cadastrado'}
                   </span>
                 </div>
                 {u.id !== usuario?.id ? (
-                  <button
-                    type="button"
-                    className="btn btn-perigo"
-                    onClick={() => excluir(u)}
-                    disabled={excluindoId === u.id}
-                  >
-                    {excluindoId === u.id ? 'Excluindo...' : 'Excluir conta'}
-                  </button>
+                  <div className="acoes">
+                    {u.mfa_ativo ? (
+                      <button type="button" className="btn btn-secundario btn-pequeno" onClick={() => redefinirMfa(u)}>
+                        Redefinir MFA
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="btn btn-perigo"
+                      onClick={() => excluir(u)}
+                      disabled={excluindoId === u.id}
+                    >
+                      {excluindoId === u.id ? 'Excluindo...' : 'Excluir conta'}
+                    </button>
+                  </div>
                 ) : null}
               </li>
             ))}

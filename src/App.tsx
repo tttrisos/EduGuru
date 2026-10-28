@@ -4,6 +4,9 @@ import Inicio from './pages/Inicio'
 import Disciplinas from './pages/Disciplinas'
 import Materiais from './pages/Materiais'
 import Perguntas from './pages/Perguntas'
+import Quiz from './pages/Quiz'
+import Ranking from './pages/Ranking'
+import Notas from './pages/Notas'
 import Logs from './pages/Logs'
 import MinhaConta from './pages/MinhaConta'
 import Usuarios from './pages/Usuarios'
@@ -39,9 +42,9 @@ function App() {
         <Route path="/privacidade" element={<Privacidade />} />
 
         {/* A partir daqui exige login. "somenteAdmin" fica de fora nessa
-            rota-pai porque aluno também precisa ver disciplinas/perguntas
-            — quem não pode criar/excluir é controlado dentro de cada
-            página, além do RLS no banco. */}
+            rota-pai porque aluno também usa várias telas — quem não pode
+            criar/excluir é controlado dentro de cada página, além do RLS
+            no banco. */}
         <Route
           element={
             <RotaProtegida>
@@ -52,8 +55,20 @@ function App() {
           <Route path="/inicio" element={<Inicio />} />
           <Route path="/disciplinas" element={<Disciplinas />} />
           <Route path="/materiais" element={<Materiais />} />
-          <Route path="/perguntas" element={<Perguntas />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/ranking" element={<Ranking />} />
+          <Route path="/notas" element={<Notas />} />
           <Route path="/minha-conta" element={<MinhaConta />} />
+
+          {/* Banco de questões: só admin (o aluno vê as perguntas no quiz). */}
+          <Route
+            path="/perguntas"
+            element={
+              <RotaProtegida somenteAdmin>
+                <Perguntas />
+              </RotaProtegida>
+            }
+          />
 
           <Route
             path="/usuarios"

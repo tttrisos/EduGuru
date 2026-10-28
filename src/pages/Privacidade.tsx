@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 
-// Documento vivo, versão 1.1 (11/10/2026). Separado do Termo de Aceite
+// Documento vivo, versão 1.2 (27/10/2026: quiz, ranking, notas e faltas).
+// Versão anterior: 1.1 (11/10/2026). Separado do Termo de Aceite
 // (TermoDeAceite.tsx) por decisão do orientador e coorientador.
 export default function Privacidade() {
   return (
@@ -11,8 +12,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.1 — 11/10/2026. Documento vivo: será atualizado conforme novas
-          funcionalidades (quiz, pontuação, ranking) entrarem no projeto. Finalidade
+          Versão 1.2 — 27/10/2026. Documento vivo: atualizado sempre que uma
+          funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
+          pontuação, ranking, Guru, notas e faltas). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -68,11 +70,23 @@ export default function Privacidade() {
             guarda quem o enviou.
           </li>
           <li>
+            <strong>Desempenho nos quizzes:</strong> rodadas de quiz jogadas (data,
+            disciplina, respostas escolhidas, acertos e pontos) e a sua escolha de
+            aparecer ou não com o nome no ranking.
+          </li>
+          <li>
+            <strong>Notas e faltas (opcional):</strong> M1, M2, nota de exame e
+            quantidade de faltas que você mesmo registra em cada disciplina, para
+            acompanhar sua situação.
+          </li>
+          <li>
             <strong>Registros de auditoria:</strong> login concluído, tentativas de login
             malsucedidas, códigos de verificação em duas etapas inválidos, ativação da
             verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
-            criação/edição/exclusão de disciplinas, perguntas e
-            materiais, alterações no perfil (apenas <em>quais</em> campos mudaram, não os
+            redefinição da verificação em duas etapas por um administrador, quizzes
+            finalizados (acertos e pontos), criação/edição/exclusão de disciplinas,
+            perguntas e materiais, registro de notas (apenas que houve a alteração, sem
+            os valores das notas), alterações no perfil (apenas <em>quais</em> campos mudaram, não os
             valores) e exclusões de conta — sempre associados a quem realizou a ação e
             quando.
           </li>
@@ -131,6 +145,24 @@ export default function Privacidade() {
                 <td>Funcionamento do quiz e da biblioteca de materiais; permitir que só o autor (ou um admin) altere/exclua o material</td>
                 <td>Execução de contrato / legítimo interesse educacional</td>
                 <td>Até ser excluído pelo autor ou por um administrador, ou até a exclusão da conta do autor</td>
+              </tr>
+              <tr>
+                <td>Rodadas de quiz, respostas e pontos</td>
+                <td>Corrigir o quiz, calcular a pontuação e o ranking, mostrar seu desempenho no Painel e permitir que o Guru indique materiais quando o aproveitamento em uma disciplina fica abaixo de 60%</td>
+                <td>Execução de contrato (art. 7º, V) — é a funcionalidade principal da plataforma</td>
+                <td>Enquanto a conta existir</td>
+              </tr>
+              <tr>
+                <td>Nome abreviado e pontos no ranking</td>
+                <td>Gamificação: mostrar a classificação aos demais alunos. Só aparecem o primeiro nome e a inicial do sobrenome (ex.: &quot;Maria S.&quot;)</td>
+                <td>Legítimo interesse educacional (art. 7º, IX), com direito de oposição: na tela Minha conta você passa a aparecer como &quot;Aluno anônimo&quot;</td>
+                <td>Enquanto a conta existir</td>
+              </tr>
+              <tr>
+                <td>Notas e faltas</td>
+                <td>Calcular e mostrar, só para você, a situação em cada disciplina (média, exame, limite de faltas)</td>
+                <td>Consentimento (art. 7º, I): registrar é opcional e você pode apagar a qualquer momento na tela Notas</td>
+                <td>Até você apagar o registro ou excluir a conta</td>
               </tr>
               <tr>
                 <td>Logs de auditoria</td>
@@ -196,6 +228,11 @@ export default function Privacidade() {
             enviou — a exclusão remove o arquivo também do armazenamento, não só da
             lista.
           </li>
+          <li>
+            Rodadas de quiz, pontos e notas/faltas: mantidos enquanto a conta existir.
+            As notas de uma disciplina podem ser apagadas por você a qualquer momento;
+            tudo é apagado junto com a conta.
+          </li>
         </ul>
 
         <h3>Quem enxerga o quê</h3>
@@ -206,11 +243,15 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Outros alunos:</strong> não veem seu perfil (nome, e-mail, curso,
-            cidade). Veem apenas os materiais que você enviar (título, link e arquivo).
+            cidade) nem suas notas. Veem os materiais que você enviar (título, link e
+            arquivo) e, no ranking, seu nome abreviado e seus pontos — ou &quot;Aluno
+            anônimo&quot;, se você preferir.
           </li>
           <li>
             <strong>Administradores:</strong> veem os perfis de todos os usuários (para
-            gerenciar contas) e os logs de auditoria.
+            gerenciar contas) e os logs de auditoria. Não veem suas notas nem suas
+            respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
+            foram feitos e a média de acertos por disciplina).
           </li>
         </ul>
 
@@ -221,6 +262,7 @@ export default function Privacidade() {
           <li>Correção de dados incompletos ou desatualizados;</li>
           <li>Exclusão dos dados que não sejam mais necessários;</li>
           <li>Revogação do consentimento dado para o campo opcional de cidade/estado;</li>
+          <li>Oposição à exibição do seu nome no ranking;</li>
           <li>Informações sobre com quem seus dados são compartilhados.</li>
         </ul>
         <p>
@@ -234,15 +276,19 @@ export default function Privacidade() {
             e baixar tudo em um arquivo (JSON);
           </li>
           <li>
-            <strong>Correção:</strong> alterar nome, curso, cidade e estado;
+            <strong>Correção:</strong> alterar nome, curso, cidade e estado (e, na tela
+            Notas, as suas notas e faltas);
+          </li>
+          <li>
+            <strong>Oposição ao ranking:</strong> desmarcar &quot;Mostrar meu nome no ranking&quot;;
           </li>
           <li>
             <strong>Revogação do consentimento:</strong> apagar cidade/estado com um clique;
           </li>
           <li>
             <strong>Eliminação:</strong> excluir a conta. Perfil, conta de acesso,
-            verificação em duas etapas e materiais enviados (com os arquivos) são apagados
-            na hora. Os registros de auditoria já existentes são mantidos até completar 90
+            verificação em duas etapas, materiais enviados (com os arquivos), notas,
+            faltas e rodadas de quiz são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
             dias, por segurança, e então apagados automaticamente.
           </li>
         </ul>
@@ -268,7 +314,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.1, 11/10/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.2, 27/10/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>
