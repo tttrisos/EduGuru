@@ -49,19 +49,26 @@ describe('calcularSituacao', () => {
     expect(calcularSituacao(notas({ m1: 7 }), 0, 80).situacao).toBe('Aguardando notas')
   })
 
-  it('aprova com MD >= 6', () => {
-    // M2 = 6×0,7 + 6×0,3 = 6; MD = (6 + 12) / 3 = 6
-    const r = calcularSituacao(notas({ m1: 6, nd: 6, ni: 6 }), 0, 80)
-    expect(r.m2).toBe(6)
-    expect(r.md).toBe(6)
+  it('aprova com MD >= 5', () => {
+    // M2 = 5×0,7 + 5×0,3 = 5; MD = (5 + 10) / 3 = 5
+    const r = calcularSituacao(notas({ m1: 5, nd: 5, ni: 5 }), 0, 80)
+    expect(r.m2).toBe(5)
+    expect(r.md).toBe(5)
     expect(r.situacao).toBe('Aprovado')
   })
 
+  it('MD abaixo de 5 sem exame fica "Em exame"', () => {
+    // M2 = 4,9; MD = (5 + 9,8) / 3 = 4,9
+    expect(calcularSituacao(notas({ m1: 5, nd: 5, ni: 4.7 }), 0, 80).situacao).toBe('Em exame')
+  })
+
   it('o 2º bimestre pesa o dobro', () => {
-    // M1 alta não compensa um 2º bimestre fraco: (10 + 4×2) / 3 = 6
-    expect(calcularSituacao(notas({ m1: 10, nd: 4, ni: 4 }), 0, 80).md).toBe(6)
-    // (3 + 7×2) / 3 = 5,7 -> exame
-    expect(calcularSituacao(notas({ m1: 3, nd: 7, ni: 7 }), 0, 80).situacao).toBe('Em exame')
+    // M1 alta não compensa um 2º bimestre fraco: (10 + 2×2) / 3 = 4,7 -> exame
+    const r = calcularSituacao(notas({ m1: 10, nd: 2, ni: 2 }), 0, 80)
+    expect(r.md).toBe(4.7)
+    expect(r.situacao).toBe('Em exame')
+    // (2 + 7×2) / 3 = 5,3 -> aprovado
+    expect(calcularSituacao(notas({ m1: 2, nd: 7, ni: 7 }), 0, 80).situacao).toBe('Aprovado')
   })
 
   it('aprova no exame quando (MD + Exame) / 2 >= 5', () => {

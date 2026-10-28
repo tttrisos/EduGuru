@@ -617,9 +617,9 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
   - M2 = ND × 70% + NI × 30%.
   - MD = (M1 + M2 × 2) ÷ 3 (o 2º bimestre tem peso 2). Em disciplina de nota única, MD = MS.
   - Médias arredondadas para 1 casa decimal, como no portal.
-  - MD ≥ 6 → Aprovado. MD < 6 → Em exame; MF = (MD + EX) ÷ 2; MF ≥ 5 → Aprovado no exame;
-    MF < 5 → Reprovado. (**Conferir no regulamento** as notas mínimas 6 e 5, que não
-    aparecem na legenda do boletim.)
+  - Nota mínima para aprovação: **5** (confirmada pelo grupo em 28/10).
+  - MD ≥ 5 → Aprovado. MD < 5 → Em exame; MF = (MD + EX) ÷ 2; MF ≥ 5 → Aprovado no exame;
+    MF < 5 → Reprovado.
   - Limite de faltas = 25% do total de aulas da disciplina (arredondado para baixo).
     Acima do limite → Reprovado por falta, independentemente da nota.
   - Alerta quando as faltas atingem 75% do limite.
@@ -628,8 +628,9 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
 - RN02 – Um registro por aluno e disciplina (salvar de novo atualiza).
 - RN03 – Somente o próprio aluno lê e altera suas notas (nem o administrador).
 - RN04 – O log registra a alteração sem os valores.
-- CA01 – Dado M1 = 6, ND = 6 e NI = 6, então M2 = 6, MD = 6 e situação "Aprovado".
-- CA02 – Dado M1 = 10, ND = 4 e NI = 4, então MD = (10 + 8) ÷ 3 = 6 (o 2º bimestre pesa o dobro).
+- CA01 – Dado M1 = 5, ND = 5 e NI = 5, então M2 = 5, MD = 5 e situação "Aprovado".
+- CA02 – Dado M1 = 10, ND = 2 e NI = 2, então MD = (10 + 4) ÷ 3 = 4,7 e situação "Em exame"
+  (o 2º bimestre pesa o dobro).
 - CA03 – Dado nota 11, então o sistema deverá recusar.
 
 ### Novo RF30 – Visualizar painel (Dashboard)
@@ -718,7 +719,7 @@ Fase A sobre a Figura 4.**
 13. Aluno vai mal (< 60%) → Guru aparece no resultado e no Painel (com 5+ respostas).
 14. Ranking geral e por disciplina; desmarcar "Mostrar meu nome" em Minha conta → outro
     aluno vê "Aluno anônimo".
-15. Notas: nota 11 → erro; M1 6, ND 6, NI 6 → M2 6,0, MD 6,0, Aprovado; só MS 7 → Aprovado;
+15. Notas: nota 11 → erro; M1 5, ND 5, NI 5 → M2 5,0, MD 5,0, Aprovado; M1 10, ND 2, NI 2 → Em exame; só MS 7 → Aprovado;
     faltas acima de 25% → Reprovado por falta.
 21. Depois da atualização 13: cada disciplina do banco inicial tem 15 perguntas e o quiz
     sorteia 10; a resposta certa aparece em letras diferentes.
