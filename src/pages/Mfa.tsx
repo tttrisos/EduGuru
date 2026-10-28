@@ -12,6 +12,11 @@ import Rodape from '../components/Rodape'
 //   - Acessos seguintes: só pede o código atual do app.
 // Só depois disso a sessão vira "aal2" e o banco libera os dados.
 
+// Exceção "limite de tentativas": depois de 5 códigos errados seguidos a
+// sessão é encerrada e a pessoa precisa digitar a senha de novo. Cada erro
+// e o bloqueio ficam no log de auditoria (mfa_falhou / mfa_bloqueado).
+const MAXIMO_TENTATIVAS = 5
+
 type Preparo =
   | { modo: 'verificar'; fatorId: string }
   | { modo: 'cadastrar'; fatorId: string; qrCode: string; segredo: string }
@@ -49,6 +54,7 @@ export default function Mfa() {
   const [codigo, setCodigo] = useState('')
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const [tentativasErradas, setTentativasErradas] = useState(0)
 
   // Em modo de desenvolvimento o React roda o efeito duas vezes; sem esta
   // trava seriam gerados dois QR Codes diferentes.
@@ -90,9 +96,27 @@ export default function Mfa() {
 
     if (error) {
       await registrarLogEvento('mfa_falhou', { etapa: preparo.modo })
+      const erradas = tentativasErradas + 1
+      setTentativasErradas(erradas)
+
+      if (erradas >= MAXIMO_TENTATIVAS) {
+        await registrarLogEvento('mfa_bloqueado', { tentativas: erradas })
+        // Navega antes de sair: se a sessão acabasse primeiro, esta tela
+        // redirecionaria sozinha para o login e o aviso se perderia.
+        navigate('/login', {
+          replace: true,
+          state: { aviso: 'Muitos códigos inválidos. Por segurança, entre de novo com e-mail e senha.' },
+        })
+        await sair()
+        return
+      }
+
       setEnviando(false)
       setCodigo('')
-      setErro('Código inválido ou expirado. Confira o horário do celular e tente o código atual.')
+      setErro(
+        'Código inválido ou expirado. Confira o horário do celular e tente o código atual. ' +
+          `Tentativas restantes: ${MAXIMO_TENTATIVAS - erradas}.`,
+      )
       return
     }
 
@@ -172,8 +196,8 @@ export default function Mfa() {
         </form>
 
         <p className="login-rodape">
-          Perdeu acesso ao aplicativo autenticador? Fale com um administrador do projeto para
-          remover o fator antigo e cadastrar de novo.
+          Perdeu acesso ao aplicativo autenticador? Peça a um administrador para redefinir a sua
+          verificação em duas etapas (tela Usuários). No próximo login você cadastra o app de novo.
         </p>
       </div>
 

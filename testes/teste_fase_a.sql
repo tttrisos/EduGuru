@@ -2,7 +2,7 @@
 -- EduGuru — Testes automáticos da Fase A (atualizações 4 a 7)
 --
 -- Como usar: cole tudo no SQL Editor do Supabase e clique em Run,
--- DEPOIS de rodar os supabase_atualizacao_4.sql a _7.sql.
+-- DEPOIS de rodar os supabase_atualizacao_4.sql a _10.sql.
 --
 -- NADA FICA GRAVADO: o script cria 3 usuários fictícios, roda os testes
 -- simulando cada um (como se fosse o site chamando a API) e, no final,
@@ -190,9 +190,11 @@ declare i integer; qtd integer; r text;
 begin
   perform set_config('request.jwt.claims', '{"role":"anon"}', true);
   execute 'set local role anon';
+  -- Desde a atualização 10, só e-mails com conta geram log.
   for i in 1..25 loop
-    perform public.registrar_login_falhou('spam@teste.eduguru');
+    perform public.registrar_login_falhou('aluno.a@teste.eduguru');
   end loop;
+  perform public.registrar_login_falhou('nao.existe@teste.eduguru');
   begin
     insert into public.logs_auditoria (acao) values ('login_falhou');
     r := 'FALHOU: anônimo inseriu log direto';
@@ -200,9 +202,13 @@ begin
     r := 'OK (bloqueado: ' || sqlerrm || ')';
   end;
   execute 'reset role';
-  select count(*) into qtd from public.logs_auditoria where usuario_email = 'spam@teste.eduguru';
+  select count(*) into qtd from public.logs_auditoria
+  where usuario_email = 'aluno.a@teste.eduguru' and acao = 'login_falhou';
   insert into _res (teste, resultado) values ('login_falhou limitado a 20 por e-mail/10 min',
     case when qtd = 20 then 'OK' else 'FALHOU: gravou ' || qtd end);
+  select count(*) into qtd from public.logs_auditoria where usuario_email = 'nao.existe@teste.eduguru';
+  insert into _res (teste, resultado) values ('login_falhou NÃO grava e-mail sem conta',
+    case when qtd = 0 then 'OK' else 'FALHOU: gravou ' || qtd end);
   insert into _res (teste, resultado) values ('Anônimo NÃO insere log direto', r);
 end $$;
 
@@ -228,7 +234,7 @@ begin
     '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated","aal":"aal2"}', true);
   execute 'set local role authenticated';
   begin
-    perform public.limpar_logs_antigos(90);
+    perform public.limpar_logs_antigos();
     r := 'FALHOU: aluno limpou logs';
   exception when others then
     r := 'OK (bloqueado: ' || sqlerrm || ')';
@@ -244,13 +250,14 @@ begin
     '{"sub":"00000000-0000-0000-0000-0000000000c3","role":"authenticated","aal":"aal2"}', true);
   execute 'set local role authenticated';
   begin
-    perform public.limpar_logs_antigos(30);
-    r := 'FALHOU: aceitou prazo menor que 90 dias';
+    -- Desde a atualização 10 a função não recebe prazo (90 dias fixos).
+    execute 'select public.limpar_logs_antigos(30)';
+    r := 'FALHOU: aceitou prazo escolhido pelo admin';
   exception when others then
     r := 'OK (bloqueado: ' || sqlerrm || ')';
   end;
   execute 'reset role';
-  insert into _res (teste, resultado) values ('Admin NÃO limpa logs com menos de 90 dias', r);
+  insert into _res (teste, resultado) values ('Admin NÃO escolhe o prazo da limpeza (fixo em 90 dias)', r);
 end $$;
 
 do $$
@@ -260,7 +267,7 @@ begin
     '{"sub":"00000000-0000-0000-0000-0000000000c3","role":"authenticated","aal":"aal1"}', true);
   execute 'set local role authenticated';
   begin
-    perform public.limpar_logs_antigos(90);
+    perform public.limpar_logs_antigos();
     r := 'FALHOU: admin sem MFA limpou logs';
   exception when others then
     r := 'OK (bloqueado: ' || sqlerrm || ')';

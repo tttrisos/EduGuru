@@ -12,6 +12,7 @@ export default function Disciplinas() {
   const [lista, setLista] = useState<Disciplina[]>([])
   const [nome, setNome] = useState('')
   const [curso, setCurso] = useState('SI')
+  const [totalAulas, setTotalAulas] = useState('80')
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(true)
 
@@ -49,10 +50,20 @@ export default function Disciplinas() {
       setErro('Digite o nome da disciplina.')
       return
     }
+    if (lista.some((d) => d.curso === curso && d.nome.trim().toLowerCase() === nome.trim().toLowerCase())) {
+      setErro('Já existe uma disciplina com esse nome neste curso.')
+      return
+    }
+    // O total de aulas é a base do limite de faltas (25%) na tela de Notas.
+    const aulas = Number(totalAulas)
+    if (!Number.isInteger(aulas) || aulas < 1 || aulas > 400) {
+      setErro('O total de aulas precisa ser um número inteiro entre 1 e 400.')
+      return
+    }
 
     const { error } = await supabase
       .from('disciplinas')
-      .insert([{ nome: nome.trim(), curso }])
+      .insert([{ nome: nome.trim(), curso, total_aulas: aulas }])
 
     if (error) {
       setErro(error.message)
@@ -64,6 +75,7 @@ export default function Disciplinas() {
   }
 
   async function excluir(id: number) {
+    if (!window.confirm('Excluir esta disciplina? As perguntas e as notas ligadas a ela também serão apagadas.')) return
     const { error } = await supabase.from('disciplinas').delete().eq('id', id)
     if (error) setErro(error.message)
     else buscar()
@@ -79,7 +91,7 @@ export default function Disciplinas() {
         <h2>Disciplinas</h2>
         <p>
           {ehAdmin
-            ? 'Cadastro das matérias de cada curso. Perguntas e materiais vão se ligar a elas na próxima etapa.'
+            ? 'Cadastro das matérias de cada curso. Perguntas, materiais, notas e o quiz são ligados a elas.'
             : 'Lista das matérias cadastradas pela coordenação. Apenas administradores podem adicionar ou remover.'}
         </p>
       </header>
@@ -100,6 +112,14 @@ export default function Disciplinas() {
                 </option>
               ))}
             </select>
+            <input
+              className="campo campo-curto"
+              value={totalAulas}
+              onChange={(e) => setTotalAulas(e.target.value)}
+              placeholder="Total de aulas"
+              title="Total de aulas no semestre"
+              inputMode="numeric"
+            />
             <button type="submit" className="btn btn-primario">
               Salvar
             </button>
@@ -117,7 +137,9 @@ export default function Disciplinas() {
               <li key={item.id} className="item-lista">
                 <div>
                   <strong>{item.nome}</strong>
-                  <span className="item-meta">{nomeCurso(item.curso)}</span>
+                  <span className="item-meta">
+                    {nomeCurso(item.curso)} · {item.total_aulas} aulas
+                  </span>
                 </div>
                 {ehAdmin ? (
                   <button type="button" className="btn btn-perigo" onClick={() => excluir(item.id)}>

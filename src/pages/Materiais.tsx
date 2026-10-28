@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
-import type { Material } from '../types'
+import type { Disciplina, Material } from '../types'
 import { useAuth } from '../contexts/AuthContext'
+import { gerarLinksArquivos } from '../lib/materiais'
 
 const LIMITE_MB = 5
 const LIMITE_BYTES = LIMITE_MB * 1024 * 1024
@@ -16,37 +17,30 @@ function formatarTamanho(bytes: number | null) {
   return mb >= 1 ? `${mb.toFixed(1)} MB` : `${(bytes / 1024).toFixed(0)} KB`
 }
 
-// O bucket é privado: em vez de link público, geramos links assinados que
-// expiram em 1 hora, só para quem está logado.
-const VALIDADE_LINK_SEGUNDOS = 60 * 60
-
 async function consultarMateriais() {
-  const { data, error } = await supabase
-    .from('materiais')
-    .select('*')
-    .order('id', { ascending: false })
-  if (error) return { lista: [] as Material[], urls: {}, erro: error.message }
-
-  const lista = (data as Material[]) ?? []
-  const caminhos = lista.map((m) => m.arquivo_path).filter((p): p is string => !!p)
-  const urls: Record<string, string> = {}
-
-  if (caminhos.length > 0) {
-    const { data: assinadas } = await supabase.storage
-      .from('materiais')
-      .createSignedUrls(caminhos, VALIDADE_LINK_SEGUNDOS)
-    for (const item of assinadas ?? []) {
-      if (item.path && item.signedUrl) urls[item.path] = item.signedUrl
-    }
+  const [materiais, disciplinas] = await Promise.all([
+    supabase.from('materiais').select('*').order('id', { ascending: false }),
+    supabase.from('disciplinas').select('*').order('nome'),
+  ])
+  const listaDisciplinas = (disciplinas.data as Disciplina[]) ?? []
+  if (materiais.error) {
+    return { lista: [] as Material[], disciplinas: listaDisciplinas, urls: {}, erro: materiais.error.message }
   }
-  return { lista, urls, erro: null }
+
+  // O bucket é privado: os arquivos abrem por links temporários (1 hora).
+  const lista = (materiais.data as Material[]) ?? []
+  const caminhos = lista.map((m) => m.arquivo_path).filter((p): p is string => !!p)
+  const urls = await gerarLinksArquivos(caminhos)
+  return { lista, disciplinas: listaDisciplinas, urls, erro: null }
 }
 
 export default function Materiais() {
   const { usuario, ehAdmin } = useAuth()
   const [lista, setLista] = useState<Material[]>([])
+  const [disciplinas, setDisciplinas] = useState<Disciplina[]>([])
   const [urlsArquivos, setUrlsArquivos] = useState<Record<string, string>>({})
   const [titulo, setTitulo] = useState('')
+  const [disciplinaId, setDisciplinaId] = useState('')
   const [link, setLink] = useState('')
   const [arquivo, setArquivo] = useState<File | null>(null)
   const [erro, setErro] = useState('')
@@ -57,6 +51,7 @@ export default function Materiais() {
     try {
       const resultado = await consultarMateriais()
 
+      setDisciplinas(resultado.disciplinas)
       if (resultado.erro) setErro(resultado.erro)
       else {
         setLista(resultado.lista)
@@ -75,6 +70,7 @@ export default function Materiais() {
   useEffect(() => {
     consultarMateriais()
       .then((resultado) => {
+        setDisciplinas(resultado.disciplinas)
         if (resultado.erro) setErro(resultado.erro)
         else {
           setLista(resultado.lista)
@@ -120,6 +116,10 @@ export default function Materiais() {
       setErro('Informe um link OU anexe um arquivo (PDF/DOCX).')
       return
     }
+    if (link.trim() && !/^https?:\/\/\S+\.\S+/.test(link.trim())) {
+      setErro('O link precisa começar com http:// ou https:// (ex.: https://site.com/apostila).')
+      return
+    }
 
     setEnviando(true)
 
@@ -154,6 +154,7 @@ export default function Materiais() {
         arquivo_path: arquivoPath,
         arquivo_nome: arquivoNome,
         arquivo_tamanho: arquivoTamanho,
+        disciplina_id: disciplinaId ? Number(disciplinaId) : null,
       },
     ])
 
@@ -166,6 +167,7 @@ export default function Materiais() {
 
     setTitulo('')
     setLink('')
+    setDisciplinaId('')
     setArquivo(null)
     buscar()
   }
@@ -185,8 +187,8 @@ export default function Materiais() {
       <header className="pagina-topo">
         <h2>Materiais</h2>
         <p>
-          Links e apostilas (PDF/DOCX, até {LIMITE_MB} MB). Na próxima entrega cada material
-          passa a pertencer a uma disciplina.
+          Links e apostilas (PDF/DOCX, até {LIMITE_MB} MB). Escolha a disciplina do material: é
+          assim que o Guru sabe o que indicar para quem está com dificuldade nela.
         </p>
       </header>
 
@@ -204,6 +206,14 @@ export default function Materiais() {
             onChange={(e) => setLink(e.target.value)}
             placeholder="https://... (opcional se anexar arquivo)"
           />
+          <select className="campo" value={disciplinaId} onChange={(e) => setDisciplinaId(e.target.value)}>
+            <option value="">Disciplina (opcional)</option>
+            {disciplinas.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.nome} ({d.curso})
+              </option>
+            ))}
+          </select>
           <label className="campo-arquivo">
             <input type="file" accept=".pdf,.docx" onChange={aoEscolherArquivo} />
             {arquivo ? `📎 ${arquivo.name} (${formatarTamanho(arquivo.size)})` : 'Anexar PDF/DOCX (opcional)'}
@@ -223,7 +233,14 @@ export default function Materiais() {
             {lista.map((item) => (
               <li key={item.id} className="item-lista">
                 <div>
-                  <strong>{item.titulo}</strong>
+                  <strong>
+                    {item.titulo}
+                    {item.disciplina_id ? (
+                      <span className="selo">
+                        {disciplinas.find((d) => d.id === item.disciplina_id)?.nome ?? 'Disciplina'}
+                      </span>
+                    ) : null}
+                  </strong>
                   <span className="item-meta">
                     {item.link ? (
                       <a href={item.link} target="_blank" rel="noreferrer">

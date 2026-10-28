@@ -26,26 +26,26 @@ const RECURSOS = [
   {
     icone: Zap,
     titulo: 'Quiz rápido',
-    texto: '10 perguntas de múltipla escolha por rodada, com resposta na hora.',
-    disponivel: false,
+    texto: 'Até 10 perguntas de múltipla escolha por rodada, com correção na hora.',
+    disponivel: true,
   },
   {
     icone: Trophy,
     titulo: 'Ranking',
-    texto: 'Acertos e rapidez viram pontos. Veja sua posição em cada disciplina.',
-    disponivel: false,
+    texto: 'Cada acerto vale pontos conforme o nível. Veja sua posição geral e em cada disciplina.',
+    disponivel: true,
   },
   {
     icone: Lightbulb,
     titulo: 'Guru',
     texto: 'Foi mal no quiz? O Guru indica materiais da mesma disciplina para revisar.',
-    disponivel: false,
+    disponivel: true,
   },
   {
     icone: BarChart3,
     titulo: 'Dashboard acadêmico',
     texto: 'Notas, faltas e desempenho nos quizzes em um só lugar.',
-    disponivel: false,
+    disponivel: true,
   },
   {
     icone: ShieldCheck,

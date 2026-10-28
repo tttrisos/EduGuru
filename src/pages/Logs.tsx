@@ -49,7 +49,8 @@ export default function Logs() {
     setMensagemLimpeza('')
     setErro('')
 
-    const { data, error } = await supabase.rpc('limpar_logs_antigos', { dias: 90 })
+    // O prazo de 90 dias é fixo dentro da função (supabase_atualizacao_10.sql).
+    const { data, error } = await supabase.rpc('limpar_logs_antigos')
 
     setLimpando(false)
     if (error) {

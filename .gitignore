@@ -26,3 +26,6 @@ dist-ssr
 # Variáveis de ambiente / segredos (nunca versionar)
 .env
 .env.*
+
+# Relatório de cobertura dos testes (gerado por npm run test:cobertura)
+coverage
