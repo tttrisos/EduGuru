@@ -19,7 +19,7 @@ O escopo inicial da aplicação é voltado exclusivamente para estudantes da UMC
 
 ## 🧩 Principais Funcionalidades
 
-- **Dashboard Acadêmico:** Registro manual e acompanhamento claro de notas (M1, M2, médias) e controle do limite de faltas.
+- **Dashboard Acadêmico:** Registro manual das notas com os campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e controle do limite de faltas.
 - **Quiz Gamificado:** Perguntas categorizadas por curso, disciplina, assunto e nível de dificuldade (iniciante, intermediário, avançado).
 - **Pontuação e Rankings:** Pontos por acerto conforme o nível (Fácil 10, Médio 20, Difícil 30), alimentando um Ranking Geral e um Ranking por Disciplina.
 - **O "Guru" (Recomendações):** Sistema leve de indicação de conteúdos de estudo com base nas lacunas de conhecimento identificadas nos quizzes.
@@ -59,7 +59,8 @@ O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-S
 - Quiz por disciplina (até 10 perguntas), com correção e pontuação feitas no banco; o aluno nunca lê o gabarito
 - Ranking geral e por disciplina (nome abreviado, com opção de aparecer como "Aluno anônimo")
 - Guru: indica materiais da disciplina quando o aproveitamento fica abaixo de 60%
-- Notas e faltas (M1, M2, ND, Exame, limite de 25% de faltas) e Painel com indicadores e gráficos (aluno e admin)
+- Notas e faltas no formato do boletim da UMC (M2 = ND×70% + NI×30%; MD = (M1 + 2×M2)/3; limite de 25% de faltas) e Painel com indicadores e gráficos (aluno e admin)
+- Banco inicial de 120 perguntas (8 disciplinas × 15), que será ampliado ao longo do projeto
 - Ajustes de segurança da validação de 05/10 (limpeza de logs com prazo fixo, recuperação do MFA, limite de tentativas)
 - Testes unitários (`npm test`) e testes de banco em `testes/`
 
@@ -74,7 +75,7 @@ https://tttrisos.github.io/EduGuru/ (publicado automaticamente pelo GitHub Actio
 ## 🗄️ Banco de dados (Supabase)
 
 Os scripts SQL ficam na raiz e devem ser rodados **em ordem** no SQL Editor do Supabase:
-`supabase_00_tabelas_base.sql`, `supabase_setup_auth_logs.sql`, `supabase_atualizacao_2.sql` … `supabase_atualizacao_12.sql`.
+`supabase_00_tabelas_base.sql`, `supabase_setup_auth_logs.sql`, `supabase_atualizacao_2.sql` … `supabase_atualizacao_13.sql` (a 13 carrega o banco inicial de perguntas).
 Os testes automáticos do banco ficam em `testes/` (cada um termina com um erro proposital que mostra o relatório e desfaz tudo).
 
 Testes unitários do front-end: `npm test` (cobertura: `npm run test:cobertura`).

@@ -354,10 +354,11 @@ dashboard, validações, branch `entrega0911`). O andamento item a item está em
 `docs/CHECKLIST_ENTREGAS.md`.
 
 Scripts novos (rodar **em ordem** no SQL Editor, depois do 9):
-`supabase_atualizacao_10.sql` → `_11.sql` → `_12.sql`. O `supabase_00_tabelas_base.sql`
+`supabase_atualizacao_10.sql` → `_11.sql` → `_12.sql` → `_13.sql` (banco inicial de 120
+perguntas). O `supabase_00_tabelas_base.sql`
 não muda nada no banco atual (só registra a criação original das tabelas).
 Testes de banco: `testes/teste_gamificacao.sql` (novo) e `testes/teste_fase_a.sql`
-(ajustado à atualização 10). Testes unitários: `npm test` (16 testes, regras de notas e senha).
+(ajustado à atualização 10). Testes unitários: `npm test` (22 testes, regras de notas e senha).
 
 ## ⚠️ Antes de tudo: o código precisa estar no GitHub
 O orientador não encontrou MFA, pg_cron, exclusão de contas, gatilho de perfis e registro
@@ -395,8 +396,9 @@ funcionalidades. Sugestão para o Resumo:
 > para acompanhar sua situação acadêmica em um painel com indicadores e gráficos.
 
 ## Objetivos, Justificativa e "Dashboard Acadêmico" (item 3 do feedback)
-- **Notas, faltas e M1/M2/ND/Exame**: agora têm RF (RF29) e estão implementados (tela
-  Notas). Nenhuma alteração de escopo; só referenciar o RF29 onde aparecem.
+- **Notas e faltas**: agora têm RF (RF29) e estão implementados (tela Notas), com os mesmos
+  campos do boletim do portal da UMC (M1, ND, NI, M2, MD, MS, EX, MF e FT). Onde o texto
+  citar "M1, M2, médias", trocar pela lista do boletim e referenciar o RF29.
 - **Ranking "de amigos"**: **retirar do escopo** (decisão tomada nesta etapa — se o grupo
   preferir manter, marcar como "Previsto"). Motivo para a banca: exigiria uma
   funcionalidade social (convites, lista de amigos) que aumenta o tratamento de dados
@@ -553,6 +555,12 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
   "falta responder N pergunta(s)"; rodada com mais de 30 minutos → recusada.
 - RN01 – Até 10 perguntas por rodada, sorteadas da disciplina escolhida.
 - RN02 – O gabarito só é revelado depois de a rodada ser finalizada.
+- Banco de perguntas: o sistema é entregue com um **banco inicial de 120 perguntas**
+  (8 disciplinas × 15; em cada uma, 6 Fácil, 5 Médio e 4 Difícil), todas com 4
+  alternativas e gabarito (`supabase_atualizacao_13.sql`). A ordem das alternativas é
+  sorteada no cadastro, para a resposta correta não ficar sempre na mesma letra. **O banco
+  será ampliado** ao longo do projeto pelo administrador (tela Perguntas, RF06) e por novos
+  scripts no mesmo formato; a meta é cobrir todas as disciplinas dos três cursos.
 - RN03 – Só uma rodada aberta por aluno; iniciar outra descarta a anterior não finalizada.
 - RN04 – A rodada deve ser finalizada em até 30 minutos e não pode ser finalizada duas vezes.
 - RN05 – O aluno não grava rodadas nem respostas diretamente: só pelas funções do banco.
@@ -598,12 +606,20 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
   então o Guru deverá indicar esse material.
 
 ### Novo RF29 – Registrar notas e faltas
-- Descrição: "O sistema deverá permitir que o aluno registre suas notas (M1, M2 e Exame) e
-  faltas por disciplina e calcular a situação."
-- Regras de cálculo (**confirmar com o regulamento do curso**; se mudar, só
+- Descrição: "O sistema deverá permitir que o aluno registre suas notas e faltas por
+  disciplina, com os mesmos campos do boletim do portal da UMC, e calcular as médias e a
+  situação."
+- Campos registrados pelo aluno: M1 (avaliações do 1º bimestre), ND (avaliações do 2º
+  bimestre), NI (avaliação integrada), MS (média semestral, só em disciplinas de nota
+  única), EX (exame) e FT (faltas no semestre).
+- Regras de cálculo (as médias seguem a legenda do boletim da UMC; se mudarem, só
   `src/lib/notas.ts` muda):
-  - ND = (M1 + M2) ÷ 2. ND ≥ 6 → Aprovado.
-  - ND < 6 → Em exame. Média final = (ND + Exame) ÷ 2; ≥ 5 → Aprovado no exame; < 5 → Reprovado.
+  - M2 = ND × 70% + NI × 30%.
+  - MD = (M1 + M2 × 2) ÷ 3 (o 2º bimestre tem peso 2). Em disciplina de nota única, MD = MS.
+  - Médias arredondadas para 1 casa decimal, como no portal.
+  - MD ≥ 6 → Aprovado. MD < 6 → Em exame; MF = (MD + EX) ÷ 2; MF ≥ 5 → Aprovado no exame;
+    MF < 5 → Reprovado. (**Conferir no regulamento** as notas mínimas 6 e 5, que não
+    aparecem na legenda do boletim.)
   - Limite de faltas = 25% do total de aulas da disciplina (arredondado para baixo).
     Acima do limite → Reprovado por falta, independentemente da nota.
   - Alerta quando as faltas atingem 75% do limite.
@@ -612,13 +628,14 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
 - RN02 – Um registro por aluno e disciplina (salvar de novo atualiza).
 - RN03 – Somente o próprio aluno lê e altera suas notas (nem o administrador).
 - RN04 – O log registra a alteração sem os valores.
-- CA01 – Dado M1 = 7 e M2 = 5, então ND = 6 e situação "Aprovado".
-- CA02 – Dado nota 11, então o sistema deverá recusar.
+- CA01 – Dado M1 = 6, ND = 6 e NI = 6, então M2 = 6, MD = 6 e situação "Aprovado".
+- CA02 – Dado M1 = 10, ND = 4 e NI = 4, então MD = (10 + 8) ÷ 3 = 6 (o 2º bimestre pesa o dobro).
+- CA03 – Dado nota 11, então o sistema deverá recusar.
 
 ### Novo RF30 – Visualizar painel (Dashboard)
 - Descrição: "O sistema deverá exibir um painel com indicadores e gráficos."
 - Aluno — indicadores: pontos, posição no ranking, quizzes feitos, % de acertos, média
-  geral (ND) e disciplinas em alerta. Gráficos: acertos por disciplina e acertos nas
+  geral (MD) e disciplinas em alerta. Gráficos: acertos por disciplina e acertos nas
   últimas 10 rodadas. Inclui o quadro do Guru (RF28).
 - Administrador — indicadores: alunos, disciplinas, perguntas prontas, materiais, quizzes
   realizados e % de acertos geral. Gráficos: quizzes nos últimos 7 dias e acertos da turma
@@ -701,7 +718,10 @@ Fase A sobre a Figura 4.**
 13. Aluno vai mal (< 60%) → Guru aparece no resultado e no Painel (com 5+ respostas).
 14. Ranking geral e por disciplina; desmarcar "Mostrar meu nome" em Minha conta → outro
     aluno vê "Aluno anônimo".
-15. Notas: nota 11 → erro; M1 7 e M2 5 → Aprovado; faltas acima de 25% → Reprovado por falta.
+15. Notas: nota 11 → erro; M1 6, ND 6, NI 6 → M2 6,0, MD 6,0, Aprovado; só MS 7 → Aprovado;
+    faltas acima de 25% → Reprovado por falta.
+21. Depois da atualização 13: cada disciplina do banco inicial tem 15 perguntas e o quiz
+    sorteia 10; a resposta certa aparece em letras diferentes.
 16. Painel do aluno e do admin com números e gráficos.
 17. Admin redefine o MFA de um aluno → no login seguinte o aluno vê o QR Code de novo.
 18. MFA: errar o código 5 vezes → volta ao login com aviso; log "mfa_bloqueado".

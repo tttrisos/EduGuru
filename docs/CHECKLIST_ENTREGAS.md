@@ -3,7 +3,7 @@
 Legenda: ✅ feito no código/documentação · 👤 depende de vocês (não dá para fazer pelo código)
 · ⚠️ atenção
 
-Última atualização: 27/10/2026.
+Última atualização: 28/10/2026.
 
 ## Passo 0 — Diagnóstico
 - ✅ Leitura do código, dos SQLs e do `docs/ATUALIZACOES_MONOGRAFIA.md`
@@ -32,7 +32,7 @@ Legenda: ✅ feito no código/documentação · 👤 depende de vocês (não dá
 ### 3. Requisitos de partes futuras
 | Item | Status | Onde |
 |---|---|---|
-| Notas, faltas, M1/M2/ND/Exame com RF | ✅ **implementado** (RF29) | `src/pages/Notas.tsx`, `src/lib/notas.ts`, `supabase_atualizacao_12.sql` |
+| Notas e faltas com RF, no formato do boletim da UMC (M1, ND, NI, M2, MD, MS, EX, MF, FT) | ✅ **implementado** (RF29), regra conferida com o boletim em 28/10 | `src/pages/Notas.tsx`, `src/lib/notas.ts`, `supabase_atualizacao_12.sql` |
 | RFs de quiz, pontuação, ranking e Guru, com regras e critério de baixo desempenho | ✅ **implementados** (RF25–RF28) | `src/pages/Quiz.tsx`, `Ranking.tsx`, `Inicio.tsx`, `supabase_atualizacao_11.sql` |
 | Ranking "de amigos" | ✅ retirado do escopo (justificativa no roteiro) | README e `ATUALIZACOES_MONOGRAFIA.md` |
 
@@ -85,7 +85,8 @@ Legenda: ✅ feito no código/documentação · 👤 depende de vocês (não dá
 | Branch `entrega0911` no GitHub | ✅ criada localmente · 👤 **push** (Passo 5) | — |
 | Vídeo de até 7 min (sem login) | 👤 roteiro sugerido abaixo | — |
 | Sem regressões | ✅ build, lint e testes passando; testes de banco atualizados · 👤 rodar os testes manuais | roteiro "Testes manuais" 1–20 |
-| (23/11) testes unitários, cobertura ≥ 50% | ✅ base pronta: Vitest + 16 testes · ⚠️ falta ampliar | `npm test`, `npm run test:cobertura` |
+| (23/11) testes unitários, cobertura ≥ 50% | ✅ base pronta: Vitest + 22 testes · ⚠️ falta ampliar | `npm test`, `npm run test:cobertura` |
+| Banco de perguntas grande, com plano de ampliação | ✅ 120 perguntas (8 disciplinas × 15) com gabarito | `supabase_atualizacao_13.sql`; texto no RF25 do roteiro |
 
 RFs implementados: RF01–RF04 (login, cadastro, MFA), RF05–RF09 (disciplinas, perguntas,
 materiais, logs), RF10 (limpeza), RF11–RF13 (termos/consentimento), RF14 (RLS), RF15
@@ -98,13 +99,15 @@ monografia de vocês; confiram se algum deles ainda descreve algo não implement
 
 ## Passo 5 — O que vocês precisam fazer (nesta ordem)
 1. 👤 **Rodar no SQL Editor do Supabase**, em ordem: `supabase_atualizacao_10.sql`,
-   `_11.sql`, `_12.sql`.
+   `_11.sql`, `_12.sql`, `_13.sql` (a 13 cadastra as 120 perguntas e mostra uma tabela
+   de conferência no final). Se a 12 já tinha sido rodada antes de 28/10, rode de novo:
+   ela troca a coluna `m2` pelas colunas do boletim (`nd`, `ni`, `ms`).
    ⚠️ A 11 apaga a coluna de texto antiga `perguntas.disciplina`: as perguntas antigas ficam
    "Incompletas" e precisam ser recadastradas com alternativas e gabarito.
 2. 👤 Rodar `testes/teste_gamificacao.sql` e `testes/teste_fase_a.sql` (todas as linhas
    devem sair `[OK]`; o erro no final é proposital).
-3. 👤 Cadastrar algumas perguntas reais (pelo menos 5 por disciplina, para o quiz e o
-   Guru ficarem bons no vídeo).
+3. ✅ Banco inicial de perguntas: já vem na atualização 13. 👤 Revisar as perguntas e
+   ligar alguns materiais às disciplinas (para o Guru ter o que indicar no vídeo).
 4. 👤 Fazer os testes manuais 1 a 20 (`ATUALIZACOES_MONOGRAFIA.md`, fim do arquivo).
 5. 👤 **Enviar ao GitHub:** `git push -u origin entrega0911` (e, se quiserem o site no ar,
    abrir um Pull Request da `entrega0911` para a `main`: o GitHub Actions publica sozinho).

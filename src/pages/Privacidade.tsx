@@ -75,7 +75,7 @@ export default function Privacidade() {
             aparecer ou não com o nome no ranking.
           </li>
           <li>
-            <strong>Notas e faltas (opcional):</strong> M1, M2, nota de exame e
+            <strong>Notas e faltas (opcional):</strong> M1, ND, NI, nota única (MS), nota de exame e
             quantidade de faltas que você mesmo registra em cada disciplina, para
             acompanhar sua situação.
           </li>

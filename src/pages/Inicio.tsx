@@ -91,10 +91,10 @@ function PainelAluno() {
 
   const situacoes = dados.notas.map((n) => {
     const disciplina = dados.disciplinas.find((d) => d.id === n.disciplina_id)
-    return calcularSituacao(n.m1, n.m2, n.exame, n.faltas, disciplina?.total_aulas ?? 80)
+    return calcularSituacao(n, n.faltas, disciplina?.total_aulas ?? 80)
   })
-  const comNd = situacoes.filter((s) => s.nd !== null)
-  const mediaGeral = comNd.length > 0 ? comNd.reduce((soma, s) => soma + (s.nd ?? 0), 0) / comNd.length : null
+  const comMd = situacoes.filter((s) => s.md !== null)
+  const mediaGeral = comMd.length > 0 ? comMd.reduce((soma, s) => soma + (s.md ?? 0), 0) / comMd.length : null
   const emAlerta = situacoes.filter(
     (s) => s.alertaFaltas || s.situacao === 'Em exame' || s.situacao.startsWith('Reprovado'),
   ).length
@@ -117,7 +117,7 @@ function PainelAluno() {
         <BigNumber valor={aproveitamento !== null ? `${aproveitamento}%` : '—'} legenda="Acertos nos quizzes" />
         <BigNumber
           valor={mediaGeral !== null ? mediaGeral.toFixed(1).replace('.', ',') : '—'}
-          legenda="Média geral (ND)"
+          legenda="Média geral (MD)"
         />
         <BigNumber valor={emAlerta} legenda="Disciplinas em alerta" detalhe="exame, reprovação ou faltas" />
       </div>
@@ -195,7 +195,7 @@ function PainelAluno() {
         </Link>
         <Link to="/notas" className="atalho">
           <h3>Notas e faltas</h3>
-          <p>Registre M1, M2, exame e faltas e veja sua situação.</p>
+          <p>Registre M1, ND, NI, exame e faltas e veja sua situação.</p>
         </Link>
         <Link to="/materiais" className="atalho">
           <h3>Materiais</h3>

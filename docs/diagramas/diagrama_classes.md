@@ -83,9 +83,13 @@ classDiagram
     class Nota {
         +int id
         +decimal m1
-        +decimal m2
+        +decimal nd
+        +decimal ni
+        +decimal ms
         +decimal exame
         +int faltas
+        +calcularM2()
+        +calcularMD()
         +calcularSituacao()
     }
 

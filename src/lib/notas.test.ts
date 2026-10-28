@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { calcularSituacao, lerNota, limiteDeFaltas } from './notas'
+import { calcularM2, calcularMD, calcularSituacao, lerNota, limiteDeFaltas, type NotasDigitadas } from './notas'
 
-// Testes da regra de notas e faltas (RF29). Rodar com: npm test
+// Testes da regra de notas e faltas (RF29), igual ao boletim da UMC.
+// Rodar com: npm test
+
+// Atalho para montar as notas digitadas (o que não for passado fica vazio).
+function notas(valores: Partial<NotasDigitadas>): NotasDigitadas {
+  return { m1: null, nd: null, ni: null, ms: null, exame: null, ...valores }
+}
 
 describe('limiteDeFaltas', () => {
   it('é 25% do total de aulas, arredondado para baixo', () => {
@@ -10,44 +16,81 @@ describe('limiteDeFaltas', () => {
   })
 })
 
-describe('calcularSituacao', () => {
-  it('sem as duas notas, fica aguardando', () => {
-    expect(calcularSituacao(7, null, null, 0, 80).situacao).toBe('Aguardando notas')
+describe('calcularM2', () => {
+  it('M2 = ND × 70% + NI × 30%', () => {
+    expect(calcularM2(8, 6)).toBe(7.4)
+    expect(calcularM2(10, 0)).toBe(7)
   })
 
-  it('ND = (M1 + M2) / 2 e aprova com ND >= 6', () => {
-    const r = calcularSituacao(7, 5, null, 0, 80)
-    expect(r.nd).toBe(6)
+  it('sem ND ou sem NI, ainda não tem M2', () => {
+    expect(calcularM2(8, null)).toBeNull()
+    expect(calcularM2(null, 6)).toBeNull()
+  })
+})
+
+describe('calcularMD', () => {
+  it('MD = (M1 + M2 × 2) / 3, com 1 casa decimal', () => {
+    expect(calcularMD(6, 7.5, null)).toBe(7)
+    expect(calcularMD(6.1, 2, null)).toBe(3.4)
+  })
+
+  it('a nota única (MS) substitui a MD', () => {
+    expect(calcularMD(null, null, 8.5)).toBe(8.5)
+    expect(calcularMD(2, 2, 9)).toBe(9)
+  })
+
+  it('sem M1 ou sem M2, ainda não tem MD', () => {
+    expect(calcularMD(6.1, null, null)).toBeNull()
+  })
+})
+
+describe('calcularSituacao', () => {
+  it('sem as notas, fica aguardando', () => {
+    expect(calcularSituacao(notas({ m1: 7 }), 0, 80).situacao).toBe('Aguardando notas')
+  })
+
+  it('aprova com MD >= 6', () => {
+    // M2 = 6×0,7 + 6×0,3 = 6; MD = (6 + 12) / 3 = 6
+    const r = calcularSituacao(notas({ m1: 6, nd: 6, ni: 6 }), 0, 80)
+    expect(r.m2).toBe(6)
+    expect(r.md).toBe(6)
     expect(r.situacao).toBe('Aprovado')
   })
 
-  it('ND abaixo de 6 sem exame fica "Em exame"', () => {
-    expect(calcularSituacao(5, 4, null, 0, 80).situacao).toBe('Em exame')
+  it('o 2º bimestre pesa o dobro', () => {
+    // M1 alta não compensa um 2º bimestre fraco: (10 + 4×2) / 3 = 6
+    expect(calcularSituacao(notas({ m1: 10, nd: 4, ni: 4 }), 0, 80).md).toBe(6)
+    // (3 + 7×2) / 3 = 5,7 -> exame
+    expect(calcularSituacao(notas({ m1: 3, nd: 7, ni: 7 }), 0, 80).situacao).toBe('Em exame')
   })
 
-  it('aprova no exame quando (ND + Exame) / 2 >= 5', () => {
-    const r = calcularSituacao(4, 4, 6, 0, 80)
+  it('aprova no exame quando (MD + Exame) / 2 >= 5', () => {
+    const r = calcularSituacao(notas({ m1: 4, nd: 4, ni: 4, exame: 6 }), 0, 80)
     expect(r.mediaFinal).toBe(5)
     expect(r.situacao).toBe('Aprovado no exame')
   })
 
   it('reprova quando a média com exame fica abaixo de 5', () => {
-    expect(calcularSituacao(3, 3, 4, 0, 80).situacao).toBe('Reprovado')
+    expect(calcularSituacao(notas({ m1: 3, nd: 3, ni: 3, exame: 4 }), 0, 80).situacao).toBe('Reprovado')
+  })
+
+  it('disciplina com nota única (MS)', () => {
+    expect(calcularSituacao(notas({ ms: 7 }), 0, 80).situacao).toBe('Aprovado')
   })
 
   it('faltas acima do limite reprovam mesmo com nota alta', () => {
-    expect(calcularSituacao(10, 10, null, 21, 80).situacao).toBe('Reprovado por falta')
+    expect(calcularSituacao(notas({ m1: 10, nd: 10, ni: 10 }), 21, 80).situacao).toBe('Reprovado por falta')
   })
 
   it('no limite exato de faltas ainda não reprova, mas alerta', () => {
-    const r = calcularSituacao(8, 8, null, 20, 80)
+    const r = calcularSituacao(notas({ m1: 8, nd: 8, ni: 8 }), 20, 80)
     expect(r.situacao).toBe('Aprovado')
     expect(r.alertaFaltas).toBe(true)
     expect(r.faltasRestantes).toBe(0)
   })
 
   it('poucas faltas não geram alerta', () => {
-    expect(calcularSituacao(8, 8, null, 2, 80).alertaFaltas).toBe(false)
+    expect(calcularSituacao(notas({ m1: 8, nd: 8, ni: 8 }), 2, 80).alertaFaltas).toBe(false)
   })
 })
 
