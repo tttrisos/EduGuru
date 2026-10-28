@@ -155,7 +155,9 @@ export type Nota = {
   id: number
   disciplina_id: number
   m1: number | null
-  m2: number | null
+  nd: number | null
+  ni: number | null
+  ms: number | null
   exame: number | null
   faltas: number
   atualizado_em: string

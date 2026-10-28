@@ -5,8 +5,9 @@ import type { Disciplina, Nota } from '../types'
 import { calcularSituacao, lerNota, MEDIA_APROVACAO, PERCENTUAL_MAXIMO_FALTAS } from '../lib/notas'
 
 // RF29 — Notas e faltas (Dashboard Acadêmico). O aluno registra as próprias
-// notas (M1, M2, Exame) e faltas; o sistema calcula ND, situação e quantas
-// faltas ainda pode ter. Só o próprio aluno vê as notas (RLS).
+// notas com os mesmos campos do boletim da UMC (M1, ND, NI, MS, Exame) e as
+// faltas; o sistema calcula M2, MD, MF, a situação e quantas faltas ainda
+// pode ter. Só o próprio aluno vê as notas (RLS).
 
 async function consultarDados() {
   const [disciplinas, notas] = await Promise.all([
@@ -22,6 +23,10 @@ async function consultarDados() {
 
 function mostrar(valor: number | null) {
   return valor === null ? '—' : valor.toFixed(1).replace('.', ',')
+}
+
+function paraTexto(valor: number | null) {
+  return valor === null ? '' : String(valor).replace('.', ',')
 }
 
 // Classe CSS da situação (verde, amarelo ou vermelho). O texto da situação
@@ -43,7 +48,9 @@ export default function Notas() {
   // Campos do formulário (texto, para aceitar vírgula e campo vazio).
   const [disciplinaId, setDisciplinaId] = useState('')
   const [m1, setM1] = useState('')
-  const [m2, setM2] = useState('')
+  const [nd, setNd] = useState('')
+  const [ni, setNi] = useState('')
+  const [ms, setMs] = useState('')
   const [exame, setExame] = useState('')
   const [faltas, setFaltas] = useState('0')
 
@@ -70,9 +77,11 @@ export default function Notas() {
 
   function editar(nota: Nota) {
     setDisciplinaId(String(nota.disciplina_id))
-    setM1(nota.m1 === null ? '' : String(nota.m1))
-    setM2(nota.m2 === null ? '' : String(nota.m2))
-    setExame(nota.exame === null ? '' : String(nota.exame))
+    setM1(paraTexto(nota.m1))
+    setNd(paraTexto(nota.nd))
+    setNi(paraTexto(nota.ni))
+    setMs(paraTexto(nota.ms))
+    setExame(paraTexto(nota.exame))
     setFaltas(String(nota.faltas))
     setMensagem('')
     setErro('')
@@ -81,7 +90,9 @@ export default function Notas() {
   function limparFormulario() {
     setDisciplinaId('')
     setM1('')
-    setM2('')
+    setNd('')
+    setNi('')
+    setMs('')
     setExame('')
     setFaltas('0')
   }
@@ -97,10 +108,8 @@ export default function Notas() {
       return
     }
 
-    const notaM1 = lerNota(m1)
-    const notaM2 = lerNota(m2)
-    const notaExame = lerNota(exame)
-    const erroNota = notaM1.erro ?? notaM2.erro ?? notaExame.erro
+    const lidas = { m1: lerNota(m1), nd: lerNota(nd), ni: lerNota(ni), ms: lerNota(ms), exame: lerNota(exame) }
+    const erroNota = lidas.m1.erro ?? lidas.nd.erro ?? lidas.ni.erro ?? lidas.ms.erro ?? lidas.exame.erro
     if (erroNota) {
       setErro(erroNota)
       return
@@ -121,9 +130,11 @@ export default function Notas() {
       {
         aluno_id: usuario!.id,
         disciplina_id: disciplina.id,
-        m1: notaM1.valor,
-        m2: notaM2.valor,
-        exame: notaExame.valor,
+        m1: lidas.m1.valor,
+        nd: lidas.nd.valor,
+        ni: lidas.ni.valor,
+        ms: lidas.ms.valor,
+        exame: lidas.exame.valor,
         faltas: qtdFaltas,
       },
       { onConflict: 'aluno_id,disciplina_id' },
@@ -146,12 +157,12 @@ export default function Notas() {
   }
 
   return (
-    <section className="pagina">
+    <section className="pagina pagina-larga">
       <header className="pagina-topo">
         <h2>Notas e faltas</h2>
         <p>
-          Registre suas notas e faltas para acompanhar a situação em cada disciplina. ND = (M1 + M2)
-          ÷ 2; com ND a partir de {MEDIA_APROVACAO} você está aprovado. O limite de faltas é{' '}
+          Registre suas notas como aparecem no boletim do portal e acompanhe a situação em cada
+          disciplina. Com MD a partir de {MEDIA_APROVACAO} você está aprovado; o limite de faltas é{' '}
           {PERCENTUAL_MAXIMO_FALTAS * 100}% das aulas. Só você vê estes dados.
         </p>
       </header>
@@ -166,22 +177,28 @@ export default function Notas() {
               </option>
             ))}
           </select>
-          <input className="campo campo-curto" value={m1} onChange={(e) => setM1(e.target.value)} placeholder="M1" inputMode="decimal" />
-          <input className="campo campo-curto" value={m2} onChange={(e) => setM2(e.target.value)} placeholder="M2" inputMode="decimal" />
-          <input className="campo campo-curto" value={exame} onChange={(e) => setExame(e.target.value)} placeholder="Exame" inputMode="decimal" />
+          <input className="campo campo-curto" value={m1} onChange={(e) => setM1(e.target.value)} placeholder="M1" title="M1 — avaliações do 1º bimestre" inputMode="decimal" />
+          <input className="campo campo-curto" value={nd} onChange={(e) => setNd(e.target.value)} placeholder="ND" title="ND — avaliações do 2º bimestre" inputMode="decimal" />
+          <input className="campo campo-curto" value={ni} onChange={(e) => setNi(e.target.value)} placeholder="NI" title="NI — avaliação integrada" inputMode="decimal" />
+          <input className="campo campo-curto" value={ms} onChange={(e) => setMs(e.target.value)} placeholder="MS" title="MS — média semestral (só em disciplina de nota única)" inputMode="decimal" />
+          <input className="campo campo-curto" value={exame} onChange={(e) => setExame(e.target.value)} placeholder="Exame" title="EX — exame" inputMode="decimal" />
           <input
             className="campo campo-curto"
             value={faltas}
             onChange={(e) => setFaltas(e.target.value)}
             placeholder="Faltas"
             inputMode="numeric"
-            title="Faltas"
+            title="FT — faltas no semestre"
           />
           <button type="submit" className="btn btn-primario">
             Salvar
           </button>
         </form>
-        <p className="item-meta">Deixe em branco a nota que ainda não saiu. Use vírgula ou ponto (ex.: 7,5).</p>
+        <p className="item-meta">
+          M1 = 1º bimestre · ND = avaliações do 2º bimestre · NI = avaliação integrada · M2 = ND × 70% + NI
+          × 30% · MD = (M1 + M2 × 2) ÷ 3 · MS = nota única (preencha só se a disciplina tiver) · Deixe em
+          branco a nota que ainda não saiu; use vírgula ou ponto (ex.: 7,5).
+        </p>
 
         {erro ? <p className="aviso erro">{erro}</p> : null}
         {mensagem ? <p className="aviso sucesso">{mensagem}</p> : null}
@@ -198,10 +215,14 @@ export default function Notas() {
                 <tr>
                   <th>Disciplina</th>
                   <th className="numero">M1</th>
-                  <th className="numero">M2</th>
                   <th className="numero">ND</th>
-                  <th className="numero">Exame</th>
-                  <th className="numero">Faltas</th>
+                  <th className="numero">NI</th>
+                  <th className="numero">M2</th>
+                  <th className="numero">MD</th>
+                  <th className="numero">MS</th>
+                  <th className="numero">EX</th>
+                  <th className="numero">MF</th>
+                  <th className="numero">FT</th>
                   <th>Situação</th>
                   <th />
                 </tr>
@@ -209,14 +230,18 @@ export default function Notas() {
               <tbody>
                 {notas.map((nota) => {
                   const disciplina = disciplinas.find((d) => d.id === nota.disciplina_id)
-                  const r = calcularSituacao(nota.m1, nota.m2, nota.exame, nota.faltas, disciplina?.total_aulas ?? 80)
+                  const r = calcularSituacao(nota, nota.faltas, disciplina?.total_aulas ?? 80)
                   return (
                     <tr key={nota.id}>
                       <td>{disciplina?.nome ?? '—'}</td>
                       <td className="numero">{mostrar(nota.m1)}</td>
-                      <td className="numero">{mostrar(nota.m2)}</td>
-                      <td className="numero">{mostrar(r.nd)}</td>
+                      <td className="numero">{mostrar(nota.nd)}</td>
+                      <td className="numero">{mostrar(nota.ni)}</td>
+                      <td className="numero">{mostrar(r.m2)}</td>
+                      <td className="numero">{mostrar(nota.ms === null ? r.md : null)}</td>
+                      <td className="numero">{mostrar(nota.ms)}</td>
                       <td className="numero">{mostrar(nota.exame)}</td>
+                      <td className="numero">{mostrar(r.mediaFinal)}</td>
                       <td className={`numero${r.alertaFaltas ? ' situacao-atencao' : ''}`}>
                         {nota.faltas}/{r.limiteFaltas}
                       </td>

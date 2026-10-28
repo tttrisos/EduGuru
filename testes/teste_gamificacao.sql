@@ -284,7 +284,7 @@ declare r text; d bigint := (select valor::bigint from _ctx where chave = 'disc'
 begin
   perform pg_temp.entrar_como('00000000-0000-0000-0000-0000000000a1', 'aal2');
   begin
-    insert into public.notas (disciplina_id, m1, m2, faltas) values (d, 7.5, 6, 4);
+    insert into public.notas (disciplina_id, m1, nd, ni, faltas) values (d, 7.5, 6, 8, 4);
     r := 'OK';
   exception when others then
     r := 'FALHOU: ' || sqlerrm;

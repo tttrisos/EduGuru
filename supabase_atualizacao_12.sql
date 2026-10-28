@@ -4,9 +4,10 @@
 -- Rodar no SQL Editor do Supabase, DEPOIS da atualização 11.
 -- Pode ser rodado mais de uma vez (idempotente).
 --
--- O aluno registra manualmente as próprias notas (M1, M2, Exame) e
--- faltas de cada disciplina. O cálculo da situação (ND, aprovado, exame,
--- reprovado, limite de faltas) fica em src/lib/notas.ts.
+-- O aluno registra manualmente as próprias notas e faltas de cada
+-- disciplina, com os mesmos campos do boletim da UMC: M1, ND, NI, MS
+-- (nota única), Exame e Faltas. O cálculo de M2, MD, MF e da situação
+-- (aprovado, exame, reprovado, limite de faltas) fica em src/lib/notas.ts.
 -- ============================================================
 
 
@@ -26,17 +27,29 @@ alter table public.disciplinas
 -- ------------------------------------------------------------
 -- Uma linha por aluno e disciplina. As notas vão de 0 a 10 e podem ficar
 -- vazias (ainda não saiu). As faltas não podem ser negativas.
+--   m1 = avaliações do 1º bimestre     nd = avaliações do 2º bimestre
+--   ni = avaliação integrada           ms = média semestral (nota única)
+-- M2 e MD não são guardadas: são calculadas a partir destas.
 create table if not exists public.notas (
   id bigint generated always as identity primary key,
   aluno_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
   disciplina_id bigint not null references public.disciplinas(id) on delete cascade,
   m1 numeric(4, 2) check (m1 between 0 and 10),
-  m2 numeric(4, 2) check (m2 between 0 and 10),
+  nd numeric(4, 2) check (nd between 0 and 10),
+  ni numeric(4, 2) check (ni between 0 and 10),
+  ms numeric(4, 2) check (ms between 0 and 10),
   exame numeric(4, 2) check (exame between 0 and 10),
   faltas integer not null default 0 check (faltas between 0 and 400),
   atualizado_em timestamptz not null default now(),
   unique (aluno_id, disciplina_id)
 );
+
+-- Para quem já rodou a primeira versão deste script (que tinha "m2"):
+-- cria as colunas novas e remove a antiga.
+alter table public.notas add column if not exists nd numeric(4, 2) check (nd between 0 and 10);
+alter table public.notas add column if not exists ni numeric(4, 2) check (ni between 0 and 10);
+alter table public.notas add column if not exists ms numeric(4, 2) check (ms between 0 and 10);
+alter table public.notas drop column if exists m2;
 
 alter table public.notas enable row level security;
 
