@@ -8,8 +8,8 @@
 //   M2 = ND × 70% + NI × 30%           (média do 2º bimestre)
 //   MD = (M1 + M2 × 2) / 3             (média; o 2º bimestre pesa o dobro)
 //   MS = média semestral (nota única)  -> quando existe, substitui a MD
-//   MD >= 6                            -> Aprovado
-//   MD <  6                            -> faz Exame; MF = (MD + EX) / 2
+//   MD >= 5                            -> Aprovado
+//   MD <  5                            -> faz Exame; MF = (MD + EX) / 2
 //   MF >= 5                            -> Aprovado no exame; senão -> Reprovado
 //   faltas > 25% das aulas             -> Reprovado por falta (vale mais que a nota)
 // As médias são arredondadas para 1 casa decimal, como no portal.
@@ -17,7 +17,7 @@
 
 export const PESO_ND = 0.7
 export const PESO_NI = 0.3
-export const MEDIA_APROVACAO = 6
+export const MEDIA_APROVACAO = 5
 export const MEDIA_APROVACAO_EXAME = 5
 export const PERCENTUAL_MAXIMO_FALTAS = 0.25
 

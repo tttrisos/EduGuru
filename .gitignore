@@ -29,3 +29,4 @@ dist-ssr
 
 # Relatório de cobertura dos testes (gerado por npm run test:cobertura)
 coverage
+
