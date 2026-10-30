@@ -1,5 +1,4 @@
-// Regras mínimas de senha. Cada regra tem "testar" (true/false), usado
-// tanto na checklist visual quanto na validação de envio do formulário.
+// Regras de senha, usadas na lista da tela e na validação do formulário.
 export type RegraSenha = {
   chave: string
   descricao: string

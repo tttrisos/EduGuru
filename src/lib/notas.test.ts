@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { calcularM2, calcularMD, calcularSituacao, lerNota, limiteDeFaltas, type NotasDigitadas } from './notas'
 
-// Testes da regra de notas e faltas (RF29), igual ao boletim da UMC.
-// Rodar com: npm test
+// Testes da regra de notas e faltas (RF29). Rodar com: npm test
 
-// Atalho para montar as notas digitadas (o que não for passado fica vazio).
 function notas(valores: Partial<NotasDigitadas>): NotasDigitadas {
   return { m1: null, nd: null, ni: null, ms: null, exame: null, ...valores }
 }

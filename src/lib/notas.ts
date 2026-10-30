@@ -1,7 +1,4 @@
-// Regras do Dashboard Acadêmico (notas e faltas). Ficam aqui, em funções
-// "puras" (sem tela e sem banco), para serem fáceis de entender e de testar.
-//
-// Regra adotada (RF29 na monografia), a mesma do boletim do portal da UMC:
+// Regras de notas e faltas (RF29), iguais às do boletim da UMC:
 //   M1 = resultado das avaliações do 1º bimestre
 //   ND = resultado das avaliações do 2º bimestre
 //   NI = nota da avaliação integrada
@@ -12,8 +9,7 @@
 //   MD <  5                            -> faz Exame; MF = (MD + EX) / 2
 //   MF >= 5                            -> Aprovado no exame; senão -> Reprovado
 //   faltas > 25% das aulas             -> Reprovado por falta (vale mais que a nota)
-// As médias são arredondadas para 1 casa decimal, como no portal.
-// Se a regra oficial mudar, só estas constantes e a função calcularSituacao mudam.
+// Médias arredondadas para 1 casa decimal.
 
 export const PESO_ND = 0.7
 export const PESO_NI = 0.3
@@ -49,7 +45,6 @@ export type ResultadoNotas = {
   alertaFaltas: boolean
 }
 
-// Arredonda para 1 casa decimal (ex.: 2,033 -> 2,0).
 function arredondar(valor: number) {
   return Math.round(valor * 10) / 10
 }
@@ -101,8 +96,7 @@ export function calcularSituacao(notas: NotasDigitadas, faltas: number, totalAul
   return { ...base, mediaFinal, situacao }
 }
 
-// Valida o que o aluno digitou: vazio = ainda não saiu (null); senão,
-// número de 0 a 10 com vírgula ou ponto. Devolve a mensagem de erro, se houver.
+// Campo vazio = nota ainda não saiu. Aceita vírgula ou ponto, de 0 a 10.
 export function lerNota(texto: string): { valor: number | null; erro: string | null } {
   const limpo = texto.trim().replace(',', '.')
   if (limpo === '') return { valor: null, erro: null }

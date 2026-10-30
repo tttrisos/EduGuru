@@ -4,10 +4,9 @@ import { GraduationCap, LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import Rodape from '../components/Rodape'
 
-// Cada papel tem o seu menu. O aluno joga o quiz e registra notas; o admin
-// cadastra o conteúdo e gerencia contas. (Rotas e RLS bloqueiam mesmo assim.)
+// Menu de cada papel.
 const itensAluno = [
-  { path: '/inicio', label: 'Painel' },
+  { path: '/painel', label: 'Painel' },
   { path: '/quiz', label: 'Quiz' },
   { path: '/ranking', label: 'Ranking' },
   { path: '/notas', label: 'Notas' },
@@ -16,7 +15,7 @@ const itensAluno = [
 ]
 
 const itensAdmin = [
-  { path: '/inicio', label: 'Painel' },
+  { path: '/painel', label: 'Painel' },
   { path: '/disciplinas', label: 'Disciplinas' },
   { path: '/perguntas', label: 'Perguntas' },
   { path: '/materiais', label: 'Materiais' },
@@ -25,9 +24,7 @@ const itensAdmin = [
   { path: '/logs', label: 'Logs' },
 ]
 
-// Área logada: barra horizontal no topo (marca, menu e usuário) e o
-// conteúdo da página logo abaixo. No celular o menu vira um botão que abre
-// a lista de links. Termo e Política ficam no rodapé de todas as páginas.
+// Área logada: barra no topo e conteúdo abaixo.
 export default function MainLayout() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -49,7 +46,7 @@ export default function MainLayout() {
     <div className="layout">
       <header className="topo">
         <div className="topo-conteudo">
-          <Link to="/inicio" className="marca" onClick={() => setMenuAberto(false)}>
+          <Link to="/painel" className="marca" onClick={() => setMenuAberto(false)}>
             <GraduationCap size={26} color="#8257e5" />
             <span>EduGuru</span>
           </Link>

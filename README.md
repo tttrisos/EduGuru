@@ -1,86 +1,128 @@
-# 🚀 EduGuru
+# EduGuru
 
-Plataforma Web acadêmica gamificada para gerenciamento, acompanhamento e personalização da jornada de aprendizagem.
+Plataforma web acadêmica gamificada para acompanhar e personalizar a jornada de aprendizagem.
 
-## 📖 Sobre o projeto
+Projeto Final de Curso (PFC/TCC) de Sistemas de Informação da Universidade de Mogi das Cruzes (UMC).
 
-O EduGuru é um projeto desenvolvido como Projeto Final de Curso (PFC/TCC) do curso de Sistemas de Informação da Universidade de Mogi das Cruzes (UMC).
+**Site publicado:** https://tttrisos.github.io/EduGuru/
 
-Diferente de sistemas acadêmicos tradicionais que funcionam apenas como repositórios passivos, o objetivo do EduGuru é combater o desengajamento através da gamificação. A plataforma centraliza o acompanhamento de notas e faltas, mas utiliza um **sistema de quizzes interativos** como principal mecanismo de engajamento. Ao estudar e responder aos quizzes, o aluno ganha pontos, participa de rankings e recebe recomendações direcionadas de materiais de estudo para suprir suas dificuldades.
+## Sobre o projeto
 
-**Identidade Visual e UX:** Focada no público jovem-adulto e imersivo, a aplicação adota uma identidade visual "Dark Mode nativa" (tons de grafite, preto e roxo), priorizando o conforto visual e uma experiência de usuário premium, inspirada em plataformas de tecnologia modernas.
+O EduGuru combate o desengajamento dos alunos com gamificação. O aluno responde quizzes por disciplina, ganha pontos, participa do ranking e recebe do **Guru** indicações de materiais nas disciplinas em que vai mal. A plataforma também centraliza notas e faltas no formato do boletim da UMC.
 
-## 🎯 Público-Alvo
+Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvimento de Sistemas e Engenharia de Software.
 
-O escopo inicial da aplicação é voltado exclusivamente para estudantes da UMC dos seguintes cursos de tecnologia:
-- Sistemas de Informação
-- Análise e Desenvolvimento de Sistemas (ADS)
-- Engenharia de Software
+## Funcionalidades
 
-## 🧩 Principais Funcionalidades
+- **Quiz:** até 10 perguntas sorteadas de uma disciplina, com correção feita no banco (o aluno nunca recebe o gabarito antes de finalizar).
+- **Pontuação e ranking:** Fácil 10, Médio 20, Difícil 30 pontos; ranking geral e por disciplina, com opção de aparecer como "Aluno anônimo".
+- **Guru:** indica materiais da disciplina quando o aproveitamento fica abaixo de 60%.
+- **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e limite de 25% de faltas.
+- **Painel:** indicadores e gráficos do aluno e, para o administrador, da plataforma.
+- **Cadastros:** disciplinas, banco de perguntas (120 iniciais) e materiais (links e arquivos PDF/DOCX).
+- **Segurança e LGPD:** verificação em duas etapas obrigatória, logs de auditoria com limpeza automática em 90 dias, Termo de Aceite, Política de Privacidade e tela Minha conta (acesso, correção e exclusão dos dados).
 
-- **Dashboard Acadêmico:** Registro manual das notas com os campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e controle do limite de faltas.
-- **Quiz Gamificado:** Perguntas categorizadas por curso, disciplina, assunto e nível de dificuldade (iniciante, intermediário, avançado).
-- **Pontuação e Rankings:** Pontos por acerto conforme o nível (Fácil 10, Médio 20, Difícil 30), alimentando um Ranking Geral e um Ranking por Disciplina.
-- **O "Guru" (Recomendações):** Sistema leve de indicação de conteúdos de estudo com base nas lacunas de conhecimento identificadas nos quizzes.
-- **Gestão de Materiais e Disciplinas:** Organização de PDFs, links e anotações atreladas às grades curriculares.
+## Tecnologias
 
-## 📱 Escopo e Plataformas
+- **Front-end:** React, TypeScript e Vite, com CSS próprio (tema escuro), publicado no GitHub Pages pelo GitHub Actions.
+- **Back-end:** Supabase (Auth, banco PostgreSQL com Row Level Security, Storage e pg_cron).
+- **API externa:** ViaCEP (cidade e estado no cadastro, opcional).
+- **Testes:** Vitest (`npm test`).
 
-O projeto será desenvolvido como uma aplicação Web responsiva, projetada para funcionar de forma fluida em computadores, notebooks, tablets e celulares através do navegador. 
-O desenvolvimento de aplicativos mobile nativos (Android/iOS) ou aplicações desktop não faz parte do escopo atual de implementação deste PFC.
+## Estrutura do projeto
 
-## 🛠️ Tecnologias e Arquitetura
+```
+eduguru/
+├── src/
+│   ├── main.tsx              Ponto de entrada do site
+│   ├── App.tsx               Rotas (endereço de cada tela)
+│   ├── supabase.ts           Conexão com o Supabase
+│   ├── types.ts              Tipos de dados (Disciplina, Pergunta, Nota...)
+│   ├── index.css             Estilos de todas as telas
+│   ├── contexts/             Sessão do usuário (login, MFA, papel)
+│   ├── layouts/              Barra superior da área logada
+│   ├── components/           Peças reutilizadas (gráfico, indicador, rodapé, rota protegida)
+│   ├── lib/                  Regras de negócio sem tela e seus testes
+│   └── pages/                Telas, separadas por funcionalidade
+│       ├── publico/          Página inicial
+│       ├── autenticacao/     Login, cadastro, MFA e redefinição de senha
+│       ├── lgpd/             Termo, Política, novo aceite e Minha conta
+│       ├── painel/           Painel e notas/faltas
+│       ├── cadastros/        Disciplinas, perguntas e materiais
+│       ├── quiz/             Quiz e ranking
+│       └── admin/            Usuários e logs
+├── supabase/                 Scripts do banco (rodar em ordem, de 01 a 13)
+├── docs/                     Integração com a API ViaCEP
+├── public/                   Ícone do site
+└── .github/workflows/        Publicação automática no GitHub Pages
+```
 
-O projeto utiliza uma arquitetura moderna baseada em serviços de Backend-as-a-Service (BaaS):
-- **Front-end:** React e TypeScript, com CSS global (hospedado no GitHub Pages).
-- **Back-end e Autenticação:** Supabase (Auth e Data API nativa).
-- **Banco de Dados:** PostgreSQL (gerenciado pelo Supabase com Row Level Security).
-- **Controle de Versão:** Git e GitHub.
+## Onde está cada funcionalidade
 
-## 📈 Status do Projeto
+| Funcionalidade | Tela | Regras / lógica | Banco (`supabase/`) |
+|---|---|---|---|
+| Página inicial | `pages/publico/Home.tsx` | — | — |
+| Login e cadastro (RF01, RF02) | `pages/autenticacao/Login.tsx` | `contexts/AuthContext.tsx`, `lib/senha.ts` | `02_perfis_e_logs.sql`, `04_seguranca_lgpd.sql` |
+| Consulta de CEP (ViaCEP) | `pages/autenticacao/Login.tsx` | `docs/INTEGRACAO_VIACEP.md` | `04_seguranca_lgpd.sql` |
+| Verificação em duas etapas (MFA) | `pages/autenticacao/Mfa.tsx` | `components/RotaProtegida.tsx` | `05_verificacao_duas_etapas.sql` |
+| Esqueci minha senha (RF24) | `pages/autenticacao/EsqueciSenha.tsx`, `RedefinirSenha.tsx` | `lib/log.ts` | `09_esqueci_senha.sql` |
+| Disciplinas | `pages/cadastros/Disciplinas.tsx` | — | `01_tabelas_base.sql`, `12_notas_e_painel.sql` |
+| Banco de perguntas (admin) | `pages/cadastros/Perguntas.tsx` | — | `11_quiz_ranking_guru.sql` (`criar_pergunta`), `13_perguntas_iniciais.sql` |
+| Materiais (links e arquivos) | `pages/cadastros/Materiais.tsx` | `lib/materiais.ts` | `03_arquivos_materiais.sql`, `04_seguranca_lgpd.sql` |
+| Quiz e pontuação (RF25, RF26) | `pages/quiz/Quiz.tsx` | — | `11_quiz_ranking_guru.sql` (`iniciar_quiz`, `finalizar_quiz`) |
+| Ranking (RF27) | `pages/quiz/Ranking.tsx` | — | `11_quiz_ranking_guru.sql` (`ranking`) |
+| Guru (RF28) | `pages/quiz/Quiz.tsx`, `pages/painel/Painel.tsx` | — | `11_quiz_ranking_guru.sql` (`recomendacoes_guru`) |
+| Notas e faltas (RF29) | `pages/painel/Notas.tsx` | `lib/notas.ts` | `12_notas_e_painel.sql` |
+| Painel (RF30) | `pages/painel/Painel.tsx` | `components/BigNumber.tsx`, `GraficoBarras.tsx` | `12_notas_e_painel.sql` (`estatisticas_admin`) |
+| Termo e Política | `pages/lgpd/TermoDeAceite.tsx`, `Privacidade.tsx` | `types.ts` (`VERSAO_TERMOS`) | — |
+| Novo aceite dos termos (RF22) | `pages/lgpd/NovoAceite.tsx` | — | `08_novo_aceite.sql` |
+| Minha conta (LGPD, RF15, RF21) | `pages/lgpd/MinhaConta.tsx` | `lib/conta.ts` | `07_minha_conta.sql` |
+| Usuários e MFA pelo admin (RF31) | `pages/admin/Usuarios.tsx` | `lib/conta.ts` | `07_minha_conta.sql`, `10_ajustes_seguranca.sql` |
+| Logs de auditoria e limpeza | `pages/admin/Logs.tsx` | `lib/log.ts` | `02_perfis_e_logs.sql`, `06_limpeza_automatica_logs.sql`, `10_ajustes_seguranca.sql` |
+| Regras de acesso (RLS) | — | — | `02` (perfis e cadastros), `04` (perfis e materiais), `05` (MFA em todas as tabelas) |
 
-**Fase 1 Concluída (Setembro/2026):** Módulos iniciais de Cadastros (Disciplinas, Perguntas e Materiais) integrados ao Supabase e entregues com sucesso.
+## Banco de dados
 
-**Fase 2 Concluída (Entrega 28/09/2026):**
-- Autenticação (login/cadastro), com perfis de aluno/admin e controle de acesso por papel (RLS no Supabase)
-- Logs de auditoria de login, logout e alterações em disciplinas/perguntas/materiais, com rotina de limpeza de registros antigos
-- Integração com a API externa ViaCEP (consulta opcional de cidade/estado no cadastro) — documentação em `INTEGRACAO_VIACEP.md`
-- Termo de Aceite e Política de Privacidade, acessíveis a qualquer momento pelo rodapé do sistema
+Os scripts da pasta `supabase/` criam o banco completo quando executados **em ordem** no SQL Editor do Supabase:
 
-**Etapa 2 (em andamento, outubro/2026)** — já implementado:
-- Verificação em duas etapas (MFA/TOTP) obrigatória, exigida também pelo banco (RLS)
-- Exclusão automática diária dos logs com mais de 90 dias (pg_cron)
-- Tela "Minha conta" (direitos LGPD: acesso, correção, revogação, exclusão de conta) e exclusão de contas por admin
-- Novo aceite do Termo/Política quando a versão muda; "Esqueci minha senha"
-- Home pública, login novo e barra de navegação no topo
+| Script | O que cria |
+|---|---|
+| `01_tabelas_base.sql` | Tabelas de disciplinas, perguntas e materiais |
+| `02_perfis_e_logs.sql` | Perfis (aluno/admin), regras de acesso e logs de auditoria |
+| `03_arquivos_materiais.sql` | Envio de arquivos PDF/DOCX (bucket privado) |
+| `04_seguranca_lgpd.sql` | Cidade/estado, aceite dos termos, permissões do perfil, dono dos materiais |
+| `05_verificacao_duas_etapas.sql` | MFA exigido pelo banco em todas as tabelas |
+| `06_limpeza_automatica_logs.sql` | Exclusão diária dos logs com mais de 90 dias |
+| `07_minha_conta.sql` | Exclusão de conta pelo titular e pelo admin |
+| `08_novo_aceite.sql` | Novo aceite quando os termos mudam de versão |
+| `09_esqueci_senha.sql` | Log do pedido de redefinição de senha |
+| `10_ajustes_seguranca.sql` | Logs de acesso, limpeza manual, redefinição de MFA e lista de usuários |
+| `11_quiz_ranking_guru.sql` | Quiz, gabaritos, pontuação, ranking e Guru |
+| `12_notas_e_painel.sql` | Notas e faltas e indicadores do painel do admin |
+| `13_perguntas_iniciais.sql` | Banco inicial de 120 perguntas |
 
-**Etapa 3 (entrega 09/11/2026)** — já implementado:
-- Quiz por disciplina (até 10 perguntas), com correção e pontuação feitas no banco; o aluno nunca lê o gabarito
-- Ranking geral e por disciplina (nome abreviado, com opção de aparecer como "Aluno anônimo")
-- Guru: indica materiais da disciplina quando o aproveitamento fica abaixo de 60%
-- Notas e faltas no formato do boletim da UMC (M2 = ND×70% + NI×30%; MD = (M1 + 2×M2)/3; limite de 25% de faltas) e Painel com indicadores e gráficos (aluno e admin)
-- Banco inicial de 120 perguntas (8 disciplinas × 15), que será ampliado ao longo do projeto
-- Ajustes de segurança da validação de 05/10 (limpeza de logs com prazo fixo, recuperação do MFA, limite de tentativas)
-- Testes unitários (`npm test`) e testes de banco em `testes/`
+Antes dos scripts 05 e 06, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 
+## Como rodar localmente
 
+Requisitos: Node.js 22 ou superior.
 
-## 🌐 Site publicado
+```bash
+git clone https://github.com/tttrisos/EduGuru.git
+cd EduGuru
+npm install
+npm run dev          # abre o site em http://localhost:5173
+```
 
-https://tttrisos.github.io/EduGuru/ (publicado automaticamente pelo GitHub Actions a cada push na `main`).
+Outros comandos:
 
-## 🗄️ Banco de dados (Supabase)
+```bash
+npm test             # testes unitários
+npm run test:cobertura
+npm run lint
+npm run build        # gera a versão de publicação em dist/
+```
 
-Os scripts SQL ficam na raiz e devem ser rodados **em ordem** no SQL Editor do Supabase:
-`supabase_00_tabelas_base.sql`, `supabase_setup_auth_logs.sql`, `supabase_atualizacao_2.sql` … `supabase_atualizacao_13.sql` (a 13 carrega o banco inicial de perguntas).
-Os testes automáticos do banco ficam em `testes/` (cada um termina com um erro proposital que mostra o relatório e desfaz tudo).
+## Documentação
 
-Testes unitários do front-end: `npm test` (cobertura: `npm run test:cobertura`).
-
-
-## 🚀 Como rodar o projeto localmente
-
-1. Clone o repositório:
-   ```bash
-   git clone [https://github.com/tttrisos/EduGuru.git](https://github.com/tttrisos/EduGuru.git)
+- `docs/INTEGRACAO_VIACEP.md` — integração com a API ViaCEP.

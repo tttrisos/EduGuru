@@ -1,14 +1,11 @@
-// Gráfico de barras horizontais feito só com HTML/CSS (sem biblioteca).
-// Uma série só, na cor da marca. Cada barra mostra o rótulo à esquerda e o
-// valor escrito à direita, então o gráfico também se lê como uma tabela.
-// Passar o mouse mostra o valor completo (atributo title).
+// Gráfico de barras horizontais em HTML/CSS.
 
 type Item = { rotulo: string; valor: number }
 
 type Props = {
   titulo: string
   itens: Item[]
-  // Valor que corresponde à barra cheia (ex.: 100 para porcentagem).
+  // Valor da barra cheia (ex.: 100 para porcentagem).
   maximo?: number
   sufixo?: string
   vazio?: string
