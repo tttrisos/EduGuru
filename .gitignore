@@ -30,5 +30,5 @@ dist-ssr
 # Relatório de cobertura dos testes (gerado por npm run test:cobertura)
 coverage
 
-# Configuração local do Claude Code (acesso ao Supabase para testes)
+# Configuração local do Claude Code
 .mcp.json

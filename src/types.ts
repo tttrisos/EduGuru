@@ -2,12 +2,10 @@ export type Disciplina = {
   id: number
   nome: string
   curso: string
-  // Base do limite de faltas (25% das aulas). Ver src/lib/notas.ts.
   total_aulas: number
 }
 
-// A resposta certa NÃO fica aqui: está na tabela "gabaritos", que só o
-// admin lê (supabase_atualizacao_11.sql).
+// A resposta certa fica na tabela "gabaritos", que só o admin lê.
 export type Pergunta = {
   id: number
   enunciado: string
@@ -22,7 +20,7 @@ export type Pergunta = {
 export type Nivel = 'Fácil' | 'Médio' | 'Difícil'
 export const NIVEIS: Nivel[] = ['Fácil', 'Médio', 'Difícil']
 
-// Mesma tabela de pontos usada na função finalizar_quiz do banco.
+// Mesmos pontos da função finalizar_quiz do banco.
 export const PONTOS_POR_NIVEL: Record<Nivel, number> = { Fácil: 10, Médio: 20, Difícil: 30 }
 
 export type Letra = 'A' | 'B' | 'C' | 'D'
@@ -45,7 +43,6 @@ export const CURSOS = [
   { valor: 'ES', label: 'Engenharia de Software' },
 ]
 
-// 'admin' cadastra perguntas/disciplinas e gerencia contas; 'aluno' só visualiza.
 export type Papel = 'aluno' | 'admin'
 
 export type Perfil = {
@@ -62,9 +59,7 @@ export type Perfil = {
   criado_em: string
 }
 
-// Versão vigente do Termo de Aceite + Política de Privacidade. Gravada no
-// perfil no momento do aceite (cadastro). Mudar aqui quando os documentos
-// mudarem de versão — quem aceitou a versão antiga vê a tela de novo aceite.
+// Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo.
 export const VERSAO_TERMOS = '1.2'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).
@@ -89,7 +84,7 @@ export type LogAuditoria = {
   criado_em: string
 }
 
-// ---------- Quiz, ranking e Guru (supabase_atualizacao_11.sql) ----------
+// Quiz, ranking e Guru
 
 // Linha devolvida por iniciar_quiz(): pergunta sorteada, sem gabarito.
 export type QuestaoQuiz = {
@@ -149,7 +144,7 @@ export type RecomendacaoGuru = {
   arquivo_nome: string | null
 }
 
-// ---------- Notas e faltas (supabase_atualizacao_12.sql) ----------
+// Notas e faltas
 
 export type Nota = {
   id: number

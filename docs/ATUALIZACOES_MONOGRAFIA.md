@@ -12,7 +12,7 @@ Legenda de status:
 
 ## Fase A — Segurança, MFA, logs e direitos LGPD
 
-Testes de banco: `testes/teste_fase_a.sql` rodado em 13/10/2026, 31/31 OK.
+Testes de banco (scripts SQL que desfazem tudo no final) rodados em 13/10/2026: 31/31 OK.
 Testes manuais pelo navegador: **pendentes** (lista no final deste arquivo).
 
 ### Resumo / Abstract / Figura 1 ⚠️
@@ -233,7 +233,7 @@ cheia e remover a legenda "previsto". Ajustes no fluxo:
 O que mudou: página inicial pública (`/`) apresentando o sistema (como funciona,
 recursos, cursos atendidos), Login em duas colunas, e a barra lateral da área logada
 substituída por uma barra horizontal no topo. A área logada passou a começar em
-`/inicio`. Nenhum dado novo é coletado (sem impacto na Política/Termo, exceto a
+`/painel`. Nenhum dado novo é coletado (sem impacto na Política/Termo, exceto a
 menção ao "menu", já ajustada).
 
 ### 1.3 Tecnologias / Figura 1
@@ -342,8 +342,7 @@ O texto já cita GitHub Pages e HashRouter — continua correto.
    (RF23/RNF05). Home e Login já foram conferidos por captura de tela em 18/10/2026.
 9. Esqueci minha senha (RF24): pedir link → e-mail chega → abrir no mesmo navegador →
    código MFA → nova senha → login com a nova funciona e com a antiga falha; link
-   aberto em outro navegador mostra "link inválido". Rodar também
-   `testes/teste_redefinicao_senha.sql`.
+   aberto em outro navegador mostra "link inválido".
 
 ---
 
@@ -353,12 +352,11 @@ Esta parte cobre o feedback da validação de 05/10 e a entrega de 09/11 (75% do
 dashboard, validações, branch `entrega0911`). O andamento item a item está em
 `docs/CHECKLIST_ENTREGAS.md`.
 
-Scripts novos (rodar **em ordem** no SQL Editor, depois do 9):
-`supabase_atualizacao_10.sql` → `_11.sql` → `_12.sql` → `_13.sql` (banco inicial de 120
-perguntas). O `supabase_00_tabelas_base.sql`
-não muda nada no banco atual (só registra a criação original das tabelas).
-Testes de banco: `testes/teste_gamificacao.sql` (novo) e `testes/teste_fase_a.sql`
-(ajustado à atualização 10). Testes unitários: `npm test` (22 testes, regras de notas e senha).
+Scripts do banco: pasta `supabase/`, de `01_tabelas_base.sql` a `13_perguntas_iniciais.sql`
+(rodar em ordem no SQL Editor). Todos já aplicados no banco do projeto em 28/10/2026.
+Testes de banco rodados em 28/10/2026: 60/60 OK (quiz, ranking, Guru, notas, MFA, logs,
+exclusão de conta e redefinição de senha). Testes unitários: `npm test` (23 testes, regras
+de notas e senha).
 
 ## ⚠️ Antes de tudo: o código precisa estar no GitHub
 O orientador não encontrou MFA, pg_cron, exclusão de contas, gatilho de perfis e registro
@@ -372,7 +370,7 @@ Sugestão de resposta ao orientador sobre o item 1 do feedback:
 > Professor, os itens do tópico 1 (MFA/TOTP, limpeza diária via pg_cron com função própria
 > sem exigir admin, exclusão de contas pelo admin, gatilho de auditoria em perfis e
 > registro do consentimento) estavam implementados localmente e não tinham sido enviados ao
-> repositório. Eles estão agora na branch entrega0911 (scripts supabase_atualizacao_4 a 9 e
+> repositório. Eles estão agora na branch entrega0911 (scripts 04 a 09 da pasta supabase/ e
 > telas Mfa, Usuarios, MinhaConta e NovoAceite).
 
 ## Item 2 do feedback — Materiais (RF08 × RLS)
@@ -557,7 +555,7 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
 - RN02 – O gabarito só é revelado depois de a rodada ser finalizada.
 - Banco de perguntas: o sistema é entregue com um **banco inicial de 120 perguntas**
   (8 disciplinas × 15; em cada uma, 6 Fácil, 5 Médio e 4 Difícil), todas com 4
-  alternativas e gabarito (`supabase_atualizacao_13.sql`). A ordem das alternativas é
+  alternativas e gabarito (`supabase/13_perguntas_iniciais.sql`). A ordem das alternativas é
   sorteada no cadastro, para a resposta correta não ficar sempre na mesma letra. **O banco
   será ampliado** ao longo do projeto pelo administrador (tela Perguntas, RF06) e por novos
   scripts no mesmo formato; a meta é cobrir todas as disciplinas dos três cursos.
@@ -709,6 +707,17 @@ Fase A sobre a Figura 4.**
 
   Conferir também se BRASIL (Lei nº 13.709/2018 — LGPD), a documentação do Supabase e do
   ViaCEP estão completas (autor, título, URL e "Acesso em:").
+
+## 1.3 Tecnologias / Arquitetura — organização do código (28/10)
+O projeto foi reorganizado em pastas por funcionalidade. O mapa completo (funcionalidade →
+tela → regra → script do banco) está no `README.md`. Texto sugerido para a seção 1.3:
+
+> O código-fonte está organizado por funcionalidade. No front-end, cada grupo de telas fica
+> em uma pasta de `src/pages` (publico, autenticacao, lgpd, painel, cadastros, quiz e
+> admin), as regras de negócio sem tela ficam em `src/lib` (com seus testes unitários) e o
+> controle de sessão em `src/contexts`. No back-end, a estrutura do banco está na pasta
+> `supabase`, em scripts SQL numerados de 01 a 13 que, executados em ordem, criam todas as
+> tabelas, regras de acesso (RLS), funções e o banco inicial de perguntas.
 
 ## Testes manuais da Etapa 3 (fazer antes do vídeo)
 10. Admin cadastra disciplina com total de aulas; tenta salvar com 0 aulas → erro.

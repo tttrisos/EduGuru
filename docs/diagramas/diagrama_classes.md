@@ -1,6 +1,6 @@
 # Diagrama de Classes (Figura 2) — versão da entrega 09/11
 
-Este diagrama é **igual ao banco de dados** depois das atualizações 00 a 12. Cada classe
+Este diagrama é **igual ao banco de dados** criado pelos scripts 01 a 13 da pasta `supabase/`. Cada classe
 é uma tabela (ou função) que existe de verdade, então ele pode substituir a Figura 2.
 
 **Como exportar em alta resolução (pedido do orientador, item 4):**

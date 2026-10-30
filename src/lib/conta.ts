@@ -1,10 +1,7 @@
 import { supabase } from '../supabase'
 
-// Antes de excluir uma conta, os ARQUIVOS dos materiais enviados por ela
-// são removidos do Storage. Isso precisa ser feito pela API de Storage
-// (o Supabase não permite apagar arquivo direto por SQL). As linhas da
-// tabela "materiais" e a conta em si são apagadas depois, no banco, pelas
-// funções excluir_minha_conta / excluir_conta_usuario.
+// Antes de excluir uma conta, apaga do Storage os arquivos enviados por ela
+// (o banco não consegue apagar arquivos; o resto é apagado pelo SQL).
 export async function removerArquivosDoUsuario(usuarioId: string): Promise<string | null> {
   const { data, error } = await supabase
     .from('materiais')

@@ -1,14 +1,9 @@
 import { supabase } from '../supabase'
 
-// Login/logout/MFA não alteram nenhuma tabela, então o trigger do banco não
-// registra sozinho — por isso chamamos isso manualmente aqui. Criar/editar/
-// excluir em disciplinas, perguntas, materiais e perfis já é logado via
-// trigger (ver supabase_setup_auth_logs.sql e supabase_atualizacao_4.sql).
-//
-// O front NÃO insere direto na tabela de logs: chama funções do banco que
-// só aceitam estes eventos e usam sempre o usuário da sessão atual.
-// Nome amigável de cada "acao" gravada em logs_auditoria (tela de Logs do
-// admin e "Meus registros de atividade" do titular).
+// Logs de acesso (login, logout, MFA, senha). Criar/editar/excluir registros
+// é logado direto pelo banco.
+
+// Nome exibido de cada ação do log.
 export const ROTULO_ACAO: Record<string, string> = {
   login: 'Login',
   login_falhou: 'Login falhou',
@@ -40,26 +35,23 @@ export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<str
   try {
     await supabase.rpc('registrar_evento_auth', { acao, detalhes: detalhes ?? null })
   } catch {
-    // Log falhou: não travamos login/logout por causa disso.
+    // Falha no log não impede o login/logout.
   }
 }
 
-// Senha errada acontece sem sessão; a função do banco limita a quantidade
-// de registros por e-mail para não virar porta de spam.
+// Sem sessão: o banco limita a quantidade de registros por e-mail.
 export async function registrarLoginFalhou(email: string) {
   try {
     await supabase.rpc('registrar_login_falhou', { email })
   } catch {
-    // idem
+    // Falha no log não impede o login.
   }
 }
 
-// Pedido de "esqueci minha senha" também acontece sem sessão; mesma ideia do
-// login_falhou (função do banco com limite por e-mail).
 export async function registrarPedidoRedefinicao(email: string) {
   try {
     await supabase.rpc('registrar_pedido_redefinicao', { email })
   } catch {
-    // idem
+    // Falha no log não impede o login.
   }
 }
