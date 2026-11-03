@@ -1,18 +1,20 @@
 -- ============================================================
 -- EduGuru — 11: quiz, pontuação, ranking e Guru (RF25 a RF28)
---   - até 10 perguntas sorteadas de uma disciplina, corrigidas no banco;
+--   - até 10 perguntas sorteadas de uma disciplina, respondidas uma por vez e corrigidas no banco;
 --   - pontos: Fácil 10, Médio 20, Difícil 30 (só no 1º acerto da pergunta);
---   - Guru: aproveitamento < 60% com pelo menos 5 respostas na disciplina.
+--   - Guru: aproveitamento < 60% com pelo menos 5 respostas na disciplina;
+--   - cada pergunta pode ter imagem e uma explicação mostrada depois da resposta.
 -- ============================================================
 
 
--- 1) Perguntas: disciplina e 4 alternativas
+-- 1) Perguntas: disciplina, 4 alternativas e imagem opcional
 alter table public.perguntas
   add column if not exists disciplina_id bigint references public.disciplinas(id) on delete cascade,
   add column if not exists alternativa_a text,
   add column if not exists alternativa_b text,
   add column if not exists alternativa_c text,
-  add column if not exists alternativa_d text;
+  add column if not exists alternativa_d text,
+  add column if not exists imagem_path text;
 
 alter table public.perguntas drop constraint if exists perguntas_nivel_valido;
 alter table public.perguntas
@@ -20,11 +22,13 @@ alter table public.perguntas
   check (nivel in ('Fácil', 'Médio', 'Difícil')) not valid;
 
 
--- 2) Gabaritos: tabela separada, que só o admin lê
+-- 2) Gabaritos e explicações: tabela separada, que só o admin lê
 create table if not exists public.gabaritos (
   pergunta_id bigint primary key references public.perguntas(id) on delete cascade,
   correta char(1) not null check (correta in ('A', 'B', 'C', 'D'))
 );
+
+alter table public.gabaritos add column if not exists explicacao text;
 
 alter table public.gabaritos enable row level security;
 
@@ -39,7 +43,40 @@ create policy "mfa_obrigatorio" on public.gabaritos
   using (public.sessao_mfa_ok()) with check (public.sessao_mfa_ok());
 
 
--- 3) Cadastro de pergunta: grava pergunta e gabarito juntos
+-- 3) Imagens das perguntas: bucket privado (PNG, JPG, WEBP ou GIF até 2 MB); só o admin envia
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'perguntas',
+  'perguntas',
+  false,
+  2097152, -- 2 MB
+  array['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "perguntas_imagens_select" on storage.objects;
+create policy "perguntas_imagens_select" on storage.objects
+  for select to authenticated using (bucket_id = 'perguntas');
+
+drop policy if exists "perguntas_imagens_admin" on storage.objects;
+create policy "perguntas_imagens_admin" on storage.objects
+  for all to authenticated
+  using (bucket_id = 'perguntas' and public.eh_admin())
+  with check (bucket_id = 'perguntas' and public.eh_admin());
+
+drop policy if exists "perguntas_imagens_mfa_obrigatorio" on storage.objects;
+create policy "perguntas_imagens_mfa_obrigatorio" on storage.objects
+  as restrictive for all to authenticated
+  using (bucket_id <> 'perguntas' or public.sessao_mfa_ok())
+  with check (bucket_id <> 'perguntas' or public.sessao_mfa_ok());
+
+
+-- 4) Cadastro de pergunta: grava pergunta, gabarito e explicação juntos
+drop function if exists public.criar_pergunta(text, bigint, text, text, text, text, text, text);
+
 create or replace function public.criar_pergunta(
   p_enunciado text,
   p_disciplina_id bigint,
@@ -48,7 +85,9 @@ create or replace function public.criar_pergunta(
   p_alternativa_b text,
   p_alternativa_c text,
   p_alternativa_d text,
-  p_correta text
+  p_correta text,
+  p_explicacao text default null,
+  p_imagem_path text default null
 )
 returns bigint
 language plpgsql
@@ -94,29 +133,33 @@ begin
     raise exception 'Escolha qual alternativa é a correta.';
   end if;
 
+  if length(coalesce(p_explicacao, '')) > 600 then
+    raise exception 'A explicação pode ter no máximo 600 caracteres.';
+  end if;
+
   insert into public.perguntas (enunciado, disciplina_id, nivel,
-                                alternativa_a, alternativa_b, alternativa_c, alternativa_d)
+                                alternativa_a, alternativa_b, alternativa_c, alternativa_d, imagem_path)
   values (trim(p_enunciado), p_disciplina_id, p_nivel,
-          alternativas[1], alternativas[2], alternativas[3], alternativas[4])
+          alternativas[1], alternativas[2], alternativas[3], alternativas[4], nullif(p_imagem_path, ''))
   returning id into nova_id;
 
-  insert into public.gabaritos (pergunta_id, correta)
-  values (nova_id, upper(p_correta));
+  insert into public.gabaritos (pergunta_id, correta, explicacao)
+  values (nova_id, upper(p_correta), nullif(trim(coalesce(p_explicacao, '')), ''));
 
   return nova_id;
 end;
 $$;
 
-revoke execute on function public.criar_pergunta(text, bigint, text, text, text, text, text, text) from public, anon;
-grant execute on function public.criar_pergunta(text, bigint, text, text, text, text, text, text) to authenticated;
+revoke execute on function public.criar_pergunta(text, bigint, text, text, text, text, text, text, text, text) from public, anon;
+grant execute on function public.criar_pergunta(text, bigint, text, text, text, text, text, text, text, text) to authenticated;
 
 
--- 4) Materiais ligados a uma disciplina (para o Guru indicar)
+-- 5) Materiais ligados a uma disciplina (para o Guru indicar)
 alter table public.materiais
   add column if not exists disciplina_id bigint references public.disciplinas(id) on delete set null;
 
 
--- 5) Rodadas do quiz (tentativas_quiz) e respostas de cada pergunta (respostas_quiz)
+-- 6) Rodadas do quiz (tentativas_quiz) e respostas de cada pergunta (respostas_quiz)
 create table if not exists public.tentativas_quiz (
   id bigint generated always as identity primary key,
   aluno_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
@@ -165,7 +208,9 @@ create policy "mfa_obrigatorio" on public.respostas_quiz
   using (public.sessao_mfa_ok()) with check (public.sessao_mfa_ok());
 
 
--- 6) Iniciar rodada: sorteia até 10 perguntas e devolve sem o gabarito
+-- 7) Iniciar rodada: sorteia até 10 perguntas e devolve sem o gabarito
+drop function if exists public.iniciar_quiz(bigint);
+
 create or replace function public.iniciar_quiz(p_disciplina_id bigint)
 returns table (
   tentativa_id bigint,
@@ -175,7 +220,8 @@ returns table (
   alternativa_b text,
   alternativa_c text,
   alternativa_d text,
-  nivel text
+  nivel text,
+  imagem_path text
 )
 language plpgsql
 security definer
@@ -216,7 +262,8 @@ begin
 
   return query
     select nova_tentativa, p.id, p.enunciado::text,
-           p.alternativa_a, p.alternativa_b, p.alternativa_c, p.alternativa_d, p.nivel::text
+           p.alternativa_a, p.alternativa_b, p.alternativa_c, p.alternativa_d, p.nivel::text,
+           p.imagem_path
     from public.respostas_quiz r
     join public.perguntas p on p.id = r.pergunta_id
     where r.tentativa_id = nova_tentativa
@@ -228,7 +275,96 @@ revoke execute on function public.iniciar_quiz(bigint) from public, anon;
 grant execute on function public.iniciar_quiz(bigint) to authenticated;
 
 
--- 7) Finalizar rodada: corrige e pontua. p_respostas = { "id_da_pergunta": "A", ... }
+-- 8) Responder uma pergunta (uma por vez): grava a resposta, que não pode
+--    mais ser trocada, e só então devolve o gabarito, os pontos e a explicação
+drop function if exists public.responder_pergunta(bigint, bigint, text);
+
+create or replace function public.responder_pergunta(p_tentativa_id bigint, p_pergunta_id bigint, p_resposta text)
+returns table (
+  gabarito text,
+  acertou boolean,
+  pontos integer,
+  explicacao text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+#variable_conflict use_column
+declare
+  rodada public.tentativas_quiz%rowtype;
+  letra text := upper(trim(coalesce(p_resposta, '')));
+  certa char(1);
+  texto_explicacao text;
+  nivel_pergunta text;
+  ganhou integer := 0;
+begin
+  if auth.uid() is null or not public.sessao_mfa_ok() then
+    raise exception 'Entre com a verificação em duas etapas para jogar.';
+  end if;
+
+  select * into rodada
+  from public.tentativas_quiz t
+  where t.id = p_tentativa_id and t.aluno_id = auth.uid();
+
+  if not found or rodada.finalizada_em is not null then
+    raise exception 'Rodada de quiz não encontrada.';
+  end if;
+
+  if rodada.iniciada_em < now() - interval '30 minutes' then
+    raise exception 'O tempo da rodada (30 minutos) acabou. Comece um novo quiz.';
+  end if;
+
+  if letra not in ('A', 'B', 'C', 'D') then
+    raise exception 'Escolha uma das alternativas.';
+  end if;
+
+  if not exists (
+    select 1 from public.respostas_quiz r
+    where r.tentativa_id = p_tentativa_id and r.pergunta_id = p_pergunta_id
+  ) then
+    raise exception 'Esta pergunta não faz parte da rodada.';
+  end if;
+
+  if exists (
+    select 1 from public.respostas_quiz r
+    where r.tentativa_id = p_tentativa_id and r.pergunta_id = p_pergunta_id and r.resposta is not null
+  ) then
+    raise exception 'Esta pergunta já foi respondida.';
+  end if;
+
+  select g.correta, g.explicacao, p.nivel into certa, texto_explicacao, nivel_pergunta
+  from public.gabaritos g
+  join public.perguntas p on p.id = g.pergunta_id
+  where g.pergunta_id = p_pergunta_id;
+
+  -- Pontua só se o aluno nunca tinha acertado essa pergunta em outra rodada.
+  if letra = certa and not exists (
+    select 1
+    from public.respostas_quiz anterior
+    join public.tentativas_quiz t on t.id = anterior.tentativa_id
+    where t.aluno_id = auth.uid()
+      and t.finalizada_em is not null
+      and anterior.pergunta_id = p_pergunta_id
+      and anterior.correta
+  ) then
+    ganhou := case nivel_pergunta when 'Difícil' then 30 when 'Médio' then 20 else 10 end;
+  end if;
+
+  update public.respostas_quiz r
+  set resposta = letra, correta = (letra = certa), pontos = ganhou
+  where r.tentativa_id = p_tentativa_id and r.pergunta_id = p_pergunta_id;
+
+  return query select certa::text, letra = certa, ganhou, texto_explicacao;
+end;
+$$;
+
+revoke execute on function public.responder_pergunta(bigint, bigint, text) from public, anon;
+grant execute on function public.responder_pergunta(bigint, bigint, text) to authenticated;
+
+
+-- 9) Finalizar rodada: corrige o que faltou e fecha com os totais.
+--    p_respostas = { "id_da_pergunta": "A", ... } (só para as ainda sem resposta)
 create or replace function public.finalizar_quiz(p_tentativa_id bigint, p_respostas jsonb)
 returns table (
   pergunta_id bigint,
@@ -265,14 +401,14 @@ begin
     raise exception 'O tempo da rodada (30 minutos) acabou. Comece um novo quiz.';
   end if;
 
-  -- a) Grava a resposta
+  -- a) Grava as respostas que ainda faltavam
   update public.respostas_quiz r
   set resposta = case
         when upper(p_respostas ->> r.pergunta_id::text) in ('A', 'B', 'C', 'D')
         then upper(p_respostas ->> r.pergunta_id::text)
         else null
       end
-  where r.tentativa_id = p_tentativa_id;
+  where r.tentativa_id = p_tentativa_id and r.resposta is null;
 
   -- b) Corrige
   update public.respostas_quiz r
@@ -327,7 +463,7 @@ revoke execute on function public.finalizar_quiz(bigint, jsonb) from public, ano
 grant execute on function public.finalizar_quiz(bigint, jsonb) to authenticated;
 
 
--- 8) Ranking (quem desmarca em Minha conta aparece como "Aluno anônimo")
+-- 10) Ranking (quem desmarca em Minha conta aparece como "Aluno anônimo")
 alter table public.perfis
   add column if not exists aparecer_no_ranking boolean not null default true;
 
@@ -393,7 +529,7 @@ revoke execute on function public.ranking(bigint) from public, anon;
 grant execute on function public.ranking(bigint) to authenticated;
 
 
--- 9) Desempenho do aluno por disciplina e Guru
+-- 11) Desempenho do aluno por disciplina e Guru
 create or replace function public.meu_desempenho()
 returns table (
   disciplina_id bigint,

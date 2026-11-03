@@ -8,7 +8,7 @@ cadastro de conta.
 
 ## Onde acontece no código
 
-- Arquivo: `src/pages/autenticacao/Login.tsx`
+- Arquivo: `src/funcionalidades/acesso/Login.tsx`
 - Função: `aoSairDoCep()`
 - Disparo: evento `onBlur` do campo "CEP (opcional)" no formulário de cadastro
 
@@ -76,7 +76,7 @@ campo é sempre opcional.
    em estado local do formulário (`cidade`, `estado`).
 3. No envio do cadastro, cidade/estado (ou `null`, se não preenchidos) vão
    junto no `options.data` do `supabase.auth.signUp()` (ver
-   `src/contexts/AuthContext.tsx`, função `cadastrar`).
+   `src/compartilhado/AuthContext.tsx`, função `cadastrar`).
 4. Uma trigger no banco (`criar_perfil_novo_usuario`, em
    `supabase/04_seguranca_lgpd.sql`) lê esses valores do metadata do usuário e
    grava nas colunas `cidade`/`estado` da tabela `perfis`.
