@@ -4,7 +4,7 @@ Plataforma web acadêmica gamificada para acompanhar e personalizar a jornada de
 
 Projeto Final de Curso (PFC/TCC) de Sistemas de Informação da Universidade de Mogi das Cruzes (UMC).
 
-**Site publicado:** https://tttrisos.github.io/EduGuru/
+**Site publicado (PREVISTO):** https://tttrisos.github.io/EduGuru/
 
 ## Sobre o projeto
 
