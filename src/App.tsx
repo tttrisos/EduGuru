@@ -1,24 +1,24 @@
 import { HashRouter, Navigate, Routes, Route } from 'react-router-dom'
-import MainLayout from './layouts/MainLayout'
-import RotaProtegida from './components/RotaProtegida'
-import Home from './pages/publico/Home'
-import Login from './pages/autenticacao/Login'
-import EsqueciSenha from './pages/autenticacao/EsqueciSenha'
-import RedefinirSenha from './pages/autenticacao/RedefinirSenha'
-import Mfa from './pages/autenticacao/Mfa'
-import TermoDeAceite from './pages/lgpd/TermoDeAceite'
-import Privacidade from './pages/lgpd/Privacidade'
-import NovoAceite from './pages/lgpd/NovoAceite'
-import MinhaConta from './pages/lgpd/MinhaConta'
-import Painel from './pages/painel/Painel'
-import Notas from './pages/painel/Notas'
-import Disciplinas from './pages/cadastros/Disciplinas'
-import Perguntas from './pages/cadastros/Perguntas'
-import Materiais from './pages/cadastros/Materiais'
-import Quiz from './pages/quiz/Quiz'
-import Ranking from './pages/quiz/Ranking'
-import Usuarios from './pages/admin/Usuarios'
-import Logs from './pages/admin/Logs'
+import LayoutLogado from './compartilhado/LayoutLogado'
+import RotaProtegida from './compartilhado/RotaProtegida'
+import Home from './funcionalidades/home/Home'
+import Login from './funcionalidades/acesso/Login'
+import EsqueciSenha from './funcionalidades/acesso/EsqueciSenha'
+import RedefinirSenha from './funcionalidades/acesso/RedefinirSenha'
+import Mfa from './funcionalidades/acesso/Mfa'
+import TermoDeAceite from './funcionalidades/lgpd/TermoDeAceite'
+import Privacidade from './funcionalidades/lgpd/Privacidade'
+import NovoAceite from './funcionalidades/lgpd/NovoAceite'
+import MinhaConta from './funcionalidades/lgpd/MinhaConta'
+import Painel from './funcionalidades/painel/Painel'
+import Notas from './funcionalidades/notas/Notas'
+import Disciplinas from './funcionalidades/disciplinas/Disciplinas'
+import Perguntas from './funcionalidades/perguntas/Perguntas'
+import Materiais from './funcionalidades/materiais/Materiais'
+import Quiz from './funcionalidades/quiz/Quiz'
+import Ranking from './funcionalidades/quiz/Ranking'
+import Usuarios from './funcionalidades/admin/Usuarios'
+import Logs from './funcionalidades/admin/Logs'
 
 function App() {
   return (
@@ -38,7 +38,7 @@ function App() {
         <Route
           element={
             <RotaProtegida>
-              <MainLayout />
+              <LayoutLogado />
             </RotaProtegida>
           }
         >

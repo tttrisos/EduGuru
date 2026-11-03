@@ -352,10 +352,10 @@ Esta parte cobre o feedback da validação de 05/10 e a entrega de 09/11 (75% do
 dashboard, validações, branch `entrega0911`). O andamento item a item está em
 `docs/CHECKLIST_ENTREGAS.md`.
 
-Scripts do banco: pasta `supabase/`, de `01_tabelas_base.sql` a `13_perguntas_iniciais.sql`
+Scripts do banco: pasta `supabase/`, de `01_tabelas_base.sql` a `14_perguntas_iniciais.sql`
 (rodar em ordem no SQL Editor). Todos já aplicados no banco do projeto em 28/10/2026.
 Testes de banco rodados em 28/10/2026: 60/60 OK (quiz, ranking, Guru, notas, MFA, logs,
-exclusão de conta e redefinição de senha). Testes unitários: `npm test` (23 testes, regras
+exclusão de conta e redefinição de senha). Testes unitários: `npm test` (36 testes, regras
 de notas e senha).
 
 ## ⚠️ Antes de tudo: o código precisa estar no GitHub
@@ -457,14 +457,15 @@ adotadas"):
 
 > As regras que não podem depender do navegador foram implementadas no banco de dados:
 > o sorteio, a correção e a pontuação do quiz são feitos por funções PostgreSQL
-> (`iniciar_quiz` e `finalizar_quiz`), e o aluno não tem permissão de gravar diretamente
+> (`iniciar_quiz`, `responder_pergunta` e `finalizar_quiz`), e o aluno não tem permissão de gravar diretamente
 > nas tabelas de rodadas e respostas, o que impede alterar a própria pontuação pela API.
 > O gabarito das perguntas fica em uma tabela separada, legível apenas por
-> administradores, de modo que o aluno nunca recebe a resposta correta antes de finalizar
-> a rodada. O ranking também é uma função do banco, que expõe apenas posição, nome
+> administradores. O aluno só recebe a resposta correta de uma pergunta depois que a
+> resposta dele foi gravada no banco, sem possibilidade de alteração, o que permite mostrar
+> a correção na hora sem abrir espaço para trocar a resposta. O ranking também é uma função do banco, que expõe apenas posição, nome
 > abreviado e pontos, já que o perfil dos demais alunos não é legível. Já as regras de
 > cálculo das notas (nota de desempenho, exame e limite de faltas) ficam em um módulo
-> TypeScript sem dependência de tela ou banco (`src/lib/notas.ts`), o que permite
+> TypeScript sem dependência de tela ou banco (`src/funcionalidades/notas/calculoNotas.ts`), o que permite
 > testá-las com testes unitários automatizados (Vitest), executados a cada publicação.
 
 ## 2.1 Autenticação — acrescentar (recuperação do MFA e limite de tentativas)
@@ -515,18 +516,36 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
 ### RF de cadastro de Perguntas (o RF atual de Perguntas) — reescrever
 - Descrição: "O sistema deverá permitir que o administrador cadastre perguntas do quiz,
   cada uma ligada a uma disciplina, com enunciado, nível (Fácil, Médio ou Difícil), quatro
-  alternativas e a indicação da alternativa correta."
+  alternativas, a indicação da alternativa correta e, opcionalmente, uma imagem e uma
+  explicação da resposta."
 - RN01 – Somente administradores cadastram e excluem perguntas (RLS e função do banco).
 - RN02 – Enunciado com 10 a 500 caracteres; as quatro alternativas são obrigatórias e
   diferentes entre si; uma alternativa deve ser marcada como correta.
 - RN03 – O gabarito é guardado separado da pergunta e não pode ser lido por alunos.
 - RN04 – Perguntas sem disciplina ou sem gabarito não entram no quiz (marcadas como
   "Incompleta").
+- RN05 – A imagem é opcional: PNG, JPG, WEBP ou GIF de até 2 MB, guardada em armazenamento
+  privado; só administradores enviam.
+- RN06 – A explicação é opcional (até 600 caracteres) e fica junto do gabarito, para que o
+  aluno só a veja depois de responder.
+- RN07 – Trechos do enunciado, das alternativas e da explicação escritos como `**texto**`
+  aparecem em negrito.
 - CA01 – Dado um aluno, quando tentar ler o gabarito pela API, então o banco deverá
   retornar vazio.
 
 ### RF de Disciplinas — acrescentar
-- Campo "total de aulas" (1 a 400, padrão 80), base do limite de faltas (RF29).
+- A tela Disciplinas tem um filtro por curso (Todos, Sistemas de Informação, ADS e Engenharia
+  de Software), com a quantidade de disciplinas de cada um. O aluno começa vendo as
+  disciplinas do próprio curso; a lista é ordenada por nome.
+- As disciplinas da grade de cada curso da UMC são carregadas pelo script
+  `supabase/13_disciplinas_cursos.sql`: Sistemas de Informação (3 unidades curriculares de
+  área e 13 profissionalizantes) e Análise e Desenvolvimento de Sistemas (3 de área, 9
+  profissionalizantes e 4 de projeto prático) e Engenharia de Software (3 de área e 13
+  profissionalizantes). As disciplinas comuns a mais de um curso são cadastradas uma única
+  vez, e o sistema mantém somente as disciplinas da grade. As oito disciplinas do banco
+  inicial de perguntas são da grade: Lógica e Programação (ADS), Estruturas Lineares (SI),
+  Redes e Segurança (SI), Segurança da Informação (ES), Banco de Dados, Programação para
+  Internet, Aplicativos Web e Engenharia de Software.
 - RN: não pode haver duas disciplinas com o mesmo nome no mesmo curso (validado na tela).
 - Excluir uma disciplina exclui as perguntas e as notas ligadas a ela (pede confirmação).
 
@@ -542,28 +561,42 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
 
 ### Novo RF25 – Responder quiz
 - Descrição: "O sistema deverá permitir que o aluno responda a uma rodada de quiz de uma
-  disciplina escolhida, com até 10 perguntas sorteadas, e veja a correção ao final."
+  disciplina escolhida, com até 10 perguntas sorteadas apresentadas uma de cada vez, e veja
+  a correção de cada pergunta logo após respondê-la."
 - Atores: Aluno.
 - Pré-condições: autenticado com MFA (aal2); a disciplina possui perguntas completas.
-- Fluxo: 1. O aluno escolhe a disciplina. 2. O sistema sorteia até 10 perguntas com gabarito
-  e as exibe sem a resposta correta. 3. O aluno marca uma alternativa em cada pergunta.
-  4. O sistema envia as respostas; o banco corrige e devolve, para cada pergunta, a resposta
-  dada, a correta e os pontos. 5. O sistema exibe acertos, aproveitamento e pontos.
-- Fluxos alternativos: disciplina sem perguntas → mensagem; pergunta sem resposta → aviso
-  "falta responder N pergunta(s)"; rodada com mais de 30 minutos → recusada.
+- Fluxo: 1. O aluno escolhe a disciplina em uma lista de cartões (as do seu curso primeiro,
+  com a quantidade de perguntas de cada uma). 2. O sistema sorteia até 10 perguntas com
+  gabarito e mostra a primeira, sem a resposta correta, com barra de progresso, nível e
+  pontos que ela vale. 3. O aluno escolhe uma alternativa (clique ou teclas 1 a 4) e clica em
+  "Verificar". 4. O banco grava a resposta, que não pode mais ser trocada, e só então
+  devolve se acertou, a alternativa correta e os pontos ganhos. 5. O sistema mostra o
+  retorno na hora (verde com os pontos, ou vermelho com a resposta certa) e a sequência
+  de acertos seguidos. 6. O aluno clica em "Continuar" e repete os passos 3 a 5 até a
+  última pergunta. 7. O sistema fecha a rodada e exibe aproveitamento, acertos, pontos,
+  melhor sequência, a revisão das perguntas erradas e, se for o caso, as dicas do Guru.
+- Fluxos alternativos: disciplina sem perguntas → cartão desabilitado; "Verificar" sem
+  alternativa escolhida → botão desabilitado; sair no meio → confirmação, e a rodada é
+  descartada; rodada com mais de 30 minutos → recusada.
+- Interface: inspirada em aplicativos de aprendizado como o Duolingo (uma pergunta por
+  tela, retorno imediato, cores de acerto e erro, mensagens de incentivo). Os enunciados e
+  as alternativas aceitam trechos em **negrito** (escritos como `**texto**` no cadastro).
 - RN01 – Até 10 perguntas por rodada, sorteadas da disciplina escolhida.
-- RN02 – O gabarito só é revelado depois de a rodada ser finalizada.
+- RN02 – O gabarito de uma pergunta só é revelado depois que o aluno grava a resposta dela,
+  que não pode mais ser alterada (função `responder_pergunta`).
 - Banco de perguntas: o sistema é entregue com um **banco inicial de 120 perguntas**
   (8 disciplinas × 15; em cada uma, 6 Fácil, 5 Médio e 4 Difícil), todas com 4
-  alternativas e gabarito (`supabase/13_perguntas_iniciais.sql`). A ordem das alternativas é
+  alternativas e gabarito (`supabase/14_perguntas_iniciais.sql`). A ordem das alternativas é
   sorteada no cadastro, para a resposta correta não ficar sempre na mesma letra. **O banco
   será ampliado** ao longo do projeto pelo administrador (tela Perguntas, RF06) e por novos
   scripts no mesmo formato; a meta é cobrir todas as disciplinas dos três cursos.
 - RN03 – Só uma rodada aberta por aluno; iniciar outra descarta a anterior não finalizada.
 - RN04 – A rodada deve ser finalizada em até 30 minutos e não pode ser finalizada duas vezes.
 - RN05 – O aluno não grava rodadas nem respostas diretamente: só pelas funções do banco.
-- CA01 – Dado um aluno com MFA, quando finalizar a rodada, então deverá ver os acertos e a
-  alternativa correta de cada pergunta errada.
+- CA01 – Dado um aluno com MFA, quando verificar uma resposta errada, então deverá ver na
+  hora a alternativa correta; ao final, a revisão de todas as perguntas erradas.
+- CA03 – Dado um aluno que já respondeu uma pergunta, quando tentar respondê-la de novo na
+  mesma rodada, então o banco deverá recusar.
 - CA02 – Dado um aluno, quando tentar finalizar a rodada de outro aluno, então o banco
   deverá recusar.
 
@@ -605,31 +638,58 @@ Sobre o "RF para o pedido de exclusão de dados pelo titular" (feedback): já é
 
 ### Novo RF29 – Registrar notas e faltas
 - Descrição: "O sistema deverá permitir que o aluno registre suas notas e faltas por
-  disciplina, com os mesmos campos do boletim do portal da UMC, e calcular as médias e a
-  situação."
+  disciplina, com os mesmos campos do boletim do portal da UMC, em dois cadastros separados
+  (notas e faltas), e calcular separadamente a situação das notas e a situação da frequência."
+- Tela: duas abas, "Notas" e "Faltas", cada uma com o seu formulário e a sua tabela. Na aba
+  Notas, uma prévia mostra M2, MD, MF e a situação enquanto o aluno digita, antes de salvar.
+- Uso: o aluno registra só as disciplinas presenciais do semestre, que são as que têm notas e
+  faltas no boletim (as demais, como Vida & Profissão e Extensão, não precisam de cálculo).
 - Campos registrados pelo aluno: M1 (avaliações do 1º bimestre), ND (avaliações do 2º
-  bimestre), NI (avaliação integrada), MS (média semestral, só em disciplinas de nota
-  única), EX (exame) e FT (faltas no semestre).
-- Regras de cálculo (as médias seguem a legenda do boletim da UMC; se mudarem, só
-  `src/lib/notas.ts` muda):
-  - M2 = ND × 70% + NI × 30%.
+  bimestre), NI (avaliação integrada), M2 (opcional, para simular quando ND e NI ainda não
+  saíram), MS (média semestral, só em disciplinas de nota única), EX (exame) e FT (faltas no
+  semestre).
+- Os valores calculados são apresentados como **estimativa**: a tela avisa que o professor
+  pode acrescentar atividades complementares, trabalhos com peso próprio ou outros critérios,
+  e que a nota oficial é a do portal da UMC.
+- Dois cálculos independentes (`src/funcionalidades/notas/calculoNotas.ts`):
+  1. **Notas** (`calcularNotas`): M2, MD, MF e situação das notas.
+  2. **Frequência** (`calcularFrequencia`): limite, faltas restantes e situação da frequência
+     (Frequência OK, Atenção às faltas ou Reprovado por falta).
+  A situação final da disciplina (usada no Painel) junta os dois: reprovar por falta vale mais
+  que a nota.
+- Regras de cálculo (as médias seguem a legenda do boletim da UMC):
+  - M2 = ND × 70% + NI × 30%. Sem ND e NI, vale a M2 digitada pelo aluno (simulação).
   - MD = (M1 + M2 × 2) ÷ 3 (o 2º bimestre tem peso 2). Em disciplina de nota única, MD = MS.
+  - Como no portal, a MD já aparece com a M1: a M2 que ainda não saiu conta como 0
+    (ex.: M1 = 6,1 → MD = 2,0). Enquanto isso, a situação fica "Aguardando notas".
+  - A MF aparece automaticamente quando as notas do semestre saem (M1 e M2, ou MS): MF = MD;
+    com exame, MF = (MD + EX) ÷ 2.
   - Médias arredondadas para 1 casa decimal, como no portal.
   - Nota mínima para aprovação: **5** (confirmada pelo grupo em 28/10).
   - MD ≥ 5 → Aprovado. MD < 5 → Em exame; MF = (MD + EX) ÷ 2; MF ≥ 5 → Aprovado no exame;
     MF < 5 → Reprovado.
-  - Limite de faltas = 25% do total de aulas da disciplina (arredondado para baixo).
-    Acima do limite → Reprovado por falta, independentemente da nota.
-  - Alerta quando as faltas atingem 75% do limite.
-- RN01 – Notas de 0 a 10 (vírgula ou ponto), podendo ficar em branco; faltas inteiras,
-  de 0 até o total de aulas.
-- RN02 – Um registro por aluno e disciplina (salvar de novo atualiza).
+  - Limite de faltas: **40 por disciplina**. Acima do limite → Reprovado por falta,
+    independentemente da nota.
+  - Cada dia de aula vale 4 faltas: 2 no primeiro módulo e 2 no segundo. A tela tem os botões
+    "+2 (1 módulo)" e "+4 (dia todo)" e mostra quantas faltas e quantos dias inteiros ainda
+    podem ser usados.
+  - Alerta quando as faltas atingem 75% do limite (30 faltas).
+- RN01 – Notas de 0 a 10 (vírgula ou ponto), podendo ficar em branco; faltas de 2 em 2
+  (cada módulo faltado conta 2).
+- RN02 – Um registro por aluno e disciplina; salvar as notas não altera as faltas e
+  salvar as faltas não altera as notas.
 - RN03 – Somente o próprio aluno lê e altera suas notas (nem o administrador).
 - RN04 – O log registra a alteração sem os valores.
 - CA01 – Dado M1 = 5, ND = 5 e NI = 5, então M2 = 5, MD = 5 e situação "Aprovado".
 - CA02 – Dado M1 = 10, ND = 2 e NI = 2, então MD = (10 + 4) ÷ 3 = 4,7 e situação "Em exame"
   (o 2º bimestre pesa o dobro).
 - CA03 – Dado nota 11, então o sistema deverá recusar.
+- CA05 – Dado só M1 = 6,1, então MD = 2,0 e MF vazia; ao informar ND e NI, a MF aparece.
+- CA06 – Dado M1 = 6,1 e M2 digitada = 7, então MD = MF = 6,7 (simulação).
+- CA04 – Dado 42 faltas, então a frequência deverá mostrar "Reprovado por falta", mesmo que a
+  situação das notas seja outra; com 20 faltas, deverá mostrar que ainda pode faltar 20 (5 dias).
+- CA07 – Dado que o aluno informe 3 faltas, então o sistema deverá recusar (as faltas vão
+  de 2 em 2).
 
 ### Novo RF30 – Visualizar painel (Dashboard)
 - Descrição: "O sistema deverá exibir um painel com indicadores e gráficos."
@@ -708,29 +768,62 @@ Fase A sobre a Figura 4.**
   Conferir também se BRASIL (Lei nº 13.709/2018 — LGPD), a documentação do Supabase e do
   ViaCEP estão completas (autor, título, URL e "Acesso em:").
 
-## 1.3 Tecnologias / Arquitetura — organização do código (28/10)
-O projeto foi reorganizado em pastas por funcionalidade. O mapa completo (funcionalidade →
-tela → regra → script do banco) está no `README.md`. Texto sugerido para a seção 1.3:
+## Quiz interativo, uma pergunta por vez (31/10) — feedback do professor em 30/10
+O quiz passou a mostrar uma pergunta por vez, com a correção logo depois de cada resposta
+(texto do RF25 acima já atualizado). Mudanças:
+- Banco: nova função `responder_pergunta` em `supabase/11_quiz_ranking_guru.sql`, que grava
+  a resposta (sem permitir troca) e devolve a correta e os pontos; `finalizar_quiz` agora
+  só completa as perguntas sem resposta e fecha a rodada.
+- Tela (`src/funcionalidades/quiz/Quiz.tsx`): cartões de disciplina, barra de progresso, sequência de
+  acertos, alternativas grandes com atalhos de teclado, retorno verde/vermelho, tela de
+  resultado com indicadores e revisão das erradas.
+- Texto em negrito nas perguntas (`**texto**`), com testes unitários em `src/compartilhado/texto.test.ts`.
+- Imagem opcional por pergunta (bucket privado `perguntas`, só o admin envia) e explicação
+  da resposta, mostrada no retorno de cada pergunta e na revisão final. A explicação fica
+  na tabela `gabaritos`, que o aluno não lê, para não entregar a resposta antes da hora.
+- As 120 perguntas iniciais ganharam termos-chave em negrito e uma explicação cada
+  (`supabase/14_perguntas_iniciais.sql`).
 
-> O código-fonte está organizado por funcionalidade. No front-end, cada grupo de telas fica
-> em uma pasta de `src/pages` (publico, autenticacao, lgpd, painel, cadastros, quiz e
-> admin), as regras de negócio sem tela ficam em `src/lib` (com seus testes unitários) e o
-> controle de sessão em `src/contexts`. No back-end, a estrutura do banco está na pasta
-> `supabase`, em scripts SQL numerados de 01 a 13 que, executados em ordem, criam todas as
-> tabelas, regras de acesso (RLS), funções e o banco inicial de perguntas.
+Texto sugerido para a seção de gamificação/fundamentação:
+
+> O quiz adota o retorno imediato (feedback) característico de aplicativos de aprendizagem:
+> após cada resposta, o aluno vê se acertou, a alternativa correta e uma explicação curta
+> do conceito. O objetivo é transformar o erro em momento de aprendizagem, e não apenas em
+> perda de pontos.
+
+## 1.3 Tecnologias / Arquitetura — organização do código (28/10, revista em 03/11)
+O projeto está organizado em pastas por funcionalidade. O mapa completo (funcionalidade →
+pasta → script do banco) está no `README.md`. Texto sugerido para a seção 1.3:
+
+> O código-fonte está organizado por funcionalidade. No front-end, cada funcionalidade tem
+> uma pasta em `src/funcionalidades` (home, acesso, lgpd, disciplinas, perguntas, materiais,
+> quiz, notas, painel e admin) que reúne as suas telas, as suas regras de negócio com os
+> testes unitários e o seu estilo visual; o que é usado por várias telas (conexão com o
+> banco, sessão do usuário, layout e componentes visuais) fica em `src/compartilhado`. No
+> back-end, a estrutura do banco está na pasta `supabase`, em scripts SQL numerados de 01 a
+> 14 que, executados em ordem, criam todas as tabelas, regras de acesso (RLS), funções, as
+> disciplinas da grade e o banco inicial de perguntas.
 
 ## Testes manuais da Etapa 3 (fazer antes do vídeo)
-10. Admin cadastra disciplina com total de aulas; tenta salvar com 0 aulas → erro.
+10. Admin cadastra disciplina (nome e curso); nome repetido no mesmo curso → erro. Aluno
+    abre Disciplinas → já vê as do seu curso; troca o filtro para Todos e para outro curso.
 11. Admin cadastra pergunta: sem alternativa correta → erro; alternativas repetidas → erro;
     completa → aparece "Correta: X".
-12. Aluno faz quiz: tenta finalizar com pergunta em branco → aviso; finaliza → resultado
-    com pontos; refaz → 0 ponto nas já acertadas.
+12. Admin cadastra pergunta com imagem e explicação → aparecem os selos "Com imagem" e
+    "Com explicação"; imagem de 3 MB ou PDF → erro.
+12b. Aluno faz quiz: as perguntas aparecem uma por vez (com a imagem, quando houver); "Verificar" fica desabilitado sem
+    alternativa; acerto → rodapé verde com os pontos; erro → rodapé vermelho com a resposta
+    certa; a explicação aparece no rodapé; teclas 1 a 4 e Enter funcionam; "Sair" pede confirmação; ao final aparecem
+    aproveitamento, pontos, melhor sequência e a revisão das erradas; refaz → 0 ponto nas
+    já acertadas.
 13. Aluno vai mal (< 60%) → Guru aparece no resultado e no Painel (com 5+ respostas).
 14. Ranking geral e por disciplina; desmarcar "Mostrar meu nome" em Minha conta → outro
     aluno vê "Aluno anônimo".
 15. Notas: nota 11 → erro; M1 5, ND 5, NI 5 → M2 5,0, MD 5,0, Aprovado; M1 10, ND 2, NI 2 → Em exame; só MS 7 → Aprovado;
-    faltas acima de 25% → Reprovado por falta.
-21. Depois da atualização 13: cada disciplina do banco inicial tem 15 perguntas e o quiz
+    faltas cadastradas no formulário separado; salvar faltas não apaga as notas (e vice-
+    versa); 42 faltas → "Reprovado por falta"; 3 faltas → erro; botões +2 e +4
+    somam as faltas.
+21. Depois do script 14: cada disciplina do banco inicial tem 15 perguntas e o quiz
     sorteia 10; a resposta certa aparece em letras diferentes.
 16. Painel do aluno e do admin com números e gráficos.
 17. Admin redefine o MFA de um aluno → no login seguinte o aluno vê o QR Code de novo.

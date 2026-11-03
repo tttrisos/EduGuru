@@ -1,16 +1,11 @@
 -- ============================================================
 -- EduGuru — 12: notas e faltas (RF29) e indicadores do painel do admin (RF30)
--- Os cálculos de M2, MD, MF e situação ficam em src/lib/notas.ts.
+-- Os cálculos de M2, MD, MF e situação ficam em src/funcionalidades/notas/calculoNotas.ts.
 -- ============================================================
 
 
--- 1) Disciplinas: total de aulas (base do limite de faltas)
-alter table public.disciplinas
-  add column if not exists total_aulas integer not null default 80;
-
-alter table public.disciplinas drop constraint if exists disciplinas_total_aulas_valido;
-alter table public.disciplinas
-  add constraint disciplinas_total_aulas_valido check (total_aulas between 1 and 400);
+-- 1) O limite de faltas é fixo (40 por disciplina): o total de aulas não é mais usado
+alter table public.disciplinas drop column if exists total_aulas;
 
 
 -- 2) Notas: uma linha por aluno e disciplina (nota vazia = ainda não saiu)
@@ -27,6 +22,9 @@ create table if not exists public.notas (
   atualizado_em timestamptz not null default now(),
   unique (aluno_id, disciplina_id)
 );
+
+-- M2 digitada pelo aluno (usada quando ND e NI ainda não saíram, para simular a MF).
+alter table public.notas add column if not exists m2 numeric(4, 2) check (m2 between 0 and 10);
 
 alter table public.notas enable row level security;
 

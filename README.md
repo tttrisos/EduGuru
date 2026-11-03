@@ -14,10 +14,10 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 
 ## Funcionalidades
 
-- **Quiz:** até 10 perguntas sorteadas de uma disciplina, com correção feita no banco (o aluno nunca recebe o gabarito antes de finalizar).
+- **Quiz:** até 10 perguntas sorteadas de uma disciplina, mostradas uma por vez, com a correção logo após cada resposta (feita no banco, sem permitir trocar a resposta).
 - **Pontuação e ranking:** Fácil 10, Médio 20, Difícil 30 pontos; ranking geral e por disciplina, com opção de aparecer como "Aluno anônimo".
 - **Guru:** indica materiais da disciplina quando o aproveitamento fica abaixo de 60%.
-- **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e limite de 25% de faltas.
+- **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e controle das faltas (limite de 40 por disciplina).
 - **Painel:** indicadores e gráficos do aluno e, para o administrador, da plataforma.
 - **Cadastros:** disciplinas, banco de perguntas (120 iniciais) e materiais (links e arquivos PDF/DOCX).
 - **Segurança e LGPD:** verificação em duas etapas obrigatória, logs de auditoria com limpeza automática em 90 dias, Termo de Aceite, Política de Privacidade e tela Minha conta (acesso, correção e exclusão dos dados).
@@ -31,55 +31,61 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 
 ## Estrutura do projeto
 
+Cada pasta de `src/funcionalidades/` reúne **tudo** de uma funcionalidade: as telas, as regras de cálculo, os testes e o estilo (CSS). O que é usado por várias telas fica em `src/compartilhado/`.
+
 ```
 eduguru/
 ├── src/
-│   ├── main.tsx              Ponto de entrada do site
-│   ├── App.tsx               Rotas (endereço de cada tela)
-│   ├── supabase.ts           Conexão com o Supabase
-│   ├── types.ts              Tipos de dados (Disciplina, Pergunta, Nota...)
-│   ├── index.css             Estilos de todas as telas
-│   ├── contexts/             Sessão do usuário (login, MFA, papel)
-│   ├── layouts/              Barra superior da área logada
-│   ├── components/           Peças reutilizadas (gráfico, indicador, rodapé, rota protegida)
-│   ├── lib/                  Regras de negócio sem tela e seus testes
-│   └── pages/                Telas, separadas por funcionalidade
-│       ├── publico/          Página inicial
-│       ├── autenticacao/     Login, cadastro, MFA e redefinição de senha
-│       ├── lgpd/             Termo, Política, novo aceite e Minha conta
-│       ├── painel/           Painel e notas/faltas
-│       ├── cadastros/        Disciplinas, perguntas e materiais
-│       ├── quiz/             Quiz e ranking
-│       └── admin/            Usuários e logs
-├── supabase/                 Scripts do banco (rodar em ordem, de 01 a 13)
-├── docs/                     Monografia, checklist, diagramas e integração ViaCEP
-├── public/                   Ícone do site
-└── .github/workflows/        Publicação automática no GitHub Pages
+│   ├── main.tsx                  Ponto de entrada do site
+│   ├── App.tsx                   Rotas (endereço de cada tela)
+│   ├── compartilhado/            Usado por todas as telas
+│   │   ├── supabase.ts           Conexão com o banco
+│   │   ├── tipos.ts              Tipos de dados (Disciplina, Pergunta, Nota...)
+│   │   ├── AuthContext.tsx       Sessão do usuário (login, MFA, aluno ou admin)
+│   │   ├── RotaProtegida.tsx     Bloqueia telas sem login, sem MFA ou sem permissão
+│   │   ├── LayoutLogado.tsx      Barra superior da área logada
+│   │   ├── Rodape.tsx, BigNumber.tsx, GraficoBarras.tsx, TextoRico.tsx
+│   │   ├── log.ts                Registro dos logs de acesso
+│   │   ├── arquivos.ts           Links temporários dos arquivos do Storage
+│   │   ├── texto.ts              Negrito nos textos (**assim**) + testes
+│   │   └── global.css            Visual comum (cores, botões, campos, tabelas)
+│   └── funcionalidades/
+│       ├── home/                 Página inicial pública
+│       ├── acesso/               Login, cadastro, MFA, esqueci minha senha + regras de senha
+│       ├── lgpd/                 Termo, Política, novo aceite e Minha conta
+│       ├── disciplinas/          Cadastro de disciplinas
+│       ├── perguntas/            Banco de perguntas do quiz (admin)
+│       ├── materiais/            Materiais de estudo (links e arquivos)
+│       ├── quiz/                 Quiz e ranking
+│       ├── notas/                Notas e faltas + cálculo (calculoNotas.ts) e testes
+│       ├── painel/               Painel do aluno e do admin
+│       └── admin/                Usuários e logs
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 14)
+├── docs/                         Monografia, checklist, diagramas e integração ViaCEP
+├── public/                       Ícone do site
+└── .github/workflows/            Publicação automática no GitHub Pages
 ```
 
 ## Onde está cada funcionalidade
 
-| Funcionalidade | Tela | Regras / lógica | Banco (`supabase/`) |
-|---|---|---|---|
-| Página inicial | `pages/publico/Home.tsx` | — | — |
-| Login e cadastro (RF01, RF02) | `pages/autenticacao/Login.tsx` | `contexts/AuthContext.tsx`, `lib/senha.ts` | `02_perfis_e_logs.sql`, `04_seguranca_lgpd.sql` |
-| Consulta de CEP (ViaCEP) | `pages/autenticacao/Login.tsx` | `docs/INTEGRACAO_VIACEP.md` | `04_seguranca_lgpd.sql` |
-| Verificação em duas etapas (MFA) | `pages/autenticacao/Mfa.tsx` | `components/RotaProtegida.tsx` | `05_verificacao_duas_etapas.sql` |
-| Esqueci minha senha (RF24) | `pages/autenticacao/EsqueciSenha.tsx`, `RedefinirSenha.tsx` | `lib/log.ts` | `09_esqueci_senha.sql` |
-| Disciplinas | `pages/cadastros/Disciplinas.tsx` | — | `01_tabelas_base.sql`, `12_notas_e_painel.sql` |
-| Banco de perguntas (admin) | `pages/cadastros/Perguntas.tsx` | — | `11_quiz_ranking_guru.sql` (`criar_pergunta`), `13_perguntas_iniciais.sql` |
-| Materiais (links e arquivos) | `pages/cadastros/Materiais.tsx` | `lib/materiais.ts` | `03_arquivos_materiais.sql`, `04_seguranca_lgpd.sql` |
-| Quiz e pontuação (RF25, RF26) | `pages/quiz/Quiz.tsx` | — | `11_quiz_ranking_guru.sql` (`iniciar_quiz`, `finalizar_quiz`) |
-| Ranking (RF27) | `pages/quiz/Ranking.tsx` | — | `11_quiz_ranking_guru.sql` (`ranking`) |
-| Guru (RF28) | `pages/quiz/Quiz.tsx`, `pages/painel/Painel.tsx` | — | `11_quiz_ranking_guru.sql` (`recomendacoes_guru`) |
-| Notas e faltas (RF29) | `pages/painel/Notas.tsx` | `lib/notas.ts` | `12_notas_e_painel.sql` |
-| Painel (RF30) | `pages/painel/Painel.tsx` | `components/BigNumber.tsx`, `GraficoBarras.tsx` | `12_notas_e_painel.sql` (`estatisticas_admin`) |
-| Termo e Política | `pages/lgpd/TermoDeAceite.tsx`, `Privacidade.tsx` | `types.ts` (`VERSAO_TERMOS`) | — |
-| Novo aceite dos termos (RF22) | `pages/lgpd/NovoAceite.tsx` | — | `08_novo_aceite.sql` |
-| Minha conta (LGPD, RF15, RF21) | `pages/lgpd/MinhaConta.tsx` | `lib/conta.ts` | `07_minha_conta.sql` |
-| Usuários e MFA pelo admin (RF31) | `pages/admin/Usuarios.tsx` | `lib/conta.ts` | `07_minha_conta.sql`, `10_ajustes_seguranca.sql` |
-| Logs de auditoria e limpeza | `pages/admin/Logs.tsx` | `lib/log.ts` | `02_perfis_e_logs.sql`, `06_limpeza_automatica_logs.sql`, `10_ajustes_seguranca.sql` |
-| Regras de acesso (RLS) | — | — | `02` (perfis e cadastros), `04` (perfis e materiais), `05` (MFA em todas as tabelas) |
+| Funcionalidade | Pasta em `src/funcionalidades/` | Banco (`supabase/`) |
+|---|---|---|
+| Página inicial (RF23) | `home/` | — |
+| Login e cadastro (RF01, RF02), CEP (ViaCEP) | `acesso/Login.tsx`, `acesso/senha.ts` | `02_perfis_e_logs.sql`, `04_seguranca_lgpd.sql` |
+| Verificação em duas etapas (MFA) | `acesso/Mfa.tsx` | `05_verificacao_duas_etapas.sql` |
+| Esqueci minha senha (RF24) | `acesso/EsqueciSenha.tsx`, `acesso/RedefinirSenha.tsx` | `09_esqueci_senha.sql` |
+| Termo, Política e novo aceite (RF11 a RF13, RF22) | `lgpd/TermoDeAceite.tsx`, `lgpd/Privacidade.tsx`, `lgpd/NovoAceite.tsx` | `08_novo_aceite.sql` |
+| Minha conta e exclusão de conta (RF15, RF21) | `lgpd/MinhaConta.tsx`, `lgpd/conta.ts` | `07_minha_conta.sql` |
+| Disciplinas | `disciplinas/` | `01_tabelas_base.sql`, `13_disciplinas_cursos.sql` |
+| Banco de perguntas, com imagem e explicação | `perguntas/` | `11_quiz_ranking_guru.sql` (`criar_pergunta`), `14_perguntas_iniciais.sql` |
+| Materiais (links e arquivos) | `materiais/` | `03_arquivos_materiais.sql`, `04_seguranca_lgpd.sql` |
+| Quiz, pontuação e Guru (RF25, RF26, RF28) | `quiz/Quiz.tsx` | `11_quiz_ranking_guru.sql` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `recomendacoes_guru`) |
+| Ranking (RF27) | `quiz/Ranking.tsx` | `11_quiz_ranking_guru.sql` (`ranking`) |
+| Notas e faltas (RF29) | `notas/Notas.tsx`, `notas/calculoNotas.ts` | `12_notas_e_painel.sql` |
+| Painel (RF30) | `painel/` | `12_notas_e_painel.sql` (`estatisticas_admin`) |
+| Usuários e redefinição de MFA (RF31) | `admin/Usuarios.tsx` | `07_minha_conta.sql`, `10_ajustes_seguranca.sql` |
+| Logs de auditoria e limpeza | `admin/Logs.tsx` | `02_perfis_e_logs.sql`, `06_limpeza_automatica_logs.sql`, `10_ajustes_seguranca.sql` |
+| Regras de acesso (RLS) | — | `02` (perfis e cadastros), `04` (perfis e materiais), `05` (MFA em todas as tabelas) |
 
 ## Banco de dados
 
@@ -99,7 +105,8 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `10_ajustes_seguranca.sql` | Logs de acesso, limpeza manual, redefinição de MFA e lista de usuários |
 | `11_quiz_ranking_guru.sql` | Quiz, gabaritos, pontuação, ranking e Guru |
 | `12_notas_e_painel.sql` | Notas e faltas e indicadores do painel do admin |
-| `13_perguntas_iniciais.sql` | Banco inicial de 120 perguntas |
+| `13_disciplinas_cursos.sql` | Disciplinas da grade de SI, ADS e ES (só as da grade da UMC) |
+| `14_perguntas_iniciais.sql` | Banco inicial de 120 perguntas, com negrito e explicações |
 
 Antes dos scripts 05 e 06, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

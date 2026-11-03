@@ -1,6 +1,6 @@
 # Diagrama de Classes (Figura 2) — versão da entrega 09/11
 
-Este diagrama é **igual ao banco de dados** criado pelos scripts 01 a 13 da pasta `supabase/`. Cada classe
+Este diagrama é **igual ao banco de dados** criado pelos scripts 01 a 14 da pasta `supabase/`. Cada classe
 é uma tabela (ou função) que existe de verdade, então ele pode substituir a Figura 2.
 
 **Como exportar em alta resolução (pedido do orientador, item 4):**
@@ -34,7 +34,6 @@ classDiagram
         +int id
         +string nome
         +string curso
-        +int total_aulas
     }
 
     class Pergunta {
@@ -45,11 +44,13 @@ classDiagram
         +string alternativa_b
         +string alternativa_c
         +string alternativa_d
+        +string imagem_path
         +criarPergunta()
     }
 
     class Gabarito {
         +char correta (A, B, C ou D)
+        +string explicacao
     }
 
     class Material {
@@ -85,12 +86,12 @@ classDiagram
         +decimal m1
         +decimal nd
         +decimal ni
+        +decimal m2
         +decimal ms
         +decimal exame
         +int faltas
-        +calcularM2()
-        +calcularMD()
-        +calcularSituacao()
+        +calcularNotas()
+        +calcularFrequencia()
     }
 
     class LogAuditoria {

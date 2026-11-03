@@ -1,0 +1,144 @@
+/* ---------- Termo de Aceite / Política de Privacidade ---------- */
+.termos-tela {
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px;
+  background: var(--bg);
+}
+
+.termos-conteudo {
+  width: 100%;
+  max-width: 760px;
+  line-height: 1.6;
+}
+
+.termos-conteudo h1 {
+  margin-top: 24px;
+  font-size: 22px;
+}
+
+.termos-conteudo h2 {
+  margin-top: 20px;
+  font-size: 16px;
+  color: var(--roxo);
+}
+
+.termos-conteudo ul {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.termos-rodape-nota {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.termos-tabela-wrap {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.termos-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.termos-tabela th,
+.termos-tabela td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.termos-tabela th {
+  background: var(--bg);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ---------- Minha conta ---------- */
+.conta-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.conta-secao h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.conta-secao p,
+.conta-secao ul {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.conta-dados {
+  display: grid;
+  grid-template-columns: minmax(140px, max-content) 1fr;
+  gap: 8px 16px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.conta-dados dt {
+  color: var(--text-muted);
+}
+
+.conta-dados dd {
+  margin: 0;
+  word-break: break-word;
+}
+
+.conta-uf {
+  flex: 0 0 80px;
+  min-width: 80px;
+}
+
+.conta-perigo {
+  border-color: color-mix(in srgb, var(--perigo) 40%, transparent);
+}
+
+.conta-btn-excluir {
+  height: 44px;
+}
+
+@media (max-width: 600px) {
+  .conta-dados {
+      grid-template-columns: 1fr;
+    }
+}
+
+/* Botão com aparência de link (ações secundárias dentro de texto) */
+.link-botao {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--perigo);
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Minha conta ---------- */
+.conta-opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.conta-opcao input {
+  accent-color: var(--roxo);
+  width: 18px;
+  height: 18px;
+}

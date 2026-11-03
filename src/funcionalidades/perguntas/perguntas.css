@@ -1,0 +1,33 @@
+.campo-texto {
+  width: 100%;
+  height: auto;
+  min-height: 80px;
+  padding: 12px 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.selo-alerta {
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  color: #fcd34d;
+}
+
+/* ---------- Cadastro de perguntas ---------- */
+.pergunta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.pergunta-alternativa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pergunta-alternativa input[type='radio'] {
+  accent-color: var(--roxo);
+  width: 18px;
+  height: 18px;
+}
