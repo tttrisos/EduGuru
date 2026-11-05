@@ -1,5 +1,5 @@
 -- ============================================================
--- EduGuru — 11: quiz, pontuação, ranking e Guru (RF25 a RF28)
+-- EduGuru — 11: quiz, pontuação, ranking e Guru (RF16 a RF19)
 --   - até 10 perguntas sorteadas de uma disciplina, respondidas uma por vez e corrigidas no banco;
 --   - pontos: Fácil 10, Médio 20, Difícil 30 (só no 1º acerto da pergunta);
 --   - Guru: aproveitamento < 60% com pelo menos 5 respostas na disciplina;

@@ -15,6 +15,7 @@ import Notas from './funcionalidades/notas/Notas'
 import Disciplinas from './funcionalidades/disciplinas/Disciplinas'
 import Perguntas from './funcionalidades/perguntas/Perguntas'
 import Materiais from './funcionalidades/materiais/Materiais'
+import PerfilAutor from './funcionalidades/materiais/PerfilAutor'
 import Quiz from './funcionalidades/quiz/Quiz'
 import Ranking from './funcionalidades/quiz/Ranking'
 import Usuarios from './funcionalidades/admin/Usuarios'
@@ -46,6 +47,7 @@ function App() {
           <Route path="/notas" element={<Notas />} />
           <Route path="/disciplinas" element={<Disciplinas />} />
           <Route path="/materiais" element={<Materiais />} />
+          <Route path="/perfil/:id" element={<PerfilAutor />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/minha-conta" element={<MinhaConta />} />

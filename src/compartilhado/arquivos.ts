@@ -16,3 +16,19 @@ export async function gerarLinksArquivos(
   }
   return urls
 }
+
+// Imagens das perguntas: as ilustrações que vêm com o sistema ficam em public/ilustracoes;
+// as enviadas pelo admin ficam no bucket "perguntas".
+export async function gerarLinksImagensPerguntas(caminhos: string[]) {
+  const ilustracoes = caminhos.filter((c) => c.startsWith('ilustracoes/'))
+  const enviadas = caminhos.filter((c) => !c.startsWith('ilustracoes/'))
+  const urls = await gerarLinksArquivos(enviadas, 'perguntas')
+  for (const caminho of ilustracoes) urls[caminho] = `${import.meta.env.BASE_URL}${caminho}`
+  return urls
+}
+
+export function formatarTamanho(bytes: number | null) {
+  if (!bytes) return ''
+  const mb = bytes / (1024 * 1024)
+  return mb >= 1 ? `${mb.toFixed(1)} MB` : `${(bytes / 1024).toFixed(0)} KB`
+}

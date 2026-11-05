@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useDialogo } from '../../compartilhado/Dialogo'
 import { supabase } from '../../compartilhado/supabase'
-import { CURSOS, type Disciplina } from '../../compartilhado/tipos'
+import { CURSOS, cursosDa, type Disciplina } from '../../compartilhado/tipos'
 import { useAuth } from '../../compartilhado/AuthContext'
 
 async function consultarDisciplinas() {
@@ -8,11 +9,15 @@ async function consultarDisciplinas() {
 }
 
 export default function Disciplinas() {
+  const { confirmar } = useDialogo()
   const { ehAdmin, perfil } = useAuth()
   const [lista, setLista] = useState<Disciplina[]>([])
   const [nome, setNome] = useState('')
-  const [curso, setCurso] = useState('SI')
+  // Cursos que têm a disciplina na grade (pode ser mais de um).
+  const [cursos, setCursos] = useState<string[]>(['SI'])
   const [erro, setErro] = useState('')
+  // Id da disciplina em edição (null = cadastrando uma nova).
+  const [editandoId, setEditandoId] = useState<number | null>(null)
   const [carregando, setCarregando] = useState(true)
   // Filtro por curso: o aluno começa vendo as disciplinas do próprio curso.
   const [filtro, setFiltro] = useState(!ehAdmin && perfil?.curso ? perfil.curso : 'todos')
@@ -49,26 +54,56 @@ export default function Disciplinas() {
       setErro('Digite o nome da disciplina.')
       return
     }
-    if (lista.some((d) => d.curso === curso && d.nome.trim().toLowerCase() === nome.trim().toLowerCase())) {
-      setErro('Já existe uma disciplina com esse nome neste curso.')
+    if (cursos.length === 0) {
+      setErro('Marque pelo menos um curso.')
       return
     }
-    const { error } = await supabase
-      .from('disciplinas')
-      .insert([{ nome: nome.trim(), curso }])
+    // A disciplina é cadastrada uma vez só, mesmo quando é de mais de um curso.
+    const repetida = lista.some(
+      (d) => d.id !== editandoId && d.nome.trim().toLowerCase() === nome.trim().toLowerCase(),
+    )
+    if (repetida) {
+      setErro('Já existe uma disciplina com esse nome. Para incluí-la em outro curso, edite-a e marque o curso.')
+      return
+    }
+    // Mantém a ordem SI, ADS, ES; o primeiro vira o "curso" principal.
+    const ordenados = CURSOS.map((c) => c.valor).filter((c) => cursos.includes(c))
+    const dados = { nome: nome.trim(), curso: ordenados[0], cursos: ordenados }
+    const { error } = editandoId
+      ? await supabase.from('disciplinas').update(dados).eq('id', editandoId)
+      : await supabase.from('disciplinas').insert([dados])
 
     if (error) {
       setErro(error.message)
       return
     }
 
-    setNome('')
+    cancelarEdicao()
     buscar()
   }
 
-  async function excluir(id: number) {
-    if (!window.confirm('Excluir esta disciplina? As perguntas e as notas ligadas a ela também serão apagadas.')) return
-    const { error } = await supabase.from('disciplinas').delete().eq('id', id)
+  function editar(item: Disciplina) {
+    setEditandoId(item.id)
+    setNome(item.nome)
+    setCursos(cursosDa(item))
+    setErro('')
+  }
+
+  function cancelarEdicao() {
+    setEditandoId(null)
+    setNome('')
+    setCursos(['SI'])
+  }
+
+  async function excluir(item: Disciplina) {
+    const ok = await confirmar({
+      titulo: `Excluir a disciplina "${item.nome}"?`,
+      mensagem: 'As perguntas e as notas ligadas a ela também serão apagadas. Isso não pode ser desfeito.',
+      textoConfirmar: 'Excluir',
+      perigo: true,
+    })
+    if (!ok) return
+    const { error } = await supabase.from('disciplinas').delete().eq('id', item.id)
     if (error) setErro(error.message)
     else buscar()
   }
@@ -77,10 +112,14 @@ export default function Disciplinas() {
     return CURSOS.find((c) => c.valor === sigla)?.label ?? sigla
   }
 
-  const filtradas = filtro === 'todos' ? lista : lista.filter((d) => d.curso === filtro)
+  function marcarCurso(sigla: string) {
+    setCursos((atual) => (atual.includes(sigla) ? atual.filter((c) => c !== sigla) : [...atual, sigla]))
+  }
+
+  const filtradas = filtro === 'todos' ? lista : lista.filter((d) => cursosDa(d).includes(filtro))
   const opcoesFiltro = [
     { valor: 'todos', label: 'Todos os cursos', total: lista.length },
-    ...CURSOS.map((c) => ({ ...c, total: lista.filter((d) => d.curso === c.valor).length })),
+    ...CURSOS.map((c) => ({ ...c, total: lista.filter((d) => cursosDa(d).includes(c.valor)).length })),
   ]
 
   return (
@@ -90,7 +129,7 @@ export default function Disciplinas() {
         <p>
           {ehAdmin
             ? 'Cadastro das matérias de cada curso. Perguntas, materiais, notas e o quiz são ligados a elas.'
-            : 'Lista das matérias cadastradas pela coordenação. Apenas administradores podem adicionar ou remover.'}
+            : 'Lista das matérias cadastradas pela coordenação. Apenas administradores podem adicionar, editar ou remover.'}
         </p>
       </header>
 
@@ -118,16 +157,23 @@ export default function Disciplinas() {
               onChange={(e) => setNome(e.target.value)}
               placeholder="Nome da disciplina"
             />
-            <select className="campo" value={curso} onChange={(e) => setCurso(e.target.value)}>
+            <fieldset className="cursos-disciplina">
+              <legend>Cursos que têm esta disciplina</legend>
               {CURSOS.map((c) => (
-                <option key={c.valor} value={c.valor}>
-                  {c.label}
-                </option>
+                <label key={c.valor} title={c.label}>
+                  <input type="checkbox" checked={cursos.includes(c.valor)} onChange={() => marcarCurso(c.valor)} />{' '}
+                  {c.valor}
+                </label>
               ))}
-            </select>
+            </fieldset>
             <button type="submit" className="btn btn-primario">
-              Salvar
+              {editandoId ? 'Salvar alterações' : 'Salvar'}
             </button>
+            {editandoId ? (
+              <button type="button" className="btn btn-secundario" onClick={cancelarEdicao}>
+                Cancelar
+              </button>
+            ) : null}
           </form>
         ) : null}
 
@@ -145,13 +191,18 @@ export default function Disciplinas() {
                 <div>
                   <strong>{item.nome}</strong>
                   <span className="item-meta">
-                    {nomeCurso(item.curso)}
+                    {cursosDa(item).map(nomeCurso).join(' · ')}
                   </span>
                 </div>
                 {ehAdmin ? (
-                  <button type="button" className="btn btn-perigo" onClick={() => excluir(item.id)}>
-                    Excluir
-                  </button>
+                  <div className="acoes-item">
+                    <button type="button" className="btn btn-secundario" onClick={() => editar(item)}>
+                      Editar
+                    </button>
+                    <button type="button" className="btn btn-perigo" onClick={() => excluir(item)}>
+                      Excluir
+                    </button>
+                  </div>
                 ) : null}
               </li>
             ))}

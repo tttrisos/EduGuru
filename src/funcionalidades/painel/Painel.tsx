@@ -18,14 +18,14 @@ import type {
 } from '../../compartilhado/tipos'
 import './painel.css'
 
-// Painel (RF30): indicadores do aluno ou, para o admin, da plataforma.
+// Painel (RF25): indicadores do aluno ou, para o admin, da plataforma.
 export default function Painel() {
   const { ehAdmin, perfil } = useAuth()
 
   return (
     <section className="pagina pagina-larga">
       <header className="pagina-topo">
-        <h2>Olá, {perfil?.nome?.split(' ')[0] ?? 'estudante'}!</h2>
+        <h2>Olá, {perfil?.nome ?? 'estudante'}!</h2>
         <p>{ehAdmin ? 'Visão geral da plataforma.' : 'Seu desempenho nos quizzes e na faculdade.'}</p>
       </header>
       {ehAdmin ? <PainelAdmin /> : <PainelAluno />}

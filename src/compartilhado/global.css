@@ -12,8 +12,41 @@
   --perigo: #e5484d;
   --certo: #4ade80;
   --errado: #f87171;
+  --text-forte: #fff;
+  --text-suave: #c4c4cc;
+  --roxo-texto: #c4b5fd;
+  --amarelo-texto: #fcd34d;
+  --laranja-texto: #fb923c;
+  --sobre-certo: #0b2914;
+  --sobre-errado: #2b0a0a;
   --radius: 8px;
   --fonte: system-ui, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+
+/* Modo claro (opção de acessibilidade no menu "Minha conta"). O escuro é o padrão. */
+:root[data-tema="claro"] {
+  --bg: #f4f4f7;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: #ebebf0;
+  --text: #1f1f24;
+  --text-muted: #5c5c6b;
+  --border: #d4d4dc;
+  --roxo: #6d3fd6;
+  --roxo-hover: #8257e5;
+  --perigo: #c62828;
+  --certo: #15803d;
+  --errado: #dc2626;
+  --text-forte: #000;
+  --text-suave: #3f3f46;
+  --roxo-texto: #5b21b6;
+  --amarelo-texto: #92400e;
+  --laranja-texto: #c2410c;
+  --sobre-certo: #fff;
+  --sobre-errado: #fff;
+  color-scheme: light;
 }
 
 html,
@@ -95,7 +128,7 @@ a {
   border-radius: var(--radius);
   background: transparent;
   text-decoration: none;
-  color: #c4c4cc;
+  color: var(--text-suave);
   font: inherit;
   font-size: 15px;
   font-weight: 500;
@@ -104,11 +137,11 @@ a {
 
 .topo-link:hover {
   background: var(--bg-hover);
-  color: #fff;
+  color: var(--text-forte);
 }
 
 .topo-link.ativo {
-  color: #fff;
+  color: var(--text-forte);
   box-shadow: inset 0 -2px 0 var(--roxo);
 }
 
@@ -117,6 +150,51 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Menu "Minha conta": Painel e tema aparecem ao passar o mouse ou focar com o teclado */
+.topo-conta {
+  position: relative;
+}
+
+.topo-conta-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 30;
+  min-width: 200px;
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 25%);
+}
+
+.topo-conta:hover .topo-conta-menu,
+.topo-conta:focus-within .topo-conta-menu {
+  display: flex;
+}
+
+.topo-tema {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.topo-conta-menu .topo-link {
+  width: 100%;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.topo-conta-menu .topo-link.ativo {
+  box-shadow: inset 2px 0 0 var(--roxo);
 }
 
 .topo-sair {
@@ -180,6 +258,24 @@ a {
   margin-bottom: 8px;
 }
 
+/* Caixinhas dos cursos de uma disciplina (tela Disciplinas) */
+.cursos-disciplina {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.cursos-disciplina legend {
+  padding: 0 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .campo {
   flex: 1;
   min-width: 160px;
@@ -227,6 +323,125 @@ a {
   background: color-mix(in srgb, var(--perigo) 12%, transparent);
 }
 
+.btn-perigo-cheio {
+  background: var(--perigo);
+  color: #fff;
+}
+
+.btn-perigo-cheio:hover {
+  filter: brightness(1.1);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Rótulo em cima do campo (formulários e janela de confirmação) */
+.rotulo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.rotulo .campo {
+  flex: none;
+  width: 100%;
+}
+
+/* ---------- Janela de confirmação (Dialogo.tsx) ---------- */
+.dialogo-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 55%);
+  backdrop-filter: blur(3px);
+  animation: dialogo-aparecer 0.15s ease;
+}
+
+.dialogo {
+  width: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 35%);
+  animation: dialogo-subir 0.2s ease;
+}
+
+.dialogo h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.dialogo-mensagem {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.dialogo-icone {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--roxo);
+  background: color-mix(in srgb, var(--roxo) 15%, transparent);
+}
+
+.dialogo-icone.perigo {
+  color: var(--perigo);
+  background: color-mix(in srgb, var(--perigo) 15%, transparent);
+}
+
+.dialogo-botoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@keyframes dialogo-aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialogo-subir {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogo-fundo,
+  .dialogo {
+    animation: none;
+  }
+}
+
+/* Botões lado a lado (Editar e Excluir nas listas, Salvar e Cancelar nos formulários) */
+.acoes-item {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.item-lista .acoes-item .btn {
+  height: 36px;
+  padding: 0 12px;
+}
+
 .lista {
   list-style: none;
   margin: 16px 0 0;
@@ -260,7 +475,7 @@ a {
 }
 
 .item-meta a {
-  color: #c4b5fd;
+  color: var(--roxo-texto);
   text-decoration: none;
 }
 
@@ -273,7 +488,7 @@ a {
 }
 
 .aviso.erro {
-  color: #f87171;
+  color: var(--errado);
 }
 
 .selo {
@@ -282,7 +497,7 @@ a {
   padding: 2px 8px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--roxo) 18%, transparent);
-  color: #c4b5fd;
+  color: var(--roxo-texto);
   font-size: 12px;
   font-weight: 600;
 }
@@ -316,6 +531,17 @@ a {
       align-items: stretch;
       border-top: 1px solid var(--border);
       padding-top: 8px;
+    }
+
+  /* No celular não existe "passar o mouse": o menu da conta fica sempre aberto */
+  .topo-conta-menu {
+      position: static;
+      display: flex;
+      min-width: 0;
+      padding: 0 0 0 12px;
+      border: none;
+      box-shadow: none;
+      background: transparent;
     }
 
   .content {
@@ -379,7 +605,7 @@ a {
 }
 
 .aviso.sucesso {
-  color: #4ade80;
+  color: var(--certo);
 }
 
 .selo-admin {
@@ -433,6 +659,21 @@ a {
   margin-bottom: 12px;
   color: var(--text-muted);
   font-size: 13px;
+}
+
+/* ---------- Texto longo e selo de alerta (Perguntas e Materiais) ---------- */
+.campo-texto {
+  width: 100%;
+  height: auto;
+  min-height: 80px;
+  padding: 12px 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.selo-alerta {
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  color: var(--amarelo-texto);
 }
 
 /* ---------- Botão secundário ---------- */
@@ -618,7 +859,7 @@ a.btn {
 }
 
 .guru a {
-  color: #c4b5fd;
+  color: var(--roxo-texto);
 }
 
 .tabela {

@@ -1,4 +1,4 @@
-// Regras de notas e faltas (RF29), iguais às do boletim da UMC:
+// Regras de notas e faltas (RF20), iguais às do boletim da UMC:
 //   M1 = resultado das avaliações do 1º bimestre
 //   ND = resultado das avaliações do 2º bimestre
 //   NI = nota da avaliação integrada

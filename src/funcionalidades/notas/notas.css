@@ -24,17 +24,17 @@
 }
 
 .situacao-ok {
-  color: #4ade80;
+  color: var(--certo);
   background: color-mix(in srgb, #4ade80 14%, transparent);
 }
 
 .situacao-atencao {
-  color: #fcd34d;
+  color: var(--amarelo-texto);
   background: color-mix(in srgb, #f59e0b 14%, transparent);
 }
 
 .situacao-ruim {
-  color: #f87171;
+  color: var(--errado);
   background: color-mix(in srgb, #f87171 14%, transparent);
 }
 
