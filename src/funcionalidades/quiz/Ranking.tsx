@@ -43,9 +43,12 @@ export default function Ranking() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Ranking</h2>
-        <p>
-          Soma dos pontos ganhos nos quizzes. Aparecem só o primeiro nome e a inicial do sobrenome;
-          se preferir não aparecer, desmarque a opção em <Link to="/minha-conta">Minha conta</Link>.
+        <p>Classificação pela soma dos pontos ganhos nos quizzes.</p>
+        <p className="pagina-fatos">
+          <span>Aparece só o nome abreviado (ex.: Maria S.)</span>
+          <span>
+            Para não aparecer, desmarque a opção em <Link to="/minha-conta">Meus dados e privacidade</Link>
+          </span>
         </p>
       </header>
 

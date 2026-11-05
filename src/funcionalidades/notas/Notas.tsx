@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Ajuda from '../../compartilhado/Ajuda'
 import { useDialogo } from '../../compartilhado/Dialogo'
 import { supabase } from '../../compartilhado/supabase'
 import { useAuth } from '../../compartilhado/AuthContext'
@@ -120,8 +121,9 @@ export default function Notas() {
     setFaltas(salva ? String(salva.faltas) : '')
   }
 
+  // Soma ou tira faltas (para corrigir um lançamento errado); nunca fica abaixo de zero.
   function somarFaltas(quantidade: number) {
-    setFaltas(String((Number(faltas) || 0) + quantidade))
+    setFaltas(String(Math.max(0, (Number(faltas) || 0) + quantidade)))
   }
 
   // Grava só os campos enviados; o que já estava salvo no outro cadastro continua igual.
@@ -207,17 +209,51 @@ export default function Notas() {
     buscar()
   }
 
-  async function excluir(nota: Nota) {
+  // Apaga só as faltas da disciplina; as notas continuam.
+  async function zerarFaltas(nota: Nota) {
     const ok = await confirmar({
-      titulo: `Apagar as notas e as faltas de ${nomeDisciplina(nota)}?`,
-      mensagem: 'Isso não pode ser desfeito.',
-      textoConfirmar: 'Apagar',
+      titulo: `Zerar as faltas de ${nomeDisciplina(nota)}?`,
+      mensagem: `As ${nota.faltas} faltas registradas voltam para 0. As notas desta disciplina não mudam.`,
+      textoConfirmar: 'Zerar faltas',
       perigo: true,
     })
     if (!ok) return
+    setErro('')
+    const { error } = await gravar(nota.disciplina_id, { faltas: 0 })
+    if (error) {
+      setErro(error.message)
+      return
+    }
+    setMensagem(`Faltas de ${nomeDisciplina(nota)} zeradas.`)
+    if (String(nota.disciplina_id) === disciplinaFaltas) setFaltas('0')
+    buscar()
+  }
+
+  // Tira a disciplina da sua lista (notas e faltas juntas), ex.: escolheu a disciplina errada.
+  async function excluir(nota: Nota) {
+    const temNotas = [nota.m1, nota.nd, nota.ni, nota.m2, nota.ms, nota.exame].some((v) => v !== null)
+    const ok = await confirmar({
+      titulo: `Tirar ${nomeDisciplina(nota)} da sua lista?`,
+      mensagem: temNotas
+        ? 'As notas e as faltas desta disciplina serão apagadas. Isso não pode ser desfeito.'
+        : `As ${nota.faltas} faltas desta disciplina serão apagadas. Depois você pode registrar outra disciplina no lugar.`,
+      textoConfirmar: 'Excluir',
+      perigo: true,
+    })
+    if (!ok) return
+    setErro('')
     const { error } = await supabase.from('notas').delete().eq('id', nota.id)
-    if (error) setErro(error.message)
-    else buscar()
+    if (error) {
+      setErro(error.message)
+      return
+    }
+    setMensagem(`${nomeDisciplina(nota)} saiu da sua lista.`)
+    if (String(nota.disciplina_id) === disciplinaFaltas) {
+      setDisciplinaFaltas('')
+      setFaltas('')
+    }
+    if (String(nota.disciplina_id) === disciplinaNotas) setDisciplinaNotas('')
+    buscar()
   }
 
   // Prévia do cálculo enquanto o aluno digita (antes de salvar).
@@ -244,10 +280,11 @@ export default function Notas() {
     <section className="pagina pagina-larga">
       <header className="pagina-topo">
         <h2>Notas e faltas</h2>
-        <p>
-          Registre só as disciplinas presenciais do semestre, como aparecem no boletim do portal. Notas e
-          faltas têm cálculos separados: com MD a partir de {MEDIA_APROVACAO} você está aprovado nas notas, e
-          o limite é de {LIMITE_FALTAS} faltas por disciplina. Só você vê estes dados.
+        <p>Registre as disciplinas presenciais do semestre, como aparecem no boletim do portal.</p>
+        <p className="pagina-fatos">
+          <span>Aprovado com MD a partir de {MEDIA_APROVACAO}</span>
+          <span>Limite de {LIMITE_FALTAS} faltas por disciplina</span>
+          <span>Só você vê estes dados</span>
         </p>
       </header>
 
@@ -293,11 +330,21 @@ export default function Notas() {
               Salvar notas
             </button>
           </form>
-          <p className="item-meta">
-            M2 = ND × 70% + NI × 30% (ou digite a M2 para simular) · MD = (M1 + M2 × 2) ÷ 3 · MS = nota única
-            (preencha só se a disciplina tiver) · Deixe em branco a nota que ainda não saiu; use vírgula ou ponto
-            (ex.: 7,5).
-          </p>
+          <Ajuda
+            titulo="Como as notas são calculadas"
+            itens={[
+              <>
+                <strong>M2</strong> = ND × 70% + NI × 30% (ou digite a M2 para simular).
+              </>,
+              <>
+                <strong>MD</strong> = (M1 + M2 × 2) ÷ 3: o 2º bimestre vale o dobro.
+              </>,
+              <>
+                <strong>MS</strong> é a nota única: preencha só se a disciplina tiver.
+              </>,
+              'Deixe em branco a nota que ainda não saiu. Use vírgula ou ponto (ex.: 7,5).',
+            ]}
+          />
           <p className="aviso aviso-estimativa">
             Os valores calculados aqui são uma <strong>estimativa</strong>. O professor pode acrescentar
             atividades complementares, trabalhos com peso próprio ou outros critérios. A nota oficial é sempre a
@@ -390,14 +437,39 @@ export default function Notas() {
             <button type="button" className="btn btn-secundario" onClick={() => somarFaltas(FALTAS_POR_DIA)} title="Faltei o dia todo">
               +{FALTAS_POR_DIA} (dia todo)
             </button>
+            <button
+              type="button"
+              className="btn btn-secundario"
+              onClick={() => somarFaltas(-FALTAS_POR_MODULO)}
+              disabled={(Number(faltas) || 0) < FALTAS_POR_MODULO}
+              title="Corrigir: tirar um módulo lançado a mais"
+            >
+              −{FALTAS_POR_MODULO}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secundario"
+              onClick={() => somarFaltas(-FALTAS_POR_DIA)}
+              disabled={(Number(faltas) || 0) < FALTAS_POR_DIA}
+              title="Corrigir: tirar um dia lançado a mais"
+            >
+              −{FALTAS_POR_DIA}
+            </button>
             <button type="submit" className="btn btn-primario">
               Salvar faltas
             </button>
           </form>
-          <p className="item-meta">
-            FT = faltas no semestre, como no boletim. Limite: {LIMITE_FALTAS} faltas por disciplina. Cada dia de aula
-            vale {FALTAS_POR_DIA} faltas: {FALTAS_POR_MODULO} no primeiro módulo e {FALTAS_POR_MODULO} no segundo.
-          </p>
+          <Ajuda
+            titulo="Como contar as faltas"
+            itens={[
+              <>
+                <strong>FT</strong> = faltas no semestre, como no boletim. Limite: {LIMITE_FALTAS} por disciplina.
+              </>,
+              `Cada dia de aula vale ${FALTAS_POR_DIA} faltas: ${FALTAS_POR_MODULO} no primeiro módulo e ${FALTAS_POR_MODULO} no segundo.`,
+              `Lançou a mais? Use −${FALTAS_POR_MODULO} ou −${FALTAS_POR_DIA} e salve, ou "Zerar" na tabela.`,
+              'Registrou a disciplina errada? Use "Excluir" na tabela e registre a certa.',
+            ]}
+          />
 
           {notas.length > 0 ? (
             <div className="tabela-rolagem">
@@ -429,6 +501,14 @@ export default function Notas() {
                         <td className="acoes">
                           <button type="button" className="btn btn-secundario btn-pequeno" onClick={() => editarFaltas(nota)}>
                             Editar
+                          </button>
+                          {nota.faltas > 0 ? (
+                            <button type="button" className="btn btn-secundario btn-pequeno" onClick={() => zerarFaltas(nota)}>
+                              Zerar
+                            </button>
+                          ) : null}
+                          <button type="button" className="btn btn-perigo btn-pequeno" onClick={() => excluir(nota)}>
+                            Excluir
                           </button>
                         </td>
                       </tr>

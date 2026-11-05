@@ -46,6 +46,7 @@ eduguru/
 │   │   ├── RotaProtegida.tsx     Bloqueia telas sem login, sem MFA ou sem permissão
 │   │   ├── LayoutLogado.tsx      Barra superior da área logada
 │   │   ├── Dialogo.tsx           Janela de confirmação (no lugar dos avisos do navegador)
+│   │   ├── Ajuda.tsx             Caixa de ajuda dos formulários (regras em tópicos)
 │   │   ├── tema.ts               Modo escuro (padrão) ou claro, salvo no navegador
 │   │   ├── Rodape.tsx, BigNumber.tsx, GraficoBarras.tsx, TextoRico.tsx
 │   │   ├── log.ts                Registro dos logs de acesso

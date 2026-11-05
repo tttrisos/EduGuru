@@ -29,6 +29,7 @@
 
 .regras-material ul {
   margin: 8px 0 0;
+  max-width: 80ch;
   padding-left: 20px;
   line-height: 1.6;
 }

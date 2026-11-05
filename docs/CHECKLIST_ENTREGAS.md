@@ -116,6 +116,7 @@ ranking, Guru, notas e faltas), RF21 (Minha conta), RF22 (novo aceite), RF23 (Ho
 | Disciplinas de ADS conferidas com a grade (05/11): disciplina comum a mais de um curso aparece no filtro de cada um; "banco" e "bancop", cadastradas por engano, saem | ✅ feito em 05/11 · 👤 rodar de novo o script 13 | `supabase/13_disciplinas_cursos.sql`, `disciplinas/Disciplinas.tsx`, `quiz/Quiz.tsx` |
 | Barra superior: "Painel" dentro do menu "Minha conta" (no lugar do nome) e modo claro como opção de acessibilidade (pedido do grupo em 05/11) | ✅ feito em 05/11 (Home e Login conferidos por captura de tela no modo claro) | `compartilhado/LayoutLogado.tsx`, `compartilhado/tema.ts`, `compartilhado/global.css` |
 | Avisos do navegador trocados por uma janela própria do EduGuru (confirmação e texto), nos dois temas (pedido do grupo em 05/11) | ✅ feito em 05/11 (janela conferida por captura de tela nos dois temas) | `compartilhado/Dialogo.tsx` e as telas que pedem confirmação |
+| Textos de descrição e ajuda mais fáceis de ler: linhas de até ~75 letras, mais espaço entre linhas e caixa de ajuda com tópicos (pedido do grupo em 05/11) | ✅ feito em 05/11 (conferido por captura de tela nos dois temas) | `compartilhado/Ajuda.tsx`, `compartilhado/global.css`, `notas/Notas.tsx` |
 
 ---
 

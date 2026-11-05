@@ -255,10 +255,13 @@ export default function Materiais() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Meus materiais</h2>
-        <p>
-          Compartilhe links e apostilas (PDF/DOCX, até {LIMITE_MB} MB) que ajudaram você. Os materiais
-          aprovados aparecem para os colegas no fim do quiz da disciplina e no{' '}
-          <Link to={`/perfil/${usuarioId}`}>seu perfil público</Link>.
+        <p>Compartilhe com os colegas os links e as apostilas que ajudaram você.</p>
+        <p className="pagina-fatos">
+          <span>PDF ou DOCX até {LIMITE_MB} MB</span>
+          <span>Os aprovados aparecem no fim do quiz da disciplina</span>
+          <span>
+            Veja o <Link to={`/perfil/${usuarioId}`}>seu perfil público</Link>
+          </span>
         </p>
       </header>
 

@@ -1030,7 +1030,12 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > Aprovado no exame; MF < 5 → Reprovado.
 > RN06 – Limite de 40 faltas por disciplina; acima dele → Reprovado por falta,
 > independentemente da nota. Cada dia de aula vale 4 faltas (2 por módulo); a tela tem os
-> botões "+2 (1 módulo)" e "+4 (dia todo)" e alerta ao atingir 75% do limite (30 faltas).
+> botões "+2 (1 módulo)" e "+4 (dia todo)" e alerta ao atingir 75% do limite (30 faltas). Para
+> corrigir um lançamento errado, há os botões "−2" e "−4" (o total nunca fica abaixo de zero) e,
+> na tabela, "Zerar", que apaga só as faltas da disciplina, sem mexer nas notas, após confirmação.
+> Para tirar da lista uma disciplina registrada por engano, há o botão "Excluir" nas duas abas, que
+> apaga as notas e as faltas daquela disciplina após confirmação; depois o aluno registra a
+> disciplina certa.
 > RN07 – Notas de 0 a 10 (vírgula ou ponto), podendo ficar em branco; faltas de 2 em 2.
 > RN08 – Um registro por aluno e disciplina; salvar as notas não altera as faltas, e vice-versa.
 > RN09 – Somente o próprio aluno lê e altera suas notas (nem o administrador); o log registra a
@@ -1755,7 +1760,9 @@ Nada desta parte vai para o documento.
 16. Notas: nota 11 → erro; M1 5, ND 5, NI 5 → M2 5,0, MD 5,0, Aprovado; M1 10, ND 2, NI 2 → Em
     exame; só MS 7 → Aprovado; faltas no formulário separado; salvar faltas não apaga as notas
     (e vice-versa); 42 faltas → "Reprovado por falta"; 3 faltas → erro; botões +2 e +4 somam
-    as faltas (RF20).
+    as faltas; −2 e −4 tiram (ficam desabilitados quando não há faltas suficientes);
+    "Zerar" pede confirmação e deixa FT = 0 sem apagar as notas da disciplina; "Excluir" na aba
+    Faltas tira a disciplina da lista (a janela avisa se ela também tem notas) (RF20).
 17. Painel do aluno e do admin com números e gráficos (RF25).
 18. Admin redefine o MFA de um aluno → no login seguinte o aluno vê o QR Code de novo (RF26).
 19. MFA: errar o código 5 vezes → volta ao login com aviso; log "mfa_bloqueado" (RF04).

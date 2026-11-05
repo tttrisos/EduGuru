@@ -212,9 +212,10 @@ export default function Perguntas() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Perguntas</h2>
-        <p>
-          Banco de questões do quiz. Cada pergunta tem 4 alternativas e uma correta. Os alunos nunca
-          veem o gabarito: a correção é feita no banco de dados.
+        <p>Banco de questões do quiz.</p>
+        <p className="pagina-fatos">
+          <span>4 alternativas e 1 correta</span>
+          <span>O aluno nunca vê o gabarito: a correção é feita no banco</span>
         </p>
       </header>
 

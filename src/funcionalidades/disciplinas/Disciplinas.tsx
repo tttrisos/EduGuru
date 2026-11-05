@@ -126,10 +126,13 @@ export default function Disciplinas() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Disciplinas</h2>
-        <p>
-          {ehAdmin
-            ? 'Cadastro das matérias de cada curso. Perguntas, materiais, notas e o quiz são ligados a elas.'
-            : 'Lista das matérias cadastradas pela coordenação. Apenas administradores podem adicionar, editar ou remover.'}
+        <p>Matérias da grade de cada curso.</p>
+        <p className="pagina-fatos">
+          {ehAdmin ? (
+            <span>Perguntas, materiais, notas e o quiz são ligados a elas</span>
+          ) : (
+            <span>Só administradores adicionam, editam ou removem</span>
+          )}
         </p>
       </header>
 

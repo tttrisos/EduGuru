@@ -97,10 +97,11 @@ export default function Usuarios() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Usuários</h2>
-        <p>
-          Contas cadastradas. A exclusão remove perfil, conta de acesso e materiais enviados pelo
-          usuário, e fica registrada no log de auditoria. Para excluir a sua própria conta, use
-          Minha conta.
+        <p>Contas cadastradas na plataforma.</p>
+        <p className="pagina-fatos">
+          <span>Excluir apaga perfil, acesso e materiais da pessoa</span>
+          <span>Toda exclusão fica no log</span>
+          <span>A sua própria conta é excluída em Meus dados e privacidade</span>
         </p>
       </header>
 

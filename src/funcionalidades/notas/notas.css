@@ -53,6 +53,9 @@ td.situacao-atencao {
 
 .aviso.aviso-estimativa {
   margin: 8px 0 12px;
+  max-width: 80ch;
+  line-height: 1.6;
+  font-size: 13.5px;
   padding: 10px 14px;
   border-left: 3px solid #f59e0b;
   border-radius: var(--radius);
