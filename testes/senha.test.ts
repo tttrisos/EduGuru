@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { REGRAS_SENHA, senhaAtendeTodasRegras } from './senha'
+import { REGRAS_SENHA, senhaAtendeTodasRegras } from '../src/funcionalidades/acesso/senha'
 
 // Testes das regras de senha do cadastro (RF02).
 

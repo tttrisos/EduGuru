@@ -8,7 +8,7 @@ import {
   lerNota,
   validarFaltas,
   type NotasDigitadas,
-} from './calculoNotas'
+} from '../src/funcionalidades/notas/calculoNotas'
 
 // Testes da regra de notas e faltas (RF20). Rodar com: npm test
 

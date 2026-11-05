@@ -32,7 +32,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 
 ## Estrutura do projeto
 
-Cada pasta de `src/funcionalidades/` reúne **tudo** de uma funcionalidade: as telas, as regras de cálculo, os testes e o estilo (CSS). O que é usado por várias telas fica em `src/compartilhado/`.
+Cada pasta de `src/funcionalidades/` reúne **tudo** de uma funcionalidade: as telas, as regras de cálculo e o estilo (CSS). O que é usado por várias telas fica em `src/compartilhado/`, e os testes unitários ficam todos em `testes/`.
 
 ```
 eduguru/
@@ -50,7 +50,7 @@ eduguru/
 │   │   ├── Rodape.tsx, BigNumber.tsx, GraficoBarras.tsx, TextoRico.tsx
 │   │   ├── log.ts                Registro dos logs de acesso
 │   │   ├── arquivos.ts           Links temporários dos arquivos e imagens das perguntas
-│   │   ├── texto.ts              Negrito nos textos (**assim**) + testes
+│   │   ├── texto.ts              Negrito nos textos (**assim**)
 │   │   └── global.css            Visual comum (cores, botões, campos, tabelas)
 │   └── funcionalidades/
 │       ├── home/                 Página inicial pública
@@ -60,9 +60,10 @@ eduguru/
 │       ├── perguntas/            Banco de perguntas do quiz (admin)
 │       ├── materiais/            Meus materiais, filtro, moderação, denúncias e perfil público
 │       ├── quiz/                 Quiz, efeitos (sons e comemorações) e ranking
-│       ├── notas/                Notas e faltas + cálculo (calculoNotas.ts) e testes
+│       ├── notas/                Notas e faltas + cálculo (calculoNotas.ts)
 │       ├── painel/               Painel do aluno e do admin
 │       └── admin/                Usuários e logs
+├── testes/                       Testes unitários (Vitest): notas, senha, negrito, filtro de materiais e efeitos do quiz
 ├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 16)
 ├── docs/                         Integração com a API ViaCEP
 ├── public/                       Ícone do site e ilustrações das perguntas (ilustracoes/)
