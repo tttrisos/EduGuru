@@ -64,14 +64,11 @@ export default function Logs() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Logs de auditoria</h2>
-        <p>
-          Últimos 200 eventos registrados no sistema (login, logout, criação/edição/exclusão de
-          registros). Só administradores enxergam esta página — a regra está garantida no banco
-          (RLS), não só aqui na tela.
-        </p>
-        <p>
-          Logs com mais de 90 dias são apagados automaticamente todo dia às 03h (horário de
-          Brasília), por uma tarefa agendada no banco. O botão abaixo é só um reforço manual.
+        <p>Últimos 200 eventos do sistema: logins, alterações e exclusões.</p>
+        <p className="pagina-fatos">
+          <span>Só administradores veem (regra garantida no banco)</span>
+          <span>Apagados após 90 dias, todo dia às 03h</span>
+          <span>O botão abaixo é um reforço manual</span>
         </p>
       </header>
 

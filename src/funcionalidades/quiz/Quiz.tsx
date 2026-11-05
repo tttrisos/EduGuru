@@ -280,11 +280,14 @@ export default function Quiz() {
       <section className="pagina pagina-larga">
         <header className="pagina-topo">
           <h2>Quiz</h2>
-          <p>
-            Escolha uma disciplina e responda até 10 perguntas, uma de cada vez. Você vê na hora se
-            acertou. Pontos por acerto: Fácil {PONTOS_POR_NIVEL['Fácil']}, Médio {PONTOS_POR_NIVEL['Médio']} e
-            Difícil {PONTOS_POR_NIVEL['Difícil']} (só na primeira vez que acerta cada pergunta). Em cada
-            rodada você tem uma dica 50/50.
+          <p>Escolha uma disciplina e responda até 10 perguntas, vendo na hora se acertou.</p>
+          <p className="pagina-fatos">
+            <span>
+              Fácil {PONTOS_POR_NIVEL['Fácil']}, Médio {PONTOS_POR_NIVEL['Médio']} e Difícil{' '}
+              {PONTOS_POR_NIVEL['Difícil']} pontos
+            </span>
+            <span>Pontua só no primeiro acerto</span>
+            <span>1 dica 50/50 por rodada</span>
           </p>
         </header>
 

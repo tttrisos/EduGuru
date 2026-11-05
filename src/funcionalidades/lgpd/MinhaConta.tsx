@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../compartilhado/supabase'
 import { useAuth } from '../../compartilhado/AuthContext'
 import { CURSOS, type LogAuditoria, type Material, type Nota, type TentativaQuiz } from '../../compartilhado/tipos'
@@ -190,10 +190,12 @@ export default function MinhaConta() {
     <section className="pagina">
       <header className="pagina-topo">
         <h2>Minha conta</h2>
-        <p>
-          Aqui você exerce os seus direitos de titular previstos na LGPD: ver os dados que o
-          EduGuru guarda sobre você, corrigi-los, revogar o consentimento do campo opcional e
-          excluir a conta. Veja a seção 7 da Política de Privacidade.
+        <p>Veja, corrija, baixe ou exclua os dados que o EduGuru guarda sobre você.</p>
+        <p className="pagina-fatos">
+          <span>Seus direitos de titular pela LGPD</span>
+          <span>
+            Detalhes na <Link to="/privacidade">Política de Privacidade</Link>, seção 7
+          </span>
         </p>
       </header>
 

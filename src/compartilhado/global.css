@@ -238,10 +238,82 @@ a {
   letter-spacing: -0.03em;
 }
 
+/* Descrições: linhas de até ~75 letras e mais espaço entre elas, para ler sem cansar */
 .pagina-topo p {
   margin: 0;
+  max-width: 75ch;
   color: var(--text-muted);
   font-size: 15px;
+  line-height: 1.6;
+}
+
+p.item-meta {
+  max-width: 75ch;
+  line-height: 1.6;
+}
+
+/* Linha de fatos curtos abaixo da descrição da página, separados por "·" */
+.pagina-topo .pagina-fatos {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: none;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+/* cada fato fica inteiro; se não couber, desce para a linha de baixo */
+.pagina-fatos span {
+  white-space: nowrap;
+}
+
+.pagina-fatos span + span::before {
+  content: '·';
+  margin: 0 8px;
+}
+
+.pagina-fatos a {
+  color: var(--roxo-texto);
+}
+
+/* Caixa de ajuda dos formulários (Ajuda.tsx) */
+.ajuda {
+  display: flex;
+  gap: 12px;
+  max-width: 80ch;
+  margin: 12px 0 4px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--roxo);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--roxo) 8%, transparent);
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.ajuda-icone {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--roxo);
+}
+
+.ajuda-titulo {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.ajuda ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.ajuda li + li {
+  margin-top: 2px;
+}
+
+.ajuda strong {
+  color: var(--text);
 }
 
 .cartao {
@@ -483,6 +555,7 @@ a {
 .aviso,
 .status {
   margin: 16px 0 0;
+  line-height: 1.5;
   color: var(--text-muted);
   font-size: 14px;
 }
