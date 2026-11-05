@@ -249,9 +249,10 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 >
 > O código-fonte está organizado por funcionalidade. No front-end, cada funcionalidade tem
 > uma pasta em `src/funcionalidades` (home, acesso, lgpd, disciplinas, perguntas, materiais,
-> quiz, notas, painel e admin) que reúne as suas telas, as suas regras de negócio com os
-> testes unitários e o seu estilo visual; o que é usado por várias telas (conexão com o
-> banco, sessão do usuário, layout e componentes visuais) fica em `src/compartilhado`. No
+> quiz, notas, painel e admin) que reúne as suas telas, as suas regras de negócio e o seu
+> estilo visual; o que é usado por várias telas (conexão com o banco, sessão do usuário, layout
+> e componentes visuais) fica em `src/compartilhado`, e os testes unitários automatizados ficam
+> separados, na pasta `testes`. No
 > back-end, a estrutura do banco está na pasta `supabase`, em scripts SQL numerados de 01 a
 > 16 que, executados em ordem, criam as tabelas, as regras de acesso (RLS), as funções, as
 > disciplinas da grade dos três cursos e o banco inicial de perguntas. As ilustrações das

@@ -8,7 +8,7 @@ import {
   dominioPermitido,
   motivoBloqueio,
   semAcento,
-} from './filtroMateriais'
+} from '../src/funcionalidades/materiais/filtroMateriais'
 
 describe('dominioDoLink', () => {
   it('tira o www e o caminho', () => {

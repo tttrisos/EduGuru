@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { partesDoTexto } from './texto'
+import { partesDoTexto } from '../src/compartilhado/texto'
 
 // Testes do negrito nas perguntas (**texto**).
 

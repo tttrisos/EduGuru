@@ -85,7 +85,7 @@ Legenda: ✅ feito no código/documentação · 👤 depende de vocês (não dá
 | Branch `entrega0911` no GitHub | ✅ criada localmente · 👤 **push** (Passo 5) | — |
 | Vídeo de até 7 min (sem login) | 👤 roteiro sugerido abaixo | — |
 | Sem regressões | ✅ build, lint e testes passando; testes de banco 60/60 OK em 28/10 · 👤 rodar os testes manuais | roteiro "Testes manuais" 1–37 |
-| (23/11) testes unitários, cobertura ≥ 50% | ✅ base pronta: Vitest + 48 testes (inclui o filtro de materiais) · ⚠️ falta ampliar | `npm test`, `npm run test:cobertura` |
+| (23/11) testes unitários, cobertura ≥ 50% | ✅ Vitest + 48 testes na pasta `testes/`, cobertura de 81,6% nos arquivos testados (05/11) · ⚠️ ampliar para as telas, se o coorientador medir o projeto todo | `npm test`, `npm run test:cobertura` |
 | Banco de perguntas grande, com plano de ampliação | ✅ 120 perguntas (8 disciplinas × 15) com gabarito | `supabase/14_perguntas_iniciais.sql`; texto no RF16 do roteiro (páginas 25–26) |
 
 RFs implementados (mesma numeração da monografia): RF01–RF04 (login, cadastro, MFA), RF05
@@ -122,7 +122,8 @@ ranking, Guru, notas e faltas), RF21 (Minha conta), RF22 (novo aceite), RF23 (Ho
 ## Passo 5 — O que vocês precisam fazer (nesta ordem)
 1. ✅ Banco atualizado (scripts 01 a 13 da pasta `supabase/`) e testado em 28/10: 60/60 OK.
 2. ✅ Projeto reorganizado em pastas por funcionalidade: cada pasta de `src/funcionalidades/`
-   tem as telas, as regras, os testes e o CSS daquela funcionalidade (mapa no `README.md`).
+   tem as telas, as regras e o CSS daquela funcionalidade (mapa no `README.md`); os testes
+   unitários ficam todos na pasta `testes/` (05/11).
 3. 👤 **Rodar no SQL Editor, nesta ordem:** `supabase/11_quiz_ranking_guru.sql` (imagens e
    explicações), `supabase/13_disciplinas_cursos.sql` (deixa só as disciplinas da grade de SI,
    ADS e ES) e `supabase/14_perguntas_iniciais.sql` (negrito e explicações das 120 perguntas).

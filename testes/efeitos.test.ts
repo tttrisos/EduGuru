@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mensagemSequencia } from './efeitos'
+import { mensagemSequencia } from '../src/funcionalidades/quiz/efeitos'
 
 describe('mensagemSequencia', () => {
   it('comemora 3, 5 e 10 acertos seguidos', () => {
