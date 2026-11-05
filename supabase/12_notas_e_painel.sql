@@ -1,5 +1,5 @@
 -- ============================================================
--- EduGuru — 12: notas e faltas (RF29) e indicadores do painel do admin (RF30)
+-- EduGuru — 12: notas e faltas (RF20) e indicadores do painel do admin (RF25)
 -- Os cálculos de M2, MD, MF e situação ficam em src/funcionalidades/notas/calculoNotas.ts.
 -- ============================================================
 

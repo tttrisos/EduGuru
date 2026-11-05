@@ -1,8 +1,38 @@
 -- ============================================================
 -- EduGuru — 13: disciplinas da grade de cada curso da UMC
 -- No final ficam SÓ as disciplinas desta grade. Disciplina comum a mais de
--- um curso é cadastrada uma vez só (no 1º curso em que aparece na lista).
+-- um curso é cadastrada uma vez só, com todos os cursos na coluna "cursos"
+-- (ex.: Banco de Dados = SI, ADS e ES). Pode ser rodado de novo.
 -- ============================================================
+
+
+-- 0) Uma disciplina pode ser de mais de um curso. "curso" fica sendo o primeiro da lista.
+alter table public.disciplinas add column if not exists cursos text[];
+
+update public.disciplinas set cursos = array[curso] where cursos is null or cardinality(cursos) = 0;
+
+alter table public.disciplinas drop constraint if exists disciplinas_cursos_validos;
+alter table public.disciplinas
+  add constraint disciplinas_cursos_validos
+  check (cardinality(cursos) > 0 and cursos <@ array['SI', 'ADS', 'ES']);
+
+create or replace function public.sincronizar_cursos_disciplina()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.cursos is null or cardinality(new.cursos) = 0 then
+    new.cursos := array[new.curso];
+  end if;
+  new.curso := new.cursos[1];
+  return new;
+end;
+$$;
+
+drop trigger if exists sincronizar_cursos_disciplina on public.disciplinas;
+create trigger sincronizar_cursos_disciplina
+  before insert or update on public.disciplinas
+  for each row execute function public.sincronizar_cursos_disciplina();
 
 
 -- 1) Grade dos cursos (tabela temporária, só existe durante este script)
@@ -92,13 +122,12 @@ where not exists (
 order by lower(g.nome), g.ordem;
 
 
--- 4) Disciplina cadastrada num curso que não a tem na grade passa para o curso certo
+-- 4) Cada disciplina da grade recebe todos os cursos em que aparece (na ordem SI, ADS, ES)
 update public.disciplinas d
-set curso = (
-  select g.curso from grade_umc g where lower(g.nome) = lower(d.nome) order by g.ordem limit 1
+set cursos = (
+  select array_agg(g.curso order by g.ordem) from grade_umc g where lower(g.nome) = lower(d.nome)
 )
-where exists (select 1 from grade_umc g where lower(g.nome) = lower(d.nome))
-  and not exists (select 1 from grade_umc g where lower(g.nome) = lower(d.nome) and g.curso = d.curso);
+where exists (select 1 from grade_umc g where lower(g.nome) = lower(d.nome));
 
 
 -- 5) Remove repetidas (mesmo nome) sem nada ligado a elas; fica a mais antiga
@@ -119,8 +148,8 @@ delete from public.disciplinas d
 where not exists (select 1 from grade_umc g where lower(g.nome) = lower(d.nome));
 
 
--- Conferência: disciplinas por curso
-select curso, count(*) as disciplinas
-from public.disciplinas
-group by curso
-order by curso;
+-- Conferência: disciplinas por curso (as comuns contam em cada curso) — SI 16, ADS 16, ES 16
+select c.curso, count(*) as disciplinas
+from public.disciplinas d, unnest(d.cursos) as c(curso)
+group by c.curso
+order by c.curso;

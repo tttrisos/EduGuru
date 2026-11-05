@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.2.
+// Termo de Aceite, versão 1.3.
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -11,7 +11,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.2 — 27/10/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.3 — 05/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -72,8 +72,12 @@ export default function TermoDeAceite() {
           <li>Compartilhar sua conta com terceiros;</li>
           <li>Tentar acessar dados ou funcionalidades administrativas sem permissão;</li>
           <li>
-            Enviar, como material, arquivos com conteúdo ilegal, ofensivo ou que viole
-            direitos autorais de terceiros;
+            Enviar, como material, links ou arquivos com conteúdo ilegal, ofensivo,
+            adulto, de apostas, pirataria ou que viole direitos autorais de terceiros;
+          </li>
+          <li>
+            Colocar dados pessoais (seus ou de outras pessoas, como CPF, e-mail ou
+            telefone) no título, na descrição ou no arquivo de um material;
           </li>
           <li>Tentar sobrecarregar, invadir ou interromper o funcionamento da plataforma;</li>
           <li>
@@ -84,9 +88,14 @@ export default function TermoDeAceite() {
 
         <h2>5. Conteúdo enviado pelo usuário</h2>
         <p>
-          Ao anexar um material (PDF/DOCX), você declara ter o direito de compartilhá-lo
-          com os demais usuários da plataforma (todo usuário logado pode ver e baixar os
-          materiais enviados). A equipe do EduGuru pode remover qualquer conteúdo que
+          Ao compartilhar um material (link ou PDF/DOCX), você declara ter o direito de
+          compartilhá-lo com os demais usuários da plataforma. Depois de aprovado, o
+          material aparece para todo usuário logado no fim do quiz da disciplina e no seu
+          perfil público, junto do seu <strong>nome abreviado</strong> (ex.: Maria S.) e do
+          seu <strong>curso</strong>. Links só são aceitos de sites permitidos e passam por
+          um filtro automático; arquivos ficam em análise até a equipe aprovar. Qualquer
+          usuário pode denunciar um material: com 3 denúncias ele é ocultado até a equipe
+          analisar. A equipe do EduGuru pode recusar ou remover qualquer conteúdo que
           viole este Termo, sem aviso prévio. Ao excluir sua conta, os materiais que você
           enviou também são excluídos.
         </p>
@@ -108,7 +117,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.2, 27/10/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.3, 05/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

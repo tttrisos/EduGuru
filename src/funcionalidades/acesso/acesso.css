@@ -26,11 +26,11 @@
 }
 
 .cep-status.cep-ok {
-  color: #4ade80;
+  color: var(--certo);
 }
 
 .cep-status.cep-erro {
-  color: #f87171;
+  color: var(--errado);
 }
 
 /* QR Code precisa de fundo branco para os apps conseguirem ler no tema escuro */
@@ -115,6 +115,7 @@
 }
 
 .login-arte-caixa strong {
+  color: #fff; /* o painel é sempre escuro, nos dois temas */
   font-size: 36px;
   letter-spacing: -0.02em;
 }

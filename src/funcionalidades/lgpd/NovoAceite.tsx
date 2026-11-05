@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDialogo } from '../../compartilhado/Dialogo'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
@@ -10,6 +11,7 @@ import './lgpd.css'
 
 // Pede novo aceite quando o Termo/Política mudam de versão.
 export default function NovoAceite() {
+  const { confirmar, pedirTexto } = useDialogo()
   const { usuario, perfil, carregando, mfaConcluido, recarregarPerfil, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -39,10 +41,16 @@ export default function NovoAceite() {
   }
 
   async function excluirConta() {
-    const digitado = window.prompt(
-      'Excluir sua conta? Perfil, conta de acesso e materiais enviados serão apagados. ' +
-        'Os registros de auditoria ficam até completar 90 dias.\n\nDigite EXCLUIR para confirmar:',
-    )
+    const digitado = await pedirTexto({
+      titulo: 'Excluir sua conta?',
+      mensagem:
+        'Perfil, conta de acesso e materiais enviados serão apagados. Os registros de auditoria ' +
+        'ficam até completar 90 dias. Isso não pode ser desfeito.',
+      rotulo: 'Digite EXCLUIR para confirmar',
+      exigir: 'EXCLUIR',
+      textoConfirmar: 'Excluir conta',
+      perigo: true,
+    })
     if (digitado !== 'EXCLUIR') return
     setErro('')
     setEnviando(true)
@@ -63,6 +71,7 @@ export default function NovoAceite() {
   }
 
   async function aoSair() {
+    if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.', textoConfirmar: 'Sair' }))) return
     await sair()
     navigate('/login', { replace: true })
   }

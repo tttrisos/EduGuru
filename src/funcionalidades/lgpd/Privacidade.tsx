@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.2.
+// Política de Privacidade, versão 1.3.
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -11,9 +11,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.2 — 27/10/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.3 — 05/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas). Finalidade
+          pontuação, ranking, Guru, notas e faltas, e materiais compartilhados com perfil público do autor). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -26,7 +26,7 @@ export default function Privacidade() {
           O EduGuru é desenvolvido por João Pedro, Luiz Antonio e Thiago, estudantes de
           Sistemas de Informação da Universidade de Mogi das Cruzes (UMC), como Projeto
           Final de Curso, com orientação do Prof. Oscar Alves Evangelista e coorientação
-          do Prof. Alessandro Aparecido da Silva. Nesta fase de protótipo acadêmico, os
+          do Prof. Alessandro Aparecido da Silva Horas. Nesta fase de protótipo acadêmico, os
           próprios integrantes do grupo atuam como responsáveis pelo tratamento dos
           dados. Em uma implantação real fora do contexto acadêmico, esse papel seria da
           instituição de ensino que viesse a adotar a plataforma.
@@ -66,7 +66,8 @@ export default function Privacidade() {
             <strong>Conteúdo da plataforma:</strong> disciplinas e perguntas de quiz
             cadastradas por administradores, e materiais de estudo (links e arquivos
             PDF/DOCX, até 5 MB) enviados por alunos ou administradores — cada material
-            guarda quem o enviou.
+            guarda quem o enviou, a situação da moderação e as denúncias recebidas (quem
+            denunciou e o motivo, visíveis só para administradores).
           </li>
           <li>
             <strong>Desempenho nos quizzes:</strong> rodadas de quiz jogadas (data,
@@ -141,7 +142,7 @@ export default function Privacidade() {
               </tr>
               <tr>
                 <td>Perguntas, disciplinas, materiais (e quem enviou cada material)</td>
-                <td>Funcionamento do quiz e da biblioteca de materiais; permitir que só o autor (ou um admin) altere/exclua o material</td>
+                <td>Funcionamento do quiz e da biblioteca de materiais; mostrar aos colegas o nome abreviado e o curso de quem compartilhou (perfil público); moderar e receber denúncias; permitir que só o autor (ou um admin) altere/exclua o material</td>
                 <td>Execução de contrato / legítimo interesse educacional</td>
                 <td>Até ser excluído pelo autor ou por um administrador, ou até a exclusão da conta do autor</td>
               </tr>
@@ -202,7 +203,10 @@ export default function Privacidade() {
           fora do Brasil, conforme a região configurada no projeto. Não usamos cookies
           de rastreamento nem de publicidade. A sessão de login é mantida pelo Supabase
           Auth usando armazenamento local do navegador, estritamente necessário para
-          você continuar logado — não é usado para te rastrear em outros sites.
+          você continuar logado — não é usado para te rastrear em outros sites. O
+          navegador também guarda duas preferências suas, que não identificam ninguém e
+          não são enviadas ao EduGuru: o tema escolhido (escuro ou claro) e se os sons do
+          quiz estão desligados.
         </p>
 
         <h2>6. Retenção e descarte</h2>
@@ -242,9 +246,12 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Outros alunos:</strong> não veem seu perfil (nome, e-mail, curso,
-            cidade) nem suas notas. Veem os materiais que você enviar (título, link e
-            arquivo) e, no ranking, seu nome abreviado e seus pontos — ou &quot;Aluno
-            anônimo&quot;, se você preferir.
+            cidade) nem suas notas. Veem os materiais que você compartilhar, depois de
+            aprovados (título, descrição, link e arquivo), com seu nome abreviado e seu
+            curso, e podem abrir seu perfil público, que mostra só isso e a lista desses
+            materiais. Quem não tem material aprovado não tem perfil público. No ranking,
+            veem seu nome abreviado e seus pontos — ou &quot;Aluno anônimo&quot;, se
+            você preferir.
           </li>
           <li>
             <strong>Administradores:</strong> veem os perfis de todos os usuários (para
@@ -266,7 +273,7 @@ export default function Privacidade() {
         </ul>
         <p>
           Você exerce esses direitos sozinho, dentro do site, na tela{' '}
-          <strong>Minha conta</strong> (menu no topo do site, depois de entrar):
+          <strong>Minha conta</strong> (depois de entrar, passe o mouse em &quot;Minha conta&quot;, no topo do site, e escolha &quot;Meus dados e privacidade&quot;):
         </p>
         <ul>
           <li>
@@ -313,7 +320,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.2, 27/10/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.3, 05/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

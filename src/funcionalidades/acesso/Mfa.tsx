@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useDialogo } from '../../compartilhado/Dialogo'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
@@ -38,6 +39,7 @@ async function prepararMfa(): Promise<Preparo> {
 }
 
 export default function Mfa() {
+  const { confirmar } = useDialogo()
   const { usuario, carregando, mfaConcluido, atualizarMfa, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -118,6 +120,7 @@ export default function Mfa() {
   }
 
   async function aoSair() {
+    if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.', textoConfirmar: 'Sair' }))) return
     await sair()
     navigate('/login', { replace: true })
   }

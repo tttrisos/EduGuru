@@ -10,7 +10,7 @@ import {
   type NotasDigitadas,
 } from './calculoNotas'
 
-// Testes da regra de notas e faltas (RF29). Rodar com: npm test
+// Testes da regra de notas e faltas (RF20). Rodar com: npm test
 
 function notas(valores: Partial<NotasDigitadas>): NotasDigitadas {
   return { m1: null, nd: null, ni: null, m2: null, ms: null, exame: null, ...valores }

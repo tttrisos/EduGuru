@@ -1,7 +1,15 @@
+// "cursos" lista todos os cursos que têm a disciplina na grade (ex.: Banco de Dados é de
+// SI, ADS e ES); "curso" é o primeiro deles.
 export type Disciplina = {
   id: number
   nome: string
   curso: string
+  cursos: string[] | null
+}
+
+// Cursos da disciplina (antes do script 13 atualizado, só existe "curso").
+export function cursosDa(d: Disciplina) {
+  return d.cursos?.length ? d.cursos : [d.curso]
 }
 
 // A resposta certa fica na tabela "gabaritos", que só o admin lê.
@@ -35,6 +43,55 @@ export type Material = {
   arquivo_tamanho: number | null
   enviado_por: string | null
   disciplina_id: number | null
+  descricao: string | null
+  status: StatusMaterial
+  motivo_moderacao: string | null
+  criado_em: string
+}
+
+// Aprovado: aparece para todos. Pendente: aguardando o admin. Recusado: só o autor vê.
+export type StatusMaterial = 'pendente' | 'aprovado' | 'recusado'
+
+// Linha devolvida por materiais_da_comunidade(): só aprovados, com o autor.
+export type MaterialComunidade = {
+  id: number
+  titulo: string
+  descricao: string | null
+  link: string | null
+  arquivo_path: string | null
+  arquivo_nome: string | null
+  arquivo_tamanho: number | null
+  disciplina_id: number | null
+  disciplina: string | null
+  autor_id: string
+  autor_nome: string
+  autor_curso: string | null
+  criado_em: string
+}
+
+// Linha devolvida por materiais_em_moderacao() (só admin).
+export type MaterialModeracao = {
+  id: number
+  titulo: string
+  descricao: string | null
+  link: string | null
+  arquivo_path: string | null
+  arquivo_nome: string | null
+  arquivo_tamanho: number | null
+  disciplina_id: number | null
+  status: StatusMaterial
+  motivo_moderacao: string | null
+  autor_nome: string
+  denuncias: number
+  motivos_denuncias: string | null
+}
+
+// Devolvido por perfil_publico(): só nome abreviado e curso.
+export type PerfilPublico = {
+  nome: string
+  curso: string | null
+  equipe: boolean
+  materiais: number
 }
 
 export const CURSOS = [
@@ -60,7 +117,7 @@ export type Perfil = {
 }
 
 // Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo.
-export const VERSAO_TERMOS = '1.2'
+export const VERSAO_TERMOS = '1.3'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).
 export type UsuarioAdmin = {

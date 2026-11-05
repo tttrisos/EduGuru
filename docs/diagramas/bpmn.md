@@ -82,46 +82,69 @@ flowchart LR
 
 ---
 
-## Figura nova — Processo central: Quiz → Pontuação → Ranking → Guru
+## Figura 5 (nova) — Processo central: Quiz → Pontuação → Ranking → Guru
 
 Pedido do orientador: "Quando o módulo avançar, criar um BPMN do processo central". O
-módulo está implementado, então esta figura entra agora (sugestão: Figura 5, na seção 3.3).
+módulo está implementado, então esta figura entra agora, como **Figura 5**, no fim da
+seção 3.3. Versão de 05/11: uma pergunta por vez, com correção imediata, dica 50/50 e
+materiais dos colegas no resultado.
 
 **Raias:** Aluno · Sistema (front-end) · Banco de dados (funções do Supabase)
 
 | # | Elemento | Tipo | Raia | Sai para |
 |---|---|---|---|---|
 | 1 | Abrir a tela Quiz | Evento de início | Aluno | 2 |
-| 2 | Escolher a disciplina | Tarefa | Aluno | 3 |
-| 3 | Sortear até 10 perguntas com gabarito (iniciar_quiz) e descartar rodada aberta anterior | Tarefa | Banco | G1 |
+| 2 | Filtrar por curso / buscar e escolher a disciplina | Tarefa | Aluno | 3 |
+| 3 | Sortear até 10 perguntas com gabarito e descartar rodada aberta anterior (iniciar_quiz) | Tarefa | Banco | G1 |
 | G1 | A disciplina tem perguntas prontas? | Gateway exclusivo | Banco | Não → 4 · Sim → 5 |
 | 4 | Informar "disciplina sem perguntas" | Evento de fim | Sistema | — |
-| 5 | Exibir perguntas (sem o gabarito) | Tarefa | Sistema | 6 |
-| 6 | Responder as perguntas | Tarefa | Aluno | G2 |
-| G2 | Todas respondidas? | Gateway exclusivo | Sistema | Não → 6 (aviso "falta responder N") · Sim → 7 |
-| 7 | Enviar respostas (finalizar_quiz) | Tarefa | Sistema | G3 |
-| G3 | Rodada dentro de 30 minutos e ainda aberta? | Gateway exclusivo | Banco | Não → 8 · Sim → 9 |
-| 8 | Recusar e pedir novo quiz | Evento de fim (erro) | Banco | — |
-| 9 | Corrigir comparando com o gabarito | Tarefa | Banco | 10 |
-| 10 | Pontuar acertos inéditos (Fácil 10, Médio 20, Difícil 30) | Tarefa | Banco | 11 |
-| 11 | Fechar a rodada e registrar log "quiz_finalizado" | Tarefa | Banco | 12 |
-| 12 | Exibir resultado (acertos, pontos, resposta correta) | Tarefa | Sistema | G4 |
-| G4 | Aproveitamento da rodada abaixo de 60%? | Gateway exclusivo | Sistema | Sim → 13 · Não → 14 |
-| 13 | Guru: indicar materiais da disciplina | Tarefa | Sistema | 14 |
-| 14 | Ranking atualizado (soma dos pontos) | Evento de fim | Banco | — |
+| 5 | Exibir a pergunta atual, sem o gabarito (com ilustração, se houver) | Tarefa | Sistema | G2 |
+| G2 | Quer usar a dica 50/50? (uma vez por rodada) | Gateway exclusivo | Aluno | Sim → 6 · Não → 7 |
+| 6 | Eliminar duas alternativas erradas (pedir_dica) | Tarefa | Banco | 7 |
+| 7 | Escolher a alternativa e clicar em "Verificar" | Tarefa | Aluno | 8 |
+| 8 | Gravar a resposta sem permitir troca, corrigir e pontuar acerto inédito (responder_pergunta) | Tarefa | Banco | G3 |
+| G3 | Rodada dentro de 30 minutos e ainda aberta? | Gateway exclusivo | Banco | Não → 9 · Sim → 10 |
+| 9 | Recusar e pedir novo quiz | Evento de fim (erro) | Banco | — |
+| 10 | Mostrar acerto/erro, resposta correta, explicação e pontos | Tarefa | Sistema | G4 |
+| G4 | Há mais perguntas? | Gateway exclusivo | Sistema | Sim → 5 · Não → 11 |
+| 11 | Fechar a rodada, somar acertos e pontos e registrar log "quiz_finalizado" (finalizar_quiz) | Tarefa | Banco | 12 |
+| 12 | Exibir resultado (aproveitamento, pontos, melhor sequência, revisão das erradas) | Tarefa | Sistema | 13 |
+| 13 | Buscar materiais aprovados dos colegas na disciplina (materiais_da_comunidade) | Tarefa | Banco | G5 |
+| G5 | Aproveitamento da rodada abaixo de 60%? | Gateway exclusivo | Sistema | Sim → 14 · Não → 15 |
+| 14 | Exibir os materiais como "Dica do Guru" | Tarefa | Sistema | 16 |
+| 15 | Exibir os materiais como "Materiais dos colegas" | Tarefa | Sistema | 16 |
+| 16 | Ranking atualizado (soma dos pontos) | Evento de fim | Banco | — |
 
-Anotação (associação, linha pontilhada) ligada à tarefa 13: *"No Painel, o Guru também
+Anotação (associação, linha pontilhada) ligada à tarefa 14: *"No Painel, o Guru também
 considera o histórico: aproveitamento < 60% com pelo menos 5 respostas na disciplina."*
+
+Anotação ligada à tarefa 8: *"Pontos: Fácil 10, Médio 20, Difícil 30; cada pergunta só
+pontua na primeira vez em que é acertada."*
 
 ```mermaid
 flowchart LR
   A((Início)) --> B[Escolher disciplina] --> C[Sortear perguntas] --> G1{Tem perguntas?}
   G1 -- Não --> F0((Fim: sem perguntas))
-  G1 -- Sim --> D[Exibir perguntas sem gabarito] --> E[Responder] --> G2{Todas respondidas?}
+  G1 -- Sim --> D[Exibir pergunta sem gabarito] --> G2{Usar dica 50/50?}
+  G2 -- Sim --> DI[Eliminar 2 erradas] --> E[Escolher e Verificar]
   G2 -- Não --> E
-  G2 -- Sim --> H[Enviar respostas] --> G3{Dentro de 30 min?}
+  E --> H[Gravar, corrigir e pontuar] --> G3{Dentro de 30 min?}
   G3 -- Não --> F1((Fim: recusada))
-  G3 -- Sim --> I[Corrigir] --> J[Pontuar acertos inéditos] --> K[Fechar rodada + log] --> R[Exibir resultado] --> G4{Aproveitamento < 60%?}
-  G4 -- Sim --> GU[Guru indica materiais] --> F2((Ranking atualizado))
-  G4 -- Não --> F2
+  G3 -- Sim --> R1[Mostrar correção e explicação] --> G4{Mais perguntas?}
+  G4 -- Sim --> D
+  G4 -- Não --> K[Fechar rodada + log] --> R[Exibir resultado] --> M[Buscar materiais dos colegas] --> G5{Aproveitamento < 60%?}
+  G5 -- Sim --> GU[Dica do Guru] --> F2((Ranking atualizado))
+  G5 -- Não --> CO[Materiais dos colegas] --> F2
 ```
+
+**Texto abaixo da figura:**
+
+> A Figura 5 representa o processo central do EduGuru. O aluno escolhe uma disciplina e o
+> banco de dados sorteia até dez perguntas, que são exibidas uma de cada vez, sem o
+> gabarito. A cada resposta, uma função do banco grava a escolha (que não pode mais ser
+> trocada), corrige, atribui os pontos conforme o nível da pergunta e só então devolve a
+> alternativa correta e a explicação. Uma vez por rodada, o aluno pode pedir a dica 50/50,
+> que elimina duas alternativas erradas sorteadas no banco. Ao final, a rodada é fechada,
+> os pontos passam a contar no ranking e o resultado mostra os materiais aprovados que os
+> colegas compartilharam na disciplina; quando o aproveitamento fica abaixo de 60%, esses
+> materiais são apresentados como indicação do Guru.

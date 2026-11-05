@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Trophy } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
-import type { Disciplina, LinhaRanking } from '../../compartilhado/tipos'
+import { cursosDa, type Disciplina, type LinhaRanking } from '../../compartilhado/tipos'
 import './quiz.css'
 
-// Ranking (RF27): top 10 geral ou por disciplina, calculado no banco.
+// Ranking (RF18): top 10 geral ou por disciplina, calculado no banco.
 
 async function consultarRanking(disciplinaId: string) {
   return await supabase.rpc('ranking', {
@@ -55,7 +55,7 @@ export default function Ranking() {
             <option value="">Ranking geral (todas as disciplinas)</option>
             {disciplinas.map((d) => (
               <option key={d.id} value={d.id}>
-                {d.nome} ({d.curso})
+                {d.nome} ({cursosDa(d).join('/')})
               </option>
             ))}
           </select>

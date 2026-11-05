@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useDialogo } from '../../compartilhado/Dialogo'
 import { supabase } from '../../compartilhado/supabase'
 import TextoRico from '../../compartilhado/TextoRico'
-import { LETRAS, NIVEIS, type Disciplina, type Letra, type Nivel, type Pergunta } from '../../compartilhado/tipos'
+import { LETRAS, NIVEIS, cursosDa, type Disciplina, type Letra, type Nivel, type Pergunta } from '../../compartilhado/tipos'
 import './perguntas.css'
 
-// Banco de perguntas do quiz (só admin). O gabarito e a explicação ficam na tabela "gabaritos".
+// Banco de perguntas do quiz (só admin): cadastrar, editar e excluir. O gabarito e a explicação ficam na tabela "gabaritos".
 
 type Gabarito = { pergunta_id: number; correta: Letra; explicacao: string | null }
 
@@ -31,6 +32,7 @@ async function consultarDados() {
 const ALTERNATIVAS_VAZIAS: Record<Letra, string> = { A: '', B: '', C: '', D: '' }
 
 export default function Perguntas() {
+  const { confirmar } = useDialogo()
   const [lista, setLista] = useState<Pergunta[]>([])
   const [gabaritos, setGabaritos] = useState<Record<number, Gabarito>>({})
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([])
@@ -46,6 +48,10 @@ export default function Perguntas() {
   const [explicacao, setExplicacao] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
   const [salvando, setSalvando] = useState(false)
+  // Edição: id da pergunta, imagem que ela já tem e se o admin pediu para tirá-la.
+  const [editandoId, setEditandoId] = useState<number | null>(null)
+  const [imagemAtual, setImagemAtual] = useState<string | null>(null)
+  const [removerImagem, setRemoverImagem] = useState(false)
 
   async function buscar() {
     const dados = await consultarDados()
@@ -113,7 +119,9 @@ export default function Perguntas() {
       }
     }
 
-    const { error } = await supabase.rpc('criar_pergunta', {
+    // Na edição, sem imagem nova, continua a atual (a não ser que o admin peça para tirar).
+    const imagemFinal = imagemPath ?? (removerImagem ? null : imagemAtual)
+    const dados = {
       p_enunciado: enunciado.trim(),
       p_disciplina_id: Number(disciplinaId),
       p_nivel: nivel,
@@ -123,8 +131,11 @@ export default function Perguntas() {
       p_alternativa_d: alternativas.D.trim(),
       p_correta: correta,
       p_explicacao: explicacao.trim() || null,
-      p_imagem_path: imagemPath,
-    })
+      p_imagem_path: editandoId ? imagemFinal : imagemPath,
+    }
+    const { error } = editandoId
+      ? await supabase.rpc('editar_pergunta', { p_id: editandoId, ...dados })
+      : await supabase.rpc('criar_pergunta', dados)
     setSalvando(false)
 
     if (error) {
@@ -133,17 +144,57 @@ export default function Perguntas() {
       return
     }
 
+    // Imagem antiga trocada ou removida: apaga do armazenamento (as ilustrações do site ficam).
+    if (editandoId && imagemAtual && imagemAtual !== imagemFinal && !imagemAtual.startsWith('ilustracoes/')) {
+      await supabase.storage.from('perguntas').remove([imagemAtual])
+    }
+
+    setMensagem(editandoId ? 'Pergunta atualizada.' : 'Pergunta cadastrada.')
+    limparFormulario()
+    buscar()
+  }
+
+  function limparFormulario() {
+    setEditandoId(null)
+    setImagemAtual(null)
+    setRemoverImagem(false)
     setEnunciado('')
     setAlternativas(ALTERNATIVAS_VAZIAS)
     setCorreta('')
     setExplicacao('')
     setImagem(null)
-    setMensagem('Pergunta cadastrada.')
-    buscar()
+  }
+
+  function editar(item: Pergunta) {
+    const gabarito = gabaritos[item.id]
+    setEditandoId(item.id)
+    setImagemAtual(item.imagem_path)
+    setRemoverImagem(false)
+    setEnunciado(item.enunciado)
+    setDisciplinaId(item.disciplina_id ? String(item.disciplina_id) : '')
+    setNivel(item.nivel)
+    setAlternativas({
+      A: item.alternativa_a ?? '',
+      B: item.alternativa_b ?? '',
+      C: item.alternativa_c ?? '',
+      D: item.alternativa_d ?? '',
+    })
+    setCorreta(gabarito?.correta ?? '')
+    setExplicacao(gabarito?.explicacao ?? '')
+    setImagem(null)
+    setErro('')
+    setMensagem('')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function excluir(item: Pergunta) {
-    if (!window.confirm('Excluir esta pergunta? Ela sai do quiz e do histórico de respostas.')) return
+    const ok = await confirmar({
+      titulo: 'Excluir esta pergunta?',
+      mensagem: 'Ela sai do quiz e do histórico de respostas. Isso não pode ser desfeito.',
+      textoConfirmar: 'Excluir',
+      perigo: true,
+    })
+    if (!ok) return
     const { error } = await supabase.from('perguntas').delete().eq('id', item.id)
     if (error) {
       setErro(error.message)
@@ -181,7 +232,7 @@ export default function Perguntas() {
               <option value="">Disciplina...</option>
               {disciplinas.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {d.nome} ({d.curso})
+                  {d.nome} ({cursosDa(d).join('/')})
                 </option>
               ))}
             </select>
@@ -223,12 +274,29 @@ export default function Perguntas() {
           />
           <label className="campo-arquivo">
             <input type="file" accept=".png,.jpg,.jpeg,.webp,.gif" onChange={aoEscolherImagem} />
-            {imagem ? `Imagem: ${imagem.name}` : `Anexar imagem (opcional, até ${LIMITE_IMAGEM_MB} MB)`}
+            {imagem
+              ? `Imagem: ${imagem.name}`
+              : imagemAtual && !removerImagem
+                ? 'Trocar a imagem atual (opcional)'
+                : `Anexar imagem (opcional, até ${LIMITE_IMAGEM_MB} MB)`}
           </label>
+          {editandoId && imagemAtual && !imagem ? (
+            <label className="item-meta">
+              <input type="checkbox" checked={removerImagem} onChange={(e) => setRemoverImagem(e.target.checked)} />{' '}
+              Remover a imagem atual
+            </label>
+          ) : null}
 
-          <button type="submit" className="btn btn-primario" disabled={salvando}>
-            {salvando ? 'Salvando...' : 'Adicionar pergunta'}
-          </button>
+          <div className="acoes-item">
+            <button type="submit" className="btn btn-primario" disabled={salvando}>
+              {salvando ? 'Salvando...' : editandoId ? 'Salvar alterações' : 'Adicionar pergunta'}
+            </button>
+            {editandoId ? (
+              <button type="button" className="btn btn-secundario" onClick={limparFormulario}>
+                Cancelar
+              </button>
+            ) : null}
+          </div>
         </form>
 
         {erro ? <p className="aviso erro">{erro}</p> : null}
@@ -260,9 +328,14 @@ export default function Perguntas() {
                       {gabarito?.explicacao ? <span className="selo">Com explicação</span> : null}
                     </span>
                   </div>
-                  <button type="button" className="btn btn-perigo" onClick={() => excluir(item)}>
-                    Excluir
-                  </button>
+                  <div className="acoes-item">
+                    <button type="button" className="btn btn-secundario" onClick={() => editar(item)}>
+                      Editar
+                    </button>
+                    <button type="button" className="btn btn-perigo" onClick={() => excluir(item)}>
+                      Excluir
+                    </button>
+                  </div>
                 </li>
               )
             })}

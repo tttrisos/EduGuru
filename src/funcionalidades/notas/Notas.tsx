@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { useDialogo } from '../../compartilhado/Dialogo'
 import { supabase } from '../../compartilhado/supabase'
 import { useAuth } from '../../compartilhado/AuthContext'
-import type { Disciplina, Nota } from '../../compartilhado/tipos'
+import { cursosDa, type Disciplina, type Nota } from '../../compartilhado/tipos'
 import {
   calcularFrequencia,
   calcularNotas,
@@ -14,7 +15,7 @@ import {
 } from './calculoNotas'
 import './notas.css'
 
-// Notas e faltas (RF29), com os campos do boletim da UMC. São dois cadastros e dois
+// Notas e faltas (RF20), com os campos do boletim da UMC. São dois cadastros e dois
 // cálculos separados: notas (M2, MD, MF) e frequência (limite de faltas). Regras em calculoNotas.ts.
 
 async function consultarDados() {
@@ -44,6 +45,7 @@ function classeSituacao(situacao: string) {
 }
 
 export default function Notas() {
+  const { confirmar } = useDialogo()
   const { usuario, perfil } = useAuth()
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([])
   const [notas, setNotas] = useState<Nota[]>([])
@@ -206,7 +208,13 @@ export default function Notas() {
   }
 
   async function excluir(nota: Nota) {
-    if (!window.confirm(`Apagar as notas e as faltas de ${nomeDisciplina(nota)}?`)) return
+    const ok = await confirmar({
+      titulo: `Apagar as notas e as faltas de ${nomeDisciplina(nota)}?`,
+      mensagem: 'Isso não pode ser desfeito.',
+      textoConfirmar: 'Apagar',
+      perigo: true,
+    })
+    if (!ok) return
     const { error } = await supabase.from('notas').delete().eq('id', nota.id)
     if (error) setErro(error.message)
     else buscar()
@@ -228,7 +236,7 @@ export default function Notas() {
 
   const opcoesDisciplinas = disciplinasOrdenadas.map((d) => (
     <option key={d.id} value={d.id}>
-      {d.nome} ({d.curso})
+      {d.nome} ({cursosDa(d).join('/')})
     </option>
   ))
 
