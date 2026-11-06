@@ -144,5 +144,6 @@ npm run build        # gera a versão de publicação em dist/
 
 - `docs/ATUALIZACOES_MONOGRAFIA.md` — o que muda no texto da monografia a cada entrega.
 - `docs/CHECKLIST_ENTREGAS.md` — andamento das entregas.
-- `docs/diagramas/` — diagrama de classes e BPMN.
+- `docs/ROTEIRO_VIDEO.md` — roteiro do vídeo de demonstração (entrega 09/11).
+- `docs/diagramas/` — arquitetura, diagramas de classes e BPMN.
 - `docs/INTEGRACAO_VIACEP.md` — integração com a API ViaCEP.

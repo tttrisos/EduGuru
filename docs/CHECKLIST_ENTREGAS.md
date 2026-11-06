@@ -82,8 +82,8 @@ Legenda: ✅ feito no código/documentação · 👤 depende de vocês (não dá
 | Dashboard com Big Numbers e gráficos | ✅ aluno (6 indicadores + 2 gráficos + Guru) e admin (6 indicadores + 2 gráficos) | `src/funcionalidades/painel/Painel.tsx` |
 | Persistência e regras de negócio | ✅ tudo gravado no Supabase; regras no banco e em `src/funcionalidades/notas/calculoNotas.ts` | — |
 | Monografia: regras de negócio, funcionalidades e decisões técnicas | ✅ texto pronto · 👤 passar para o PDF | `docs/ATUALIZACOES_MONOGRAFIA.md` (página por página) |
-| Branch `entrega0911` no GitHub | ✅ criada localmente · 👤 **push** (Passo 5) | — |
-| Vídeo de até 7 min (sem login) | 👤 roteiro sugerido abaixo | — |
+| Branch `entrega0911` no GitHub | ⚠️ **ainda não existe no GitHub**; a local está num commit antigo (f16248c) · 👤 `git branch -f entrega0911 trabalho` e `git push -u origin entrega0911` | — |
+| Vídeo de até 7 min (sem login) | 👤 roteiro pronto | `docs/ROTEIRO_VIDEO.md` |
 | Sem regressões | ✅ build, lint e testes passando; testes de banco 60/60 OK em 28/10 · 👤 rodar os testes manuais | roteiro "Testes manuais" 1–37 |
 | (23/11) testes unitários, cobertura ≥ 50% | ✅ Vitest + 48 testes na pasta `testes/`, cobertura de 81,6% nos arquivos testados (05/11) · ⚠️ ampliar para as telas, se o coorientador medir o projeto todo | `npm test`, `npm run test:cobertura` |
 | Banco de perguntas grande, com plano de ampliação | ✅ 120 perguntas (8 disciplinas × 15) com gabarito | `supabase/14_perguntas_iniciais.sql`; texto no RF16 do roteiro (páginas 25–26) |
@@ -125,36 +125,15 @@ ranking, Guru, notas e faltas), RF21 (Minha conta), RF22 (novo aceite), RF23 (Ho
 2. ✅ Projeto reorganizado em pastas por funcionalidade: cada pasta de `src/funcionalidades/`
    tem as telas, as regras e o CSS daquela funcionalidade (mapa no `README.md`); os testes
    unitários ficam todos na pasta `testes/` (05/11).
-3. 👤 **Rodar no SQL Editor, nesta ordem:** `supabase/11_quiz_ranking_guru.sql` (imagens e
-   explicações), `supabase/13_disciplinas_cursos.sql` (deixa só as disciplinas da grade de SI,
-   ADS e ES) e `supabase/14_perguntas_iniciais.sql` (negrito e explicações das 120 perguntas).
-   Os três podem ser rodados mais de uma vez. Rodar também, de novo, `supabase/12_notas_e_painel.sql`
-   (coluna `m2` para a simulação da MF e remoção do total de aulas).
-4. ✅ Banco inicial de perguntas (script 14). 👤 Revisar as perguntas e ligar alguns
-   materiais às disciplinas (para o Guru ter o que indicar no vídeo).
-4b. 👤 **Rodar no SQL Editor** `supabase/15_materiais_comunidade_quiz.sql` (depois do 14). Pode
-   ser rodado mais de uma vez. As duas consultas do fim mostram os materiais por situação e
-   quantas perguntas ficaram com ilustração (36). Depois disso, todos aceitam de novo os
-   termos (versão 1.3) no próximo acesso.
-4c. 👤 **Rodar no SQL Editor** `supabase/16_editar_perguntas.sql` (depois do 15). Pode ser rodado
-   mais de uma vez. Ele cria a função de editar perguntas (as telas Disciplinas, Perguntas e
-   Meus materiais ganharam o botão "Editar" em 05/11).
+3. ✅ Scripts 11 a 16 rodados no SQL Editor e conferidos em 05/11: 16 disciplinas em cada curso
+   (SI, ADS e ES), 120 perguntas (8 disciplinas × 15: 6 Fácil, 5 Médio e 4 Difícil) e 36 com
+   ilustração. Todos aceitam de novo os termos (versão 1.3) no próximo acesso.
+4. 👤 Cadastrar os dados de exemplo do vídeo (lista em `docs/ROTEIRO_VIDEO.md`, item 1).
 5. 👤 Fazer os testes manuais 1 a 37 (`ATUALIZACOES_MONOGRAFIA.md`, fim do arquivo).
-6. 👤 **Enviar ao GitHub:** `git push -u origin entrega0911` (e, se quiserem o site no ar,
+6. 👤 **Enviar ao GitHub:** `git branch -f entrega0911 trabalho` e `git push -u origin entrega0911` (e, se quiserem o site no ar,
    abrir um Pull Request da `entrega0911` para a `main`: o GitHub Actions publica sozinho).
 7. 👤 Passar as mudanças do roteiro para a monografia e redesenhar as figuras.
-8. 👤 Gravar o vídeo e avisar o orientador.
+8. 👤 Gravar o vídeo seguindo `docs/ROTEIRO_VIDEO.md` e avisar o orientador.
 
-## Roteiro sugerido para o vídeo (até 7 min, sem login)
-1. (0:00) Painel do aluno: big numbers e gráficos.
-2. (0:45) Quiz: escolher a disciplina, responder uma pergunta por vez (acertar uma e errar
-   outra para mostrar o retorno verde/vermelho), resultado com pontos, revisão e Guru.
-3. (2:00) Ranking geral e por disciplina; Minha conta → ocultar nome → "Aluno anônimo".
-4. (2:45) Notas: nota inválida (erro), salvar, situação calculada, alerta de faltas.
-5. (3:30) Meus materiais: link recusado pelo filtro, link do YouTube publicado, PDF em
-   análise; fim do quiz com os materiais dos colegas e o perfil público; denúncia.
-6. (4:00) Admin: painel do admin, cadastrar pergunta (validações), moderação de materiais,
-   Usuários (redefinir MFA), Logs (limpeza manual).
-7. (5:30) LGPD: Termo/Política 1.3, novo aceite, baixar meus dados (JSON).
-8. (6:15) Código: mostrar o mapa do `README.md` (onde fica cada funcionalidade) e a
-   pasta `supabase/`.
+## Roteiro do vídeo
+Está em [`docs/ROTEIRO_VIDEO.md`](ROTEIRO_VIDEO.md): preparação, cenas com tempos e RFs, sugestão de fala e conferência final.

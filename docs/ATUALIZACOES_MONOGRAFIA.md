@@ -3,9 +3,10 @@
 Este arquivo diz **exatamente onde** cada mudança entra no documento da monografia, na
 ordem das páginas, para o texto andar junto com o código.
 
-- **Base:** `[MONOGRAFIA]EduGuru.pdf` recebido em **05/11/2026** (40 páginas, ainda com o texto
-  da primeira entrega: MFA "previsto", Tailwind, RF15 a RF20 "[PREVISTO]", apêndices na versão 1.0).
-- **Código conferido:** branch `trabalho`, scripts `supabase/01` a `15`, em 05/11/2026.
+- **Base:** `[MONOGRAFIA]EduGuru.pdf` na **versão de 05/11/2026, 44 páginas** (já com Resumo,
+  Introdução, 1.3, Figura 1 e capítulo 2 até a 2.5 passados). Os itens já aplicados saíram deste
+  arquivo; ficou só o que falta.
+- **Código conferido:** branch `trabalho`, scripts `supabase/01` a `16`, em 05/11/2026.
 - **Numeração dos RFs:** a mesma do PDF. RF16 a RF20 continuam sendo quiz, pontuação, ranking,
   Guru e notas (agora implementados), e os RFs novos vão de **RF21 a RF29**. O código, o
   README e o checklist usam esta mesma numeração.
@@ -15,92 +16,47 @@ ordem das páginas, para o texto andar junto com o código.
 - **Ação:** SUBSTITUIR, ACRESCENTAR DEPOIS, APAGAR ou INSERIR (seção/RF novo);
 - o texto final, pronto para colar (entre aspas ou em bloco `>`).
 
-Marque `[x]` ao passar cada item para o documento. Os números de página mudam conforme vocês
-inserem texto. Por isso, guiem-se pelo **Localizar**, e a página serve só de referência.
+Ao passar um item, pode apagá-lo daqui (ou marcar `[x]`). As páginas citadas são as do PDF de
+05/11 (44 págs.) e mudam conforme o texto entra; guiem-se pelo **Localizar**.
 
 **Regra para as próximas mudanças:** toda funcionalidade nova entra **neste arquivo, na
 página/seção certa** (não no fim), no mesmo dia em que o código muda.
 
----
-
-## 0. Correções que valem para o documento inteiro
-
-- [ ] **Tempo verbal:** tudo o que está descrito está implementado. Trocar o futuro pelo
-  presente ("o sistema deverá exibir" pode ficar nos RFs, que são requisitos; mas no texto
-  corrido usar "o sistema exibe", não "exibirá" / "será implementado").
-- [ ] **Apagar todas as marcações** `[PREVISTO]`, `[previsto]`, `(Previsto)` e as linhas
-  `Status: Previsto para a próxima etapa do projeto.` (RF03, RF04, RF10, RF15 a RF20, RNF02).
-  Os textos novos abaixo já vêm sem elas.
-- [ ] **Remover as marcações amarelas** (pedido do orientador).
-- [ ] **"Tailwind CSS"**: o projeto nunca usou Tailwind. Aparece no Resumo (pág. 3), no
-  Abstract (pág. 4) e na Figura 1 (pág. 9). Os textos novos abaixo já corrigem.
-- [ ] **Nome do coorientador:** o nome completo é "Prof. Alessandro Aparecido da Silva Horas"
-  (como na pág. 2). O Apêndice B (pág. 36) estava sem "Horas"; o texto novo do Apêndice B
-  abaixo e a página `/privacidade` do site já foram corrigidos.
-- [ ] **CRUD completo:** desde 05/11 o sistema cadastra, lista, **edita** e exclui disciplinas e
-  perguntas (admin) e materiais (o autor). Os RFs abaixo e o Termo 1.3 (Apêndice A e página
-  `/termos`) já dizem isso.
+**Atenção ao colar:** os trechos deste arquivo usam crases (`assim`) só para marcar nomes de
+código. **No Word, não cole as crases**: escreva o nome sem elas (ou em itálico).
 
 ---
 
-## Pág. 3 — RESUMO
+## 0. Correções no que já foi passado (revisão de 05/11)
 
-- [ ] **Localizar:** "O presente trabalho descreve o desenvolvimento do EduGuru" (o parágrafo todo).
-  **Ação:** SUBSTITUIR o parágrafo por:
+- [x] **Crases aparecendo no texto** (págs. 9–12): `iniciar_quiz`, `responder_pergunta`,
+  `finalizar_quiz`, `src/funcionalidades`, `src/compartilhado`, `testes`, `supabase`,
+  `public/ilustracoes`, `supabase.auth.mfa`, `aal2` (3 vezes) e `security definer`. Apagar as
+  crases (no Word: Ctrl+H, localizar `` ` `` e substituir por nada) e, se quiserem, deixar esses
+  nomes em itálico.
+- [x] **Resumo (pág. 3) e Abstract (pág. 4) em dois parágrafos.** A ABNT (NBR 6028) pede o resumo
+  em **parágrafo único**. Juntar "Quando o aluno apresenta baixo desempenho..." ao parágrafo de
+  cima, e o mesmo no Abstract ("When a student shows low performance...").
+- [x] **Abstract (pág. 4):** "As **na** expected result" → "As **an** expected result".
+- [x] **2.1 (pág. 11):** "não depende apenas de esconder botões na interface**,** mesmo que alguém
+  tente acessar a API" → trocar a vírgula por **dois-pontos** ("...na interface: mesmo que alguém
+  tente..."), como estava no texto original.
+- [x] **2.2 (pág. 13):** "até **vinteregistros** de falha" → "até **vinte registros** de falha".
+- [x] **1.3 (pág. 10):** "Isso vale para os materiais compartilhados" → "**O mesmo** vale para os
+  materiais compartilhados" (do jeito que está, "Isso" parece se referir ao ranking).
+- [x] **1.3 (págs. 9–10):** os dois últimos itens ("As regras que não podem depender do
+  navegador..." e "O código-fonte está organizado por funcionalidade...") entraram como
+  **marcadores**. Eles não são tecnologias, são texto corrido: tirar o marcador e deixar como
+  dois parágrafos normais, antes da Figura 1.
+- [x] **2.4 (pág. 15)** cita "(seção 2.6)", mas a **seção 2.6 ainda não foi inserida** (item logo
+  abaixo).
+- [x] **Linhas "Status:" vazias** depois do RF16, RF17, RF18, RF19 e RF20 (págs. 30–33): apagar.
+  Elas somem de qualquer forma quando esses RFs forem substituídos (seção 3.1 abaixo).
+- [x] **Ainda falam em "etapa futura" / "próxima etapa"**, e são corrigidos pelos itens abaixo:
+  RF10, RF15 a RF20, RNF08, o texto da 3.2 (Figuras 2 e 3), o texto da 3.3 (Figura 4) e os
+  Apêndices A, B e C (que continuam na versão 1.0).
 
-> O presente trabalho descreve o desenvolvimento do EduGuru, uma plataforma Web focada no
-> gerenciamento, acompanhamento e personalização da jornada de aprendizagem de estudantes
-> universitários. O problema central abordado é a dispersão de informações acadêmicas e a
-> consequente falta de engajamento dos alunos com o próprio desempenho. Para solucionar essa
-> questão, o projeto propõe a construção de um sistema que vai além do simples armazenamento
-> de notas e faltas, utilizando um motor de gamificação baseado em quizzes interativos,
-> pontuação e rankings. A metodologia abrange o desenvolvimento de uma interface responsiva
-> utilizando React e TypeScript, com CSS global, integrada a um back-end gerenciado pelo
-> Supabase (Backend-as-a-Service), que provê autenticação com verificação em duas etapas,
-> banco de dados PostgreSQL com regras de acesso por linha (Row Level Security) e uma API REST
-> nativa. O sistema permite ao aluno responder quizzes por disciplina, corrigidos e pontuados
-> no próprio banco de dados, acompanhar sua posição em um ranking, registrar notas e faltas
-> para acompanhar sua situação acadêmica em um painel com indicadores e gráficos e
-> compartilhar materiais de estudo com os colegas, que passam por filtro automático e
-> moderação. Quando o aluno apresenta baixo desempenho em uma disciplina, o mecanismo de
-> recomendação (Guru) indica materiais de estudo relacionados. Como resultado esperado, a
-> plataforma visa aumentar a retenção de conhecimento e a motivação dos estudantes.
-
-- [ ] **Palavras-chave:** sem alteração.
-
-## Pág. 4 — ABSTRACT
-
-- [ ] **Localizar:** "This paper describes the development of EduGuru" (o parágrafo todo).
-  **Ação:** SUBSTITUIR por:
-
-> This paper describes the development of EduGuru, a Web platform focused on the
-> management, monitoring, and personalization of the learning journey for university
-> students. The central problem addressed is the dispersion of academic information and the
-> consequent lack of student engagement with their own performance. To solve this issue, the
-> project proposes the construction of a system that goes beyond the simple storage of grades
-> and absences, utilizing a gamification engine based on interactive quizzes, scoring, and
-> rankings. The methodology encompasses the development of a responsive interface using React
-> and TypeScript, with global CSS, integrated with a backend managed by Supabase
-> (Backend-as-a-Service), which provides authentication with two-factor verification, a
-> PostgreSQL database with Row Level Security, and a native REST API. The system allows
-> students to answer quizzes by subject, graded and scored in the database itself, follow
-> their position in a ranking, record grades and absences to monitor their academic status
-> on a dashboard with indicators and charts, and share study materials with classmates,
-> which go through automatic filtering and moderation. When a student shows low performance
-> in a subject, the recommendation mechanism (Guru) suggests related study materials. As an
-> expected result, the platform aims to increase knowledge retention and student motivation.
-
-- [ ] **Keywords:** sem alteração.
-
-## Pág. 5 — LISTA DE FIGURAS
-
-- [ ] **Ação:** SUBSTITUIR a lista inteira por:
-
-> Figura 1 - Diagrama de Arquitetura do Sistema EduGuru.
-> Figura 2 - Diagrama de Classes: conta, conteúdo, comunidade e auditoria.
-> Figura 3 - Diagrama de Classes: quiz, pontuação, ranking, Guru e notas.
-> Figura 4 - Diagrama de processo (BPMN) do login com verificação em duas etapas.
-> Figura 5 - Diagrama de processo (BPMN) do quiz, da pontuação e das indicações do Guru.
+---
 
 ## Pág. 6 — SUMÁRIO
 
@@ -131,351 +87,9 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ---
 
-## Pág. 7 — 1. INTRODUÇÃO
+## Pág. 16 — INSERIR seção nova 2.6 (logo depois da 2.5, antes de "3. ANÁLISE E PROJETO")
 
-- [ ] **Localizar:** "Além disso, a plataforma identifica as dificuldades para recomendar
-  materiais adequados, apoiando-se em conceitos de ambientes digitais de aprendizagem
-  discutidos por Almeida (2003)."
-  **Ação:** SUBSTITUIR por:
-
-> Além disso, a plataforma identifica as dificuldades para recomendar materiais adequados,
-> inclusive materiais compartilhados pelos próprios colegas, apoiando-se em conceitos de
-> ambientes digitais de aprendizagem discutidos por Almeida (2003).
-
-### Pág. 7–8 — 1.1 OBJETIVOS (Objetivos Específicos)
-
-- [ ] **Localizar:** "Implementar funcionalidades para o registro e acompanhamento de
-  disciplinas, notas, atividades e controle de faltas."
-  **Ação:** SUBSTITUIR por: "Implementar funcionalidades para o registro e acompanhamento de
-  disciplinas, notas e faltas, no formato do boletim da UMC."
-- [ ] **Localizar:** "Desenvolver o motor de gamificação estruturado em quizzes, atribuição de
-  pontos e geração de rankings (global e de amigos)."
-  **Ação:** SUBSTITUIR por: "Desenvolver o motor de gamificação estruturado em quizzes,
-  atribuição de pontos e geração de rankings (geral e por disciplina)."
-  (O ranking "de amigos" saiu do escopo: exigiria uma função social, com convites e lista de
-  amigos, que aumenta o tratamento de dados pessoais sem ganho para o objetivo do projeto.)
-- [ ] **Localizar:** "Criar um mecanismo leve de recomendação de conteúdos (o "Guru") baseado
-  no desempenho dos alunos nos quizzes."
-  **Ação:** SUBSTITUIR por: "Criar um mecanismo leve de recomendação de conteúdos (o "Guru")
-  baseado no desempenho dos alunos nos quizzes, apoiado por uma biblioteca colaborativa de
-  materiais compartilhados pelos alunos e moderada."
-- [ ] **Ação:** ACRESCENTAR um último objetivo específico:
-  "Garantir a segurança e a privacidade dos dados, com verificação em duas etapas, controle
-  de acesso no próprio banco de dados, registros de auditoria e adequação à LGPD."
-
-### Pág. 8 — 1.2 JUSTIFICATIVA
-
-- [ ] **Localizar:** "seja calculando notas de M1, M2, Notas Diversas (ND), Exames ou
-  acompanhando o Conceito final, dependendo das regras específicas de cada disciplina."
-  **Ação:** SUBSTITUIR por: "seja calculando as médias do boletim (M1, ND, NI, M2, média da
-  disciplina, exame e média final) ou controlando o limite de faltas, dependendo das regras
-  específicas de cada disciplina."
-- [ ] **Localizar:** "Do ponto de vista social e educacional, sistemas de recomendação podem
-  guiar o estudante em suas fraquezas (LEITE et al., 2019)." **Ação:** SUBSTITUIR por:
-
-> Do ponto de vista social e educacional, sistemas de recomendação podem guiar o estudante em
-> suas fraquezas, e, em ambientes educacionais, a forma como essas recomendações são
-> apresentadas ganha ainda mais importância, "visto que pode influenciar no processo de ensino
-> e aprendizagem" (SOUZA; GASPARINI; MACHADO, 2019, p. 376).
-
-  Motivo: a referência LEITE et al. (2019) não foi encontrada em nenhuma base (SBC Open Lib,
-  RENOTE, Google Acadêmico) e estava sem local de publicação. O artigo de Souza, Gasparini e
-  Machado (RENOTE, 2019) trata do mesmo tema, tem acesso aberto
-  (https://doi.org/10.22456/1679-1916.99521) e o trecho citado está no resumo, na primeira
-  página do artigo (p. 376). Se vocês tiverem o arquivo do LEITE et al. e quiserem mantê-lo,
-  me mandem que eu completo a referência.
-
-### Pág. 8–9 — 1.3 TECNOLOGIAS, FERRAMENTAS E ARQUITETURA
-
-- [ ] **Localizar:** o item que começa com "Front-end (Interface Web): Desenvolvido utilizando
-  a biblioteca React". **Ação:** SUBSTITUIR o item inteiro por:
-
-> • Front-end (Interface Web): desenvolvido com a biblioteca React em conjunto com TypeScript
-> e o empacotador Vite, com interface em CSS global com variáveis, roteamento com React Router
-> (HashRouter) e ícones Lucide. Essa escolha justifica-se pela necessidade de criar uma
-> interface componentizada, ágil e responsiva, garantindo acesso adequado via navegadores em
-> computadores, tablets e smartphones. O front-end é publicado no GitHub Pages
-> (https://tttrisos.github.io/EduGuru/) por um fluxo de integração e entrega contínuas
-> (GitHub Actions): a cada atualização da branch principal, o código passa por verificação
-> estática (ESLint) e pelos testes automatizados (Vitest), é compilado e publicado
-> automaticamente, sem passos manuais.
-
-- [ ] **Localizar:** o item que começa com "Back-end e Banco de Dados (BaaS)". **Ação:**
-  SUBSTITUIR o item inteiro por:
-
-> • Back-end e Banco de Dados (BaaS): a plataforma utiliza os serviços do Supabase. Esta
-> ferramenta atua como um Backend-as-a-Service, fornecendo nativamente a infraestrutura de
-> banco de dados relacional PostgreSQL, a autenticação (Supabase Auth), o armazenamento de
-> arquivos (Supabase Storage, em compartimentos privados) e a geração automática da Data API
-> para o consumo dos dados pelo front-end. As regras que não podem depender do navegador
-> ficam em funções do próprio banco de dados, e tarefas periódicas, como a limpeza dos logs,
-> são executadas pela extensão pg_cron. O Supabase foi escolhido por acelerar o ciclo de
-> desenvolvimento e dispensar servidor próprio.
-
-- [ ] **Localizar:** o item que começa com "O Módulo "Guru" (Motor de Recomendação)".
-  **Ação:** SUBSTITUIR o item inteiro por:
-
-> • O Módulo "Guru" (Motor de Recomendação): o sistema de recomendações é um algoritmo
-> baseado em regras (rule-based), executado por uma função do banco de dados. Ele calcula o
-> aproveitamento do aluno em cada disciplina (acertos ÷ respostas, considerando todas as
-> rodadas) e, quando esse valor fica abaixo de 60% com pelo menos cinco respostas, indica os
-> materiais de estudo ligados à mesma disciplina. As indicações aparecem no Painel e no
-> resultado do quiz, junto dos materiais aprovados que os colegas compartilharam.
-
-- [ ] **Localizar:** o item que começa com "Segurança e Autenticação: O módulo Supabase Auth
-  gerenciará". **Ação:** SUBSTITUIR o item inteiro por:
-
-> • Segurança e Autenticação: o módulo Supabase Auth gerencia o acesso e as credenciais dos
-> usuários, com verificação em duas etapas obrigatória. Em conjunto, políticas de Row Level
-> Security (RLS) aplicadas diretamente no banco de dados garantem que cada usuário acesse
-> apenas os dados permitidos ao seu perfil, em conformidade com as boas práticas de
-> privacidade e proteção de dados.
-
-- [ ] **Ação:** ACRESCENTAR DEPOIS do item "Segurança e Autenticação" (antes da Figura 1)
-  os dois parágrafos abaixo.
-
-> As regras que não podem depender do navegador foram implementadas no banco de dados. O
-> sorteio, a correção e a pontuação do quiz são feitos por funções PostgreSQL
-> (`iniciar_quiz`, `responder_pergunta` e `finalizar_quiz`), e o aluno não tem permissão de
-> gravar diretamente nas tabelas de rodadas e respostas, o que impede alterar a própria
-> pontuação pela API. O gabarito das perguntas fica em uma tabela separada, legível apenas por
-> administradores, e o aluno só recebe a resposta correta de uma pergunta depois que a
-> resposta dele foi gravada, sem possibilidade de alteração. O ranking também é uma função do
-> banco, que expõe apenas posição, nome abreviado e pontos. O mesmo vale para os materiais
-> compartilhados: o filtro de conteúdo é aplicado por um gatilho do banco, e não apenas na
-> tela. Já as regras de cálculo das notas (médias, exame e limite de faltas) ficam em um
-> módulo TypeScript sem dependência de tela ou banco, o que permite testá-las com testes
-> unitários automatizados (Vitest), executados a cada publicação.
->
-> O código-fonte está organizado por funcionalidade. No front-end, cada funcionalidade tem
-> uma pasta em `src/funcionalidades` (home, acesso, lgpd, disciplinas, perguntas, materiais,
-> quiz, notas, painel e admin) que reúne as suas telas, as suas regras de negócio e o seu
-> estilo visual; o que é usado por várias telas (conexão com o banco, sessão do usuário, layout
-> e componentes visuais) fica em `src/compartilhado`, e os testes unitários automatizados ficam
-> separados, na pasta `testes`. No
-> back-end, a estrutura do banco está na pasta `supabase`, em scripts SQL numerados de 01 a
-> 16 que, executados em ordem, criam as tabelas, as regras de acesso (RLS), as funções, as
-> disciplinas da grade dos três cursos e o banco inicial de perguntas. As ilustrações das
-> perguntas ficam em `public/ilustracoes` e são publicadas junto com o site.
-
-### Pág. 9 — Figura 1 (Arquitetura)
-
-- [ ] **Ação:** REDESENHAR a figura com estas caixas (a atual tem Tailwind, "JWT / Go" e não
-  tem Storage, pg_cron, ViaCEP nem GitHub):
-  - **Usuário (navegador)** — Aluno e Administrador → **Front-end**: React + TypeScript +
-    Vite, CSS global (sem Tailwind), HashRouter. Telas: Home pública, Login/MFA, Painel,
-    Quiz, Ranking, Notas, Disciplinas, Perguntas, Materiais (com Moderação), Perfil público,
-    Usuários, Logs, Minha conta.
-  - **GitHub (repositório)** → **GitHub Actions** (lint, testes, build) → **GitHub Pages**
-    (hospedagem do front-end).
-  - **Supabase**, com quatro caixas internas: **Auth** (login, MFA/TOTP, e-mails de
-    confirmação e de redefinição), **Banco PostgreSQL** (tabelas + RLS + funções
-    `security definer` + gatilhos de auditoria e de filtro), **Storage** (arquivos de
-    materiais e imagens de perguntas, compartimentos privados), **pg_cron** (limpeza diária
-    de logs).
-  - **ViaCEP** (API externa, chamada direto do navegador só com o CEP).
-  - Setas: Front-end ↔ Supabase (HTTPS, chave pública + token JWT do usuário); Front-end →
-    ViaCEP (HTTPS, só o CEP).
-- [ ] **Legenda:** sem alteração ("Figura 1 - Diagrama de Arquitetura do Sistema EduGuru.").
-
----
-
-## Pág. 9 — 2. DESENVOLVIMENTO (introdução)
-
-- [ ] Sem alteração.
-
-## Pág. 9–10 — 2.1 Autenticação, Autorização e Criptografia
-
-- [ ] **1º parágrafo** ("A autenticação do EduGuru é feita por meio do Supabase Auth..."):
-  sem alteração.
-- [ ] **Localizar:** "A verificação em duas etapas (MFA/TOTP), baseada no recurso nativo do
-  Supabase Auth (supabase.auth.mfa), está prevista para uma próxima etapa" (o 2º parágrafo
-  todo). **Ação:** SUBSTITUIR por:
-
-> A verificação em duas etapas (MFA/TOTP) é obrigatória para todos os usuários e usa o
-> recurso nativo do Supabase Auth (`supabase.auth.mfa`). No primeiro acesso, depois de
-> validar e-mail e senha, o sistema exibe um QR Code (e a chave em texto, como alternativa)
-> para ser lido em um aplicativo autenticador; o fator só é ativado após a confirmação do
-> primeiro código de 6 dígitos. Nos acessos seguintes, o sistema pede o código atual do
-> aplicativo. Somente após essa etapa a sessão é elevada ao nível de garantia `aal2`. A
-> exigência não fica apenas na interface: políticas restritivas de Row Level Security em
-> todas as tabelas e no armazenamento de arquivos recusam qualquer sessão que não esteja em
-> `aal2`, de modo que uma senha vazada não basta para acessar os dados, mesmo chamando a API
-> diretamente.
-
-- [ ] **Localizar:** "Isso significa que a restrição de que apenas administradores podem
-  cadastrar disciplinas, perguntas e materiais, ou excluir contas de alunos, não depende
-  apenas de esconder botões na interface". **Ação:** SUBSTITUIR esse trecho por: "Isso
-  significa que a restrição de que apenas administradores podem cadastrar, editar e excluir
-  disciplinas e perguntas, moderar materiais ou excluir contas de outros usuários não depende
-  apenas de esconder botões na interface" (o restante do parágrafo continua igual).
-- [ ] **Ação:** ACRESCENTAR DEPOIS desse 3º parágrafo (fim da seção 2.1) os parágrafos:
-
-> A exclusão de contas é feita por funções do banco executadas com privilégio de servidor
-> (`security definer`), que verificam quem as chamou; a chave administrativa do Supabase
-> (service_role) nunca é exposta no front-end.
->
-> Durante a revisão da segunda etapa foi identificada e corrigida uma falha de autorização:
-> a política que permitia ao usuário editar o próprio perfil não restringia as colunas, o que
-> permitiria a um aluno alterar o próprio papel para administrador por meio da API. A
-> permissão de alteração passou a ser concedida apenas às colunas nome, curso, cidade, estado
-> e preferência de exibição no ranking; papel e dados de consentimento só são alterados por
-> funções do servidor.
->
-> Para o caso de perda do aparelho com o aplicativo autenticador, um administrador pode
-> redefinir a verificação em duas etapas do usuário pela tela Usuários. A operação é feita
-> por uma função do banco que verifica se quem a chamou é administrador com sessão `aal2`,
-> remove o fator cadastrado e registra a ação no log de auditoria; a senha continua sendo
-> exigida e, no acesso seguinte, o usuário cadastra o aplicativo novamente. Além disso, após
-> cinco códigos inválidos consecutivos a sessão é encerrada e o usuário precisa informar a
-> senha de novo; cada código inválido e o bloqueio ficam registrados no log. Como limitação,
-> o limite de cinco tentativas é controlado pela aplicação, por sessão; o próprio Supabase
-> Auth também limita as verificações por endereço IP, e um bloqueio por conta no servidor
-> exigiria um recurso disponível apenas nos planos pagos do Supabase.
->
-> A recuperação de acesso ("esqueci minha senha") usa o recurso nativo do Supabase Auth: o
-> usuário informa o e-mail e recebe um link que abre a tela de nova senha. A resposta exibida
-> é sempre a mesma, exista ou não conta com aquele e-mail, para não revelar quem está
-> cadastrado. Se a conta possui verificação em duas etapas, o código do aplicativo
-> autenticador é exigido antes da troca, e o acesso apenas ao e-mail não basta. Concluída a
-> troca, todas as sessões abertas da conta são encerradas. Para compatibilizar o link do
-> e-mail com o roteamento por hash (HashRouter), o cliente Supabase usa o fluxo PKCE, em que o
-> link retorna com um código de uso único que só pode ser trocado por uma sessão no mesmo
-> navegador em que o pedido foi feito.
-
-## Pág. 10–11 — 2.2 Logs de Auditoria e Rastreabilidade
-
-- [ ] **Localizar:** "Para atender à exigência de rastreabilidade das ações realizadas no
-  sistema, foram criados gatilhos" (o 1º parágrafo todo). **Ação:** SUBSTITUIR por:
-
-> Para atender à exigência de rastreabilidade das ações realizadas no sistema, foram criados
-> gatilhos (triggers) no banco de dados que registram automaticamente toda operação de
-> inserção, atualização ou exclusão nas tabelas de disciplinas, perguntas, materiais, perfis
-> e notas, sem depender de código escrito no front-end para cada tela. Cada registro de log
-> armazena o usuário responsável, a ação realizada, a tabela e o registro afetados, os
-> detalhes da operação e a data/hora do evento. Como medida de minimização de dados, no caso
-> do perfil o log guarda apenas quais campos foram alterados, e não os valores; e as
-> alterações de notas e faltas são registradas sem nenhum valor (apenas ação, tabela e
-> registro), porque o administrador lê os logs e não deve ver as notas dos alunos.
-
-- [ ] **Localizar:** "Eventos que não correspondem diretamente a uma operação de banco, como
-  login, logout e tentativas de verificação em duas etapas, são registrados explicitamente
-  pela aplicação quando ocorrem." **Ação:** SUBSTITUIR essa frase por (fica como um novo
-  parágrafo):
-
-> Eventos que não correspondem a uma operação de banco são registrados por funções do banco
-> que aceitam apenas uma lista fechada de eventos e sempre usam o usuário da sessão atual; o
-> front-end não grava diretamente na tabela de logs. São eles: login concluído, logout,
-> ativação da verificação em duas etapas, códigos inválidos, bloqueio por tentativas,
-> redefinição da verificação por um administrador, pedidos de redefinição de senha (limitados
-> a cinco por e-mail a cada dez minutos), senhas redefinidas, quizzes finalizados (com
-> acertos e pontos), limpezas manuais de logs e exclusões de conta. As tentativas de login
-> com senha incorreta, que ocorrem sem sessão, só são registradas quando o e-mail pertence a
-> uma conta existente, o que impede a criação de registros com e-mails inventados; a função
-> não retorna nenhuma informação, de modo que quem a chama não descobre se o e-mail está
-> cadastrado, e há um limite de vinte registros por e-mail a cada dez minutos. Como
-> limitação, um terceiro que conheça o e-mail de um usuário ainda pode gerar até vinte
-> registros de falha a cada dez minutos para esse e-mail.
-
-- [ ] **Localizar:** "Os registros de auditoria ficam disponíveis para consulta em uma tela
-  exclusiva para administradores" (o último parágrafo da 2.2, que continua na pág. 11 até
-  "...refletir o estado atual."). **Ação:** SUBSTITUIR o parágrafo inteiro por:
-
-> Os registros de auditoria ficam disponíveis para consulta em uma tela exclusiva para
-> administradores, que lista os 200 eventos mais recentes. Conforme apontado pela orientação
-> do projeto durante a validação da entrega de 28/09, a Política de Privacidade previa a
-> exclusão automática dos logs após 90 dias. A exclusão automática foi implementada com a
-> extensão pg_cron: uma tarefa agendada executa diariamente às 03h (horário de Brasília) uma
-> função própria, separada da usada pelo administrador, que apaga os registros com mais de 90
-> dias e registra a própria execução no log. Essa função não pode ser chamada pela API por
-> nenhum usuário. O administrador mantém, como reforço, a limpeza manual pela tela de Logs;
-> essa função não recebe parâmetro (o prazo de 90 dias é fixo dentro dela), e cada limpeza
-> manual também é registrada no log, com quem a fez e quantos registros foram removidos.
-
-## Pág. 11 — 2.3 Integração com API Externa — ViaCEP
-
-- [ ] Sem alteração. (A finalidade de cidade/estado mudou só na Política, Apêndice B.)
-
-## Pág. 11–12 — 2.4 Adequação à LGPD
-
-- [ ] **Localizar:** "disponíveis em páginas acessíveis a qualquer momento pelo sistema, tanto
-  pelo menu lateral quanto pelo rodapé, independentemente de o usuário estar ou não
-  autenticado". **Ação:** SUBSTITUIR por: "disponíveis em páginas acessíveis a qualquer
-  momento pelo rodapé de todas as telas do sistema, inclusive na página inicial pública e na
-  tela de login, independentemente de o usuário estar ou não autenticado".
-- [ ] **Localizar:** "descrevendo os dados reais coletados pelo sistema (nome, e-mail, senha,
-  curso, cidade, estado) a finalidade de cada dado". **Ação:** SUBSTITUIR por: "descrevendo
-  os dados reais tratados pelo sistema (nome, e-mail, senha, curso, cidade e estado, desempenho
-  no quiz, notas e faltas e materiais compartilhados), a finalidade de cada dado".
-- [ ] **Localizar:** "O aceite dos dois documentos é exigido no momento do cadastro, por meio
-  de uma caixa de seleção obrigatória com links diretos para o conteúdo completo de cada um."
-  **Ação:** ACRESCENTAR DEPOIS dessa frase: "O aceite é registrado no banco de dados com data,
-  hora e versão dos documentos; quando o Termo ou a Política mudam de versão, o sistema pede
-  um novo aceite no acesso seguinte, permitindo também excluir a conta sem aceitar."
-- [ ] **Ação:** ACRESCENTAR no fim da seção 2.4 (depois de "...está detalhado no Apêndice C."):
-
-> Os direitos do titular (art. 18 da LGPD) são exercidos diretamente no sistema, pela tela
-> "Minha conta": acesso a todos os dados guardados, inclusive os próprios registros de
-> atividade, com download em arquivo JSON; correção de nome, curso, cidade e estado;
-> revogação do consentimento do campo opcional de localização; oposição à exibição do nome
-> no ranking; e exclusão da conta, que atende ao direito de eliminação (art. 18, VI).
->
-> Conforme o sistema ganhou funcionalidades, o Termo de Aceite e a Política de Privacidade
-> foram atualizados, e estão na versão 1.3 (05/11/2026), reproduzida nos Apêndices A e B. A
-> exibição no ranking usa apenas o primeiro nome e a inicial do sobrenome, com base no
-> legítimo interesse educacional, e o aluno pode se opor desmarcando a opção "Mostrar meu
-> nome no ranking", passando a aparecer como "Aluno anônimo". As notas e faltas são
-> opcionais, informadas pelo próprio aluno com base no consentimento, visíveis apenas para
-> ele (nem o administrador as lê) e podem ser apagadas a qualquer momento. Os materiais
-> compartilhados mostram aos colegas apenas o nome abreviado e o curso de quem os enviou, em
-> respeito ao princípio da necessidade (art. 6º, III), e o filtro de conteúdo recusa dados
-> pessoais como CPF, e-mail e telefone (seção 2.6).
-
----
-
-## Pág. 12 — INSERIR seção nova 2.5 (antes de "3. ANÁLISE E PROJETO")
-
-- [ ] **Ação:** INSERIR a seção abaixo depois do fim da 2.4 e das seções novas, antes do título
-  "3. ANÁLISE E PROJETO". A definição de Deterding et al. é **citação direta** (com página,
-  tirada do resumo do artigo, p. 9); as demais são **citações indiretas** (paráfrase), em que
-  a ABNT NBR 10520 deixa a página opcional. Por isso não é preciso trocar nenhuma obra.
-
-> **2.5 Gamificação na Educação**
->
-> Deterding et al. (2011, p. 9, tradução nossa) definem gamificação como "o uso de elementos
-> de design de jogos em contextos que não são jogos". Os autores diferenciam a gamificação dos jogos
-> sérios: não se cria um jogo completo, mas se incorporam elementos como pontos, níveis,
-> classificações e feedback imediato a uma atividade já existente. Kapp (2012) aplica o
-> conceito à aprendizagem e defende que esses elementos, quando ligados a objetivos
-> instrucionais claros, aumentam o engajamento e a motivação do aluno, sobretudo pelo
-> feedback rápido e pela possibilidade de errar e tentar de novo sem penalidade.
->
-> Werbach e Hunter (2012) organizam os elementos de jogo em três níveis (dinâmicas,
-> mecânicas e componentes) e alertam que componentes como pontos e placares (o chamado
-> modelo PBL: points, badges e leaderboards) não produzem engajamento sozinhos: precisam
-> estar a serviço de um objetivo. Na revisão de estudos empíricos de Hamari, Koivisto e
-> Sarsa (2014), a gamificação apresentou efeitos majoritariamente positivos, mas
-> dependentes do contexto e do perfil dos usuários.
->
-> O EduGuru adota esses fundamentos da seguinte forma: (i) **pontos** por acerto, com peso
-> por nível de dificuldade, como feedback imediato do desempenho; (ii) **classificação**
-> (ranking geral e por disciplina) como elemento de comparação social, exibindo apenas o nome
-> abreviado e permitindo ao aluno ocultar o próprio nome; (iii) **feedback corretivo** logo
-> após cada resposta, com a alternativa correta e uma explicação curta do conceito, e a
-> revisão das perguntas erradas ao fim da rodada; e (iv) o **Guru**, que transforma o baixo
-> desempenho em indicação de material de estudo, ligando a mecânica de jogo ao objetivo de
-> aprendizagem, como recomendam Kapp (2012) e Werbach e Hunter (2012). Para evitar que a
-> pontuação vire um fim em si mesma, cada pergunta só pontua na primeira vez em que é
-> acertada: repetir o quiz serve para revisar, não para acumular pontos.
->
-> A interface do quiz segue o modelo de aplicativos de aprendizagem: uma pergunta por tela,
-> retorno imediato com cores de acerto e erro, sequência de acertos seguidos com mensagens de
-> comemoração, sons curtos (que podem ser desligados) e ilustrações próprias que mostram o
-> cenário da pergunta (um trecho de código, uma tabela, uma rede) sem entregar a resposta.
-> Uma vez por rodada, o aluno pode usar a dica 50/50, que elimina duas alternativas erradas.
-> O objetivo é transformar o erro em momento de aprendizagem, e não apenas em perda de pontos.
-
-## Pág. 12 — INSERIR seção nova 2.6 (logo depois da 2.5)
+- [ ] **Ação:** INSERIR depois do último parágrafo da 2.5 ("...e não apenas em perda de pontos."):
 
 > **2.6 Biblioteca Colaborativa de Materiais**
 >
@@ -502,7 +116,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ---
 
-## Pág. 12 — 3. ANÁLISE E PROJETO (introdução)
+## Pág. 16–17 — 3. ANÁLISE E PROJETO (introdução)
 
 - [ ] **Localizar:** "a lista de requisitos funcionais e não funcionais, o diagrama de classes
   e o diagrama de processo (BPMN) do fluxo de autenticação com verificação em duas etapas. Os
@@ -512,12 +126,11 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   de classes e os diagramas de processo (BPMN) da autenticação com verificação em duas etapas
   e do quiz. Todos os requisitos descritos estão implementados."
 
-## Pág. 12–31 — 3.1 Requisitos Funcionais e Não Funcionais
+## Pág. 17–36 — 3.1 Requisitos Funcionais e Não Funcionais
 
-### RF01 – Autenticar usuário no sistema (pág. 12–13)
+### RF01 – Autenticar usuário no sistema (pág. 17–18)
 - [ ] **Localizar:** "3. Se válidas, o sistema libera o acesso às áreas compatíveis com o
-  perfil do usuário (nesta entrega, sem uma segunda etapa de verificação — ver RF03/RF04,
-  previstos para etapa futura)." **Ação:** SUBSTITUIR por: "3. Se válidas, o sistema solicita
+  perfil do usuário." **Ação:** SUBSTITUIR por: "3. Se válidas, o sistema solicita
   a verificação em duas etapas (RF03 no primeiro acesso, RF04 nos seguintes) e só então libera
   o acesso às áreas compatíveis com o perfil do usuário."
 - [ ] **Localizar:** "CA01 – Dado um usuário cadastrado com credenciais válidas, quando informar
@@ -530,11 +143,10 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 - [ ] **Ação:** ACRESCENTAR DEPOIS de CA03: "CA04 – Dado um usuário logado, quando clicar em
   "Sair" e cancelar a confirmação, então a sessão deverá continuar aberta."
 
-### RF02 – Cadastrar novo usuário (pág. 13–14)
+### RF02 – Cadastrar novo usuário (pág. 18–19)
 - [ ] Sem alteração.
 
-### RF03 – Configurar verificação em duas etapas (pág. 14–15)
-- [ ] Título: apagar "[PREVISTO]".
+### RF03 – Configurar verificação em duas etapas (pág. 19–20)
 - [ ] **Localizar (Pré-condições):** "O usuário deve estar autenticado e ainda não possuir MFA
   ativo." **Ação:** SUBSTITUIR por: "O usuário deve ter e-mail e senha validados e ainda não
   possuir MFA ativo."
@@ -544,8 +156,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 - [ ] **Localizar (Pós-condições):** "Fator MFA ativo e vinculado à conta do usuário."
   **Ação:** ACRESCENTAR no fim: " Ativação registrada no log de auditoria."
 
-### RF04 – Validar código de verificação em duas etapas no login (pág. 15–16)
-- [ ] Título: apagar "[PREVISTO]".
+### RF04 – Validar código de verificação em duas etapas no login (pág. 20–21)
 - [ ] **Ação:** ACRESCENTAR DEPOIS de "RN02 – Tentativas malsucedidas são registradas em log de
   auditoria.":
   - "RN03 – O banco de dados recusa leitura e escrita de sessões que não estejam em aal2."
@@ -554,10 +165,10 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 - [ ] **Ação:** ACRESCENTAR DEPOIS do fluxo principal: "**Fluxo alternativo:** cinco códigos
   inválidos → encerrar a sessão → voltar ao login."
 
-### RF05 – Consultar endereço automaticamente via CEP (pág. 16–17)
+### RF05 – Consultar endereço automaticamente via CEP (pág. 21–22)
 - [ ] Sem alteração.
 
-### RF06 – Gerenciar disciplinas (pág. 17–18)
+### RF06 – Gerenciar disciplinas (pág. 22–23)
 - [ ] Descrição, fluxo e RN01 do PDF (cadastrar, editar e excluir) continuam valendo.
 - [ ] **Localizar (Fluxo, passo 2):** "Informa nome e curso da disciplina e confirma o cadastro,
   edição ou exclusão." **Ação:** SUBSTITUIR por: "2. Informa o nome da disciplina, marca os
@@ -585,7 +196,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
     as 16 disciplinas da grade de ADS, inclusive as comuns a outros cursos (ex.: Banco de
     Dados)."
 
-### RF07 – Gerenciar perguntas (pág. 18–19)
+### RF07 – Gerenciar perguntas (pág. 23)
 - [ ] **Ação:** SUBSTITUIR o RF07 inteiro (do título até o CA02) por:
 
 > **RF07 – Gerenciar perguntas**
@@ -651,7 +262,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA05 – Dado um administrador, quando editar a alternativa correta de uma pergunta, então
 > a próxima rodada de quiz deverá corrigir pela nova alternativa.
 
-### RF08 – Gerenciar materiais de estudo com upload de arquivo (pág. 19–20)
+### RF08 – Gerenciar materiais de estudo com upload de arquivo (pág. 24)
 - [ ] **Ação:** SUBSTITUIR o RF08 inteiro (do título até o CA02, que termina na pág. 20) por:
 
 > **RF08 – Compartilhar materiais de estudo**
@@ -732,10 +343,10 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA07 – Dado um aluno, quando tentar editar pela API o material de outro aluno, então o banco
 > não deverá alterar nada.
 
-### RF09 – Consultar logs de auditoria (pág. 20–21)
+### RF09 – Consultar logs de auditoria (pág. 25)
 - [ ] Sem alteração.
 
-### RF10 – Excluir automaticamente logs de auditoria com mais de 90 dias (pág. 21–22)
+### RF10 – Excluir automaticamente logs de auditoria com mais de 90 dias (pág. 25–26)
 - [ ] **Ação:** SUBSTITUIR o RF10 inteiro (do título até a linha "Status: A exclusão manual...")
   por:
 
@@ -773,35 +384,36 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA03 – Dado qualquer usuário autenticado, quando tentar chamar diretamente a função usada
 > pela tarefa agendada, então o banco deverá negar.
 
-### RF11 – Apresentar Termo de Aceite (pág. 22)
+### RF11 – Apresentar Termo de Aceite (pág. 26–27)
 - [ ] **Localizar (Descrição):** "por meio de links fixos no menu e no rodapé" → SUBSTITUIR por
   "por meio de links no rodapé de todas as telas".
 - [ ] **Localizar (Fluxo, passo 1):** "disponível no menu lateral e no rodapé" → SUBSTITUIR por
   "disponível no rodapé".
 
-### RF12 – Apresentar Política de Privacidade (pág. 23)
+### RF12 – Apresentar Política de Privacidade (pág. 27–28)
 - [ ] **Localizar (Fluxo, passo 1):** "disponível no menu lateral e no rodapé" → SUBSTITUIR por
   "disponível no rodapé de todas as telas".
 - [ ] **Localizar (RN01):** "(cadastro, autenticação, logs, integração com ViaCEP)" →
   SUBSTITUIR por "(cadastro, autenticação, verificação em duas etapas, logs, integração com
   ViaCEP, quiz e ranking, notas e faltas e materiais compartilhados)".
 
-### RF13 – Registrar consentimento do usuário no cadastro (pág. 23–24)
+### RF13 – Registrar consentimento do usuário no cadastro (pág. 28–29)
 - [ ] **Localizar (Pós-condições):** "Consentimento do usuário registrado no momento da criação
   da conta." → SUBSTITUIR por "Aceite registrado no perfil do usuário com data, hora e versão
   dos documentos."
 - [ ] **Ação:** ACRESCENTAR DEPOIS de RN01: "RN02 – Quando o Termo ou a Política mudam de
   versão, o usuário deve aceitar a nova versão no acesso seguinte (RF22)."
 
-### RF14 – Controlar acesso por perfil de usuário (pág. 24–25)
+### RF14 – Controlar acesso por perfil de usuário (pág. 29)
 - [ ] **Localizar:** "RN01 – Toda tabela sensível (disciplinas, perguntas, materiais, perfis,
   logs) possui política de RLS própria." → SUBSTITUIR por: "RN01 – Toda tabela sensível
   (disciplinas, perguntas, gabaritos, materiais, denúncias, perfis, rodadas e respostas do quiz,
   notas e logs) possui política de RLS própria, e todas exigem sessão com verificação em duas
   etapas concluída (aal2)."
 
-### RF15 – Excluir conta de usuário (pág. 25)
-- [ ] **Ação:** SUBSTITUIR o RF15 inteiro (o parágrafo curto com "[PREVISTO]") por:
+### RF15 – Excluir conta de usuário (pág. 29–30)
+- [ ] **Ação:** SUBSTITUIR o RF15 inteiro (o parágrafo curto que diz "em etapa futura" e "Ainda não
+  implementado") por:
 
 > **RF15 – Excluir conta de usuário**
 >
@@ -834,8 +446,8 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA02 – Dado um aluno, quando tentar excluir a conta de outro usuário pela API, então o banco
 > deverá negar.
 
-### RF16 – Responder quiz (pág. 25–26)
-- [ ] **Ação:** SUBSTITUIR o RF16 inteiro (do título até "Status: Previsto...") por:
+### RF16 – Responder quiz (pág. 30)
+- [ ] **Ação:** SUBSTITUIR o RF16 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF16 – Responder quiz**
 >
@@ -895,8 +507,8 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA04 – Dado um aluno que já usou a dica 50/50 na rodada, quando pedir outra, então o banco
 > deverá recusar.
 
-### RF17 – Calcular pontuação do quiz (pág. 26)
-- [ ] **Ação:** SUBSTITUIR o RF17 inteiro (do título até "Status: Previsto...") por:
+### RF17 – Calcular pontuação do quiz (pág. 30–31)
+- [ ] **Ação:** SUBSTITUIR o RF17 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF17 – Calcular pontuação do quiz**
 >
@@ -927,8 +539,8 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA02 – Dada uma rodada finalizada, então os pontos gravados deverão ser a soma dos pontos das
 > respostas corretas.
 
-### RF18 – Exibir ranking (pág. 27)
-- [ ] **Ação:** SUBSTITUIR o RF18 inteiro (do título até "Status: Previsto...") por:
+### RF18 – Exibir ranking (pág. 31–32)
+- [ ] **Ação:** SUBSTITUIR o RF18 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF18 – Exibir ranking**
 >
@@ -960,8 +572,8 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA02 – Dado um aluno que desmarcou "Mostrar meu nome no ranking", quando outro aluno
 > consultar o ranking, então deverá ver "Aluno anônimo" na posição dele.
 
-### RF19 – Recomendar conteúdo (Guru) (pág. 27–28)
-- [ ] **Ação:** SUBSTITUIR o RF19 inteiro (do título até "Status: Previsto...") por:
+### RF19 – Recomendar conteúdo (Guru) (pág. 32–33)
+- [ ] **Ação:** SUBSTITUIR o RF19 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF19 – Recomendar conteúdo (Guru)**
 >
@@ -995,8 +607,8 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA02 – Dado um aluno que terminou uma rodada com menos de 60% de acertos, então o resultado
 > deverá exibir os materiais da disciplina como "Dica do Guru".
 
-### RF20 – Registrar notas e faltas (pág. 28–29)
-- [ ] **Ação:** SUBSTITUIR o RF20 inteiro (do título até "Status: Previsto...") por (atenção:
+### RF20 – Registrar notas e faltas (pág. 33)
+- [ ] **Ação:** SUBSTITUIR o RF20 inteiro (do título até a linha "Status:" vazia) por (atenção:
   no PDF quem registra é o administrador; no sistema é o **próprio aluno**):
 
 > **RF20 – Registrar notas e faltas**
@@ -1056,7 +668,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA06 – Dado M1 = 6,1 e M2 digitada = 7, então MD = MF = 6,7 (simulação).
 > CA07 – Dado que o aluno informe 3 faltas, então o sistema deverá recusar.
 
-### INSERIR RF21 a RF29 (pág. 29, depois do RF20 e antes do RNF01)
+### INSERIR RF21 a RF29 (pág. 33, depois do RF20 e antes do RNF01)
 - [ ] **Ação:** INSERIR os nove RFs abaixo, nesta ordem, depois do RF20.
 
 > **RF21 – Exercer direitos do titular (Minha conta)**
@@ -1251,27 +863,26 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA01 – Dado um aluno com um material aprovado, quando um colega abrir o perfil dele, então
 > deverá ver só o nome abreviado, o curso e os materiais aprovados.
 
-### RNF01 – Segurança no armazenamento de senhas (pág. 29)
+### RNF01 – Segurança no armazenamento de senhas (pág. 33–34)
 - [ ] Sem alteração.
 
-### RNF02 – Autenticação multifator obrigatória (pág. 29)
-- [ ] Título: apagar "[PREVISTO]".
+### RNF02 – Autenticação multifator obrigatória (pág. 34)
 - [ ] **Localizar (Critério de aceite):** "...então o sistema deverá obrigar a configuração do
   MFA antes de liberar o acesso." **Ação:** ACRESCENTAR no fim: " e o banco de dados deverá
   recusar requisições de sessões sem MFA concluído."
 
-### RNF03 – Rastreabilidade das operações (pág. 29)
+### RNF03 – Rastreabilidade das operações (pág. 34)
 - [ ] **Localizar:** "Dado o cancelamento de uma pergunta feito diretamente via API" →
   SUBSTITUIR por "Dada a exclusão de uma pergunta feita diretamente via API".
 
-### RNF04 – Usabilidade e clareza das mensagens (pág. 30)
+### RNF04 – Usabilidade e clareza das mensagens (pág. 34)
 - [ ] **Localizar:** "devem indicar visualmente quais regras ainda não foram atendidas." **Ação:**
   ACRESCENTAR DEPOIS: " Ações que apagam dados ou encerram a sessão pedem confirmação em uma
   janela própria do sistema (no lugar do aviso padrão do navegador), que segue o tema escolhido,
   diz o que vai acontecer e traz o nome da ação no botão (ex.: "Excluir", "Sair"); a exclusão de
   conta só é liberada depois de digitar EXCLUIR."
 
-### RNF05 – Portabilidade e responsividade (pág. 30)
+### RNF05 – Portabilidade e responsividade (pág. 35)
 - [ ] **Localizar (Critério de aceite):** "Dado o acesso ao sistema por um navegador mobile,
   quando navegar pelas telas, então o layout deverá se adaptar sem quebrar elementos."
   **Ação:** SUBSTITUIR por: "Todas as telas devem funcionar sem rolagem horizontal da página em
@@ -1279,7 +890,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   tabelas largas rolam dentro do próprio quadro e, no celular, o menu da barra superior é
   recolhido em um botão."
 
-### RNF06 – Disponibilidade e infraestrutura em nuvem (pág. 30)
+### RNF06 – Disponibilidade e infraestrutura em nuvem (pág. 35)
 - [ ] **Localizar (Critério de aceite):** "Dado o ambiente de produção, quando qualquer
   integrante do grupo acessar o sistema publicado, então ele deverá responder sem necessidade
   de infraestrutura local ligada." **Ação:** SUBSTITUIR por (pedido do orientador: critério
@@ -1287,21 +898,20 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   (https://tttrisos.github.io/EduGuru/) deve abrir a página inicial e permitir o login completo
   (com verificação em duas etapas) em pelo menos duas redes diferentes (Wi-Fi e 4G)."
 
-### RNF07 – Minimização de dados pessoais (pág. 30–31)
+### RNF07 – Minimização de dados pessoais (pág. 35)
 - [ ] **Ação:** ACRESCENTAR no fim do texto do RNF07 (antes do critério): "Pelo mesmo
   princípio, o ranking e os materiais compartilhados mostram apenas o nome abreviado, e o
   filtro de materiais recusa CPF, e-mail e telefone."
 
-### RNF08 – Retenção e descarte controlado de dados de auditoria (pág. 31)
+### RNF08 – Retenção e descarte controlado de dados de auditoria (pág. 35–36)
 - [ ] **Localizar:** "Os dados de auditoria devem ter prazo de retenção de 90 dias. Nesta
   etapa, o descarte é feito manualmente por um administrador, com o prazo mínimo garantido
-  pela própria função do banco. O descarte automático diário está previsto para uma próxima
-  etapa." **Ação:** SUBSTITUIR por: "Os dados de auditoria têm prazo de retenção de 90 dias,
+  pela própria função do banco." **Ação:** SUBSTITUIR por: "Os dados de auditoria têm prazo de retenção de 90 dias,
   com descarte automático diário por tarefa agendada no banco (pg_cron) e descarte manual como
   reforço, sempre respeitando o prazo mínimo."
 - [ ] Critério de aceite: sem alteração (só acrescentar o ponto final que falta).
 
-### INSERIR RNF09 – Desempenho (pág. 31, depois do RNF08)
+### INSERIR RNF09 – Desempenho (pág. 36, depois do RNF08)
 - [ ] **Ação:** INSERIR:
 
 > **RNF09 – Desempenho**
@@ -1311,7 +921,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > **Critério de aceite:** Em conexão 4G, o Painel deve carregar em até 3 segundos e a correção
 > de cada resposta do quiz deve ser exibida em até 2 segundos após clicar em "Verificar".
 
-### INSERIR RNF10 – Acessibilidade visual (pág. 31, depois do RNF09)
+### INSERIR RNF10 – Acessibilidade visual (pág. 36, depois do RNF09)
 - [ ] **Ação:** INSERIR:
 
 > **RNF10 – Acessibilidade visual**
@@ -1329,7 +939,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ---
 
-## Pág. 31–33 — 3.2 Diagrama de Classes
+## Pág. 36–37 — 3.2 Diagrama de Classes
 
 - [ ] **Título:** trocar "3.2 Diagrama de Classes" por "3.2 Diagramas de Classes".
 - [ ] **Localizar:** "O diagrama de classes do EduGuru foi dividido em duas figuras" (o
@@ -1340,7 +950,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > módulo de gamificação e acompanhamento (quiz, pontuação, ranking, Guru e notas). Todas as
 > classes correspondem a tabelas ou funções que existem no banco de dados.
 
-- [ ] **Figura 2 (pág. 32):** SUBSTITUIR pela figura do bloco "Figura 2" de
+- [ ] **Figura 2 (pág. 36):** SUBSTITUIR pela figura do bloco "Figura 2" de
   `docs/diagramas/diagrama_classes.md` (exportar em PNG 3x/4x ou SVG).
   **Legenda:** "Figura 2 - Diagrama de Classes: conta, conteúdo, comunidade e auditoria."
 - [ ] **Localizar:** "A Figura 2 mostra as classes atualmente implementadas" (o parágrafo
@@ -1354,7 +964,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > denúncias e que cada pergunta tem no máximo um gabarito. A autoria só é guardada no
 > material; quem cadastrou disciplinas e perguntas fica registrado no log de auditoria.
 
-- [ ] **Figura 3 (pág. 33):** SUBSTITUIR pela figura do bloco "Figura 3" de
+- [ ] **Figura 3 (pág. 37):** SUBSTITUIR pela figura do bloco "Figura 3" de
   `docs/diagramas/diagrama_classes.md` (a figura atual tem "\n", acentuação errada e marca as
   classes como planejadas). **Legenda:** "Figura 3 - Diagrama de Classes: quiz, pontuação,
   ranking, Guru e notas."
@@ -1370,14 +980,14 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > registra, e os cálculos de média e frequência ficam em um módulo do front-end com testes
 > unitários.
 
-## Pág. 33–34 — 3.3 Diagrama de Processo de Autenticação (BPMN)
+## Pág. 38–39 — 3.3 Diagrama de Processo de Autenticação (BPMN)
 
 - [ ] **Título:** trocar por "3.3 Diagramas de Processo (BPMN)".
 - [ ] **Localizar:** "O diagrama distingue, por estilo de linha e preenchimento, o que já está
-  implementado nesta entrega do que está previsto para uma próxima etapa (verificação em duas
-  etapas / MFA), conforme legenda na própria figura." **Ação:** SUBSTITUIR por: "Todo o fluxo
+  implementado nesta entrega do que está para uma próxima etapa (verificação em duas etapas /
+  MFA), conforme legenda na própria figura." **Ação:** SUBSTITUIR por: "Todo o fluxo
   representado está implementado, inclusive a verificação em duas etapas."
-- [ ] **Figura 4 (pág. 34):** REDESENHAR conforme `docs/diagramas/bpmn.md` (Figura 4: fluxos
+- [ ] **Figura 4 (pág. 38):** REDESENHAR conforme `docs/diagramas/bpmn.md` (Figura 4: fluxos
   em linha contínua, sem cruzamentos, log das falhas, limite de 5 tentativas e gateway do novo
   aceite; sem a legenda "previsto"). **Legenda:** "Figura 4 - Diagrama de processo (BPMN) do
   login com verificação em duas etapas."
@@ -1392,7 +1002,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ---
 
-## Pág. 35–36 — APÊNDICE A — Termo de Aceite
+## Pág. 39–40 — APÊNDICE A — Termo de Aceite
 
 - [ ] **Ação:** SUBSTITUIR todo o conteúdo do Apêndice A (do "Texto vigente..." até o item 7)
   por:
@@ -1472,7 +1082,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > antes de liberar a área logada. Se não concordar, você pode excluir sua conta na mesma
 > tela, sem precisar aceitar.
 
-## Pág. 36–38 — APÊNDICE B — Política de Privacidade
+## Pág. 40–43 — APÊNDICE B — Política de Privacidade
 
 - [ ] **Ação:** SUBSTITUIR todo o conteúdo do Apêndice B (do "Texto vigente..." até o fim do
   item 8) por:
@@ -1626,7 +1236,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > indevido, avaliar quais contas foram afetadas, e comunicar o orientador e os usuários
 > afetados assim que possível.
 
-## Pág. 39 — APÊNDICE C — Plano de Retenção e Descarte de Dados
+## Pág. 43 — APÊNDICE C — Plano de Retenção e Descarte de Dados
 
 - [ ] **Ação:** SUBSTITUIR a tabela inteira por:
 
@@ -1646,7 +1256,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   é uma limitação temporária" (o parágrafo depois da tabela). **Ação:** APAGAR (a exclusão
   automática já existe).
 
-## Pág. 40 — 4. REFERÊNCIAS BIBLIOGRÁFICAS
+## Pág. 44 — 4. REFERÊNCIAS BIBLIOGRÁFICAS
 
 - [ ] **Título:** trocar "4. REFERÊNCIAS BIBLIOGRÁFICAS" por "REFERÊNCIAS" (sem número, como
   pede a ABNT NBR 14724).
@@ -1719,8 +1329,8 @@ Nada desta parte vai para o documento.
 > Eles estão agora na branch entrega0911 (scripts 04 a 09 da pasta supabase/ e telas Mfa,
 > Usuarios, MinhaConta e NovoAceite).
 
-- 👤 Exportar as Figuras 2 e 3 (`docs/diagramas/diagrama_classes.md`) e redesenhar as Figuras
-  1, 4 e 5 (`docs/diagramas/bpmn.md` e a seção 1.3 acima).
+- 👤 Exportar as Figuras 1 (`docs/diagramas/arquitetura.md`), 2 e 3 (`docs/diagramas/diagrama_classes.md`)
+  pelo mermaid.live e redesenhar as Figuras 4 e 5 (`docs/diagramas/bpmn.md`).
 
 ## Testes já feitos
 - Testes de banco: 31/31 (13/10) e 60/60 (28/10) com o banco do projeto; script 15 testado em
