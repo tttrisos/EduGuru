@@ -89,7 +89,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 16 — INSERIR seção nova 2.6 (logo depois da 2.5, antes de "3. ANÁLISE E PROJETO")
 
-- [ ] **Ação:** INSERIR depois do último parágrafo da 2.5 ("...e não apenas em perda de pontos."):
+- [x] **Ação:** INSERIR depois do último parágrafo da 2.5 ("...e não apenas em perda de pontos."):
 
 > **2.6 Biblioteca Colaborativa de Materiais**
 >
@@ -118,7 +118,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 16–17 — 3. ANÁLISE E PROJETO (introdução)
 
-- [ ] **Localizar:** "a lista de requisitos funcionais e não funcionais, o diagrama de classes
+- [x] **Localizar:** "a lista de requisitos funcionais e não funcionais, o diagrama de classes
   e o diagrama de processo (BPMN) do fluxo de autenticação com verificação em duas etapas. Os
   artefatos contemplam tanto as funcionalidades já implementadas quanto os módulos planejados
   para as próximas etapas do projeto, conforme orientação repassada para esta entrega."
@@ -129,65 +129,65 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 ## Pág. 17–36 — 3.1 Requisitos Funcionais e Não Funcionais
 
 ### RF01 – Autenticar usuário no sistema (pág. 17–18)
-- [ ] **Localizar:** "3. Se válidas, o sistema libera o acesso às áreas compatíveis com o
+- [x] **Localizar:** "3. Se válidas, o sistema libera o acesso às áreas compatíveis com o
   perfil do usuário." **Ação:** SUBSTITUIR por: "3. Se válidas, o sistema solicita
   a verificação em duas etapas (RF03 no primeiro acesso, RF04 nos seguintes) e só então libera
   o acesso às áreas compatíveis com o perfil do usuário."
-- [ ] **Localizar:** "CA01 – Dado um usuário cadastrado com credenciais válidas, quando informar
+- [x] **Localizar:** "CA01 – Dado um usuário cadastrado com credenciais válidas, quando informar
   e-mail e senha corretos, então o sistema deverá iniciar a sessão." **Ação:** SUBSTITUIR o fim
   por: "...então o sistema deverá iniciar a sessão e encaminhar para a verificação em duas
   etapas."
-- [ ] **Ação:** ACRESCENTAR DEPOIS de "RN02 – Usuários sem cadastro não conseguem autenticar.":
+- [x] **Ação:** ACRESCENTAR DEPOIS de "RN02 – Usuários sem cadastro não conseguem autenticar.":
   "RN03 – Ao clicar em "Sair", o sistema pede confirmação antes de encerrar a sessão; o logout
   é registrado no log de auditoria."
-- [ ] **Ação:** ACRESCENTAR DEPOIS de CA03: "CA04 – Dado um usuário logado, quando clicar em
+- [x] **Ação:** ACRESCENTAR DEPOIS de CA03: "CA04 – Dado um usuário logado, quando clicar em
   "Sair" e cancelar a confirmação, então a sessão deverá continuar aberta."
 
 ### RF02 – Cadastrar novo usuário (pág. 18–19)
-- [ ] Sem alteração.
+- [x] Sem alteração.
 
 ### RF03 – Configurar verificação em duas etapas (pág. 19–20)
-- [ ] **Localizar (Pré-condições):** "O usuário deve estar autenticado e ainda não possuir MFA
+- [x] **Localizar (Pré-condições):** "O usuário deve estar autenticado e ainda não possuir MFA
   ativo." **Ação:** SUBSTITUIR por: "O usuário deve ter e-mail e senha validados e ainda não
   possuir MFA ativo."
-- [ ] **Ação:** ACRESCENTAR DEPOIS de "RN02 – O fator só é considerado ativo após a validação
+- [x] **Ação:** ACRESCENTAR DEPOIS de "RN02 – O fator só é considerado ativo após a validação
   do primeiro código.": "RN03 – Fatores não confirmados de tentativas anteriores são
   descartados antes de gerar um novo QR Code."
-- [ ] **Localizar (Pós-condições):** "Fator MFA ativo e vinculado à conta do usuário."
-  **Ação:** ACRESCENTAR no fim: " Ativação registrada no log de auditoria."
+- [x] **Localizar (Pós-condições):** "Fator MFA ativo e vinculado à conta do usuário."
+  **Ação:** ACRESCENTAR no fim: "Ativação registrada no log de auditoria."
 
 ### RF04 – Validar código de verificação em duas etapas no login (pág. 20–21)
-- [ ] **Ação:** ACRESCENTAR DEPOIS de "RN02 – Tentativas malsucedidas são registradas em log de
+- [x] **Ação:** ACRESCENTAR DEPOIS de "RN02 – Tentativas malsucedidas são registradas em log de
   auditoria.":
   - "RN03 – O banco de dados recusa leitura e escrita de sessões que não estejam em aal2."
   - "RN04 – Após cinco códigos inválidos consecutivos, a sessão é encerrada e o usuário volta
     ao login; o bloqueio é registrado no log ("mfa_bloqueado")."
-- [ ] **Ação:** ACRESCENTAR DEPOIS do fluxo principal: "**Fluxo alternativo:** cinco códigos
+- [x] **Ação:** ACRESCENTAR DEPOIS do fluxo principal: "**Fluxo alternativo:** cinco códigos
   inválidos → encerrar a sessão → voltar ao login."
 
 ### RF05 – Consultar endereço automaticamente via CEP (pág. 21–22)
-- [ ] Sem alteração.
+- [x] Sem alteração.
 
 ### RF06 – Gerenciar disciplinas (pág. 22–23)
-- [ ] Descrição, fluxo e RN01 do PDF (cadastrar, editar e excluir) continuam valendo.
-- [ ] **Localizar (Fluxo, passo 2):** "Informa nome e curso da disciplina e confirma o cadastro,
+- [x] Descrição, fluxo e RN01 do PDF (cadastrar, editar e excluir) continuam valendo.
+- [x] **Localizar (Fluxo, passo 2):** "Informa nome e curso da disciplina e confirma o cadastro,
   edição ou exclusão." **Ação:** SUBSTITUIR por: "2. Informa o nome da disciplina, marca os
   cursos que a têm na grade (SI, ADS e/ou ES) e confirma o cadastro, edição ou exclusão. Para editar, clica em "Editar" na
   disciplina: o formulário é preenchido com os dados atuais e o botão passa a "Salvar
   alterações"."
-- [ ] **Ação:** ACRESCENTAR no fim da Descrição: " As disciplinas da grade dos cursos de
+- [x] **Ação:** ACRESCENTAR no fim da Descrição: "As disciplinas da grade dos cursos de
   Sistemas de Informação, Análise e Desenvolvimento de Sistemas e Engenharia de Software da UMC
   já vêm cadastradas (16 por curso), e a tela tem um filtro por curso (Todos, SI, ADS e ES) com a
   quantidade de disciplinas de cada um; o aluno começa vendo as do próprio curso. Uma disciplina
   comum a mais de um curso, como Banco de Dados, aparece no filtro de cada um deles."
-- [ ] **Ação:** ACRESCENTAR DEPOIS de RN01:
+- [x] **Ação:** ACRESCENTAR DEPOIS de RN01:
   - "RN02 – Não pode haver duas disciplinas com o mesmo nome."
   - "RN03 – Uma disciplina comum a mais de um curso é cadastrada uma única vez, com a lista
     dos cursos que a têm na grade (pelo menos um); perguntas, notas e materiais ficam ligados a
     essa única disciplina."
   - "RN04 – Excluir uma disciplina exclui as perguntas e as notas ligadas a ela, após
     confirmação."
-- [ ] **Ação:** ACRESCENTAR DEPOIS de CA02:
+- [x] **Ação:** ACRESCENTAR DEPOIS de CA02:
   - "CA03 – Dado um administrador, quando cadastrar ou editar uma disciplina com o nome de outra
     já existente, então o sistema deverá recusar."
   - "CA04 – Dado um administrador, quando editar o nome de uma disciplina, então o novo nome
@@ -197,7 +197,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
     Dados)."
 
 ### RF07 – Gerenciar perguntas (pág. 23)
-- [ ] **Ação:** SUBSTITUIR o RF07 inteiro (do título até o CA02) por:
+- [x] **Ação:** SUBSTITUIR o RF07 inteiro (do título até o CA02) por:
 
 > **RF07 – Gerenciar perguntas**
 >
@@ -263,7 +263,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > a próxima rodada de quiz deverá corrigir pela nova alternativa.
 
 ### RF08 – Gerenciar materiais de estudo com upload de arquivo (pág. 24)
-- [ ] **Ação:** SUBSTITUIR o RF08 inteiro (do título até o CA02, que termina na pág. 20) por:
+- [x] **Ação:** SUBSTITUIR o RF08 inteiro (do título até o CA02, que termina na pág. 20) por:
 
 > **RF08 – Compartilhar materiais de estudo**
 >
@@ -344,7 +344,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > não deverá alterar nada.
 
 ### RF09 – Consultar logs de auditoria (pág. 25)
-- [ ] Sem alteração.
+- [x] Sem alteração.
 
 ### RF10 – Excluir automaticamente logs de auditoria com mais de 90 dias (pág. 25–26)
 - [ ] **Ação:** SUBSTITUIR o RF10 inteiro (do título até a linha "Status: A exclusão manual...")
@@ -385,15 +385,15 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > pela tarefa agendada, então o banco deverá negar.
 
 ### RF11 – Apresentar Termo de Aceite (pág. 26–27)
-- [ ] **Localizar (Descrição):** "por meio de links fixos no menu e no rodapé" → SUBSTITUIR por
+- [x] **Localizar (Descrição):** "por meio de links fixos no menu e no rodapé" → SUBSTITUIR por
   "por meio de links no rodapé de todas as telas".
-- [ ] **Localizar (Fluxo, passo 1):** "disponível no menu lateral e no rodapé" → SUBSTITUIR por
+- [x] **Localizar (Fluxo, passo 1):** "disponível no menu lateral e no rodapé" → SUBSTITUIR por
   "disponível no rodapé".
 
 ### RF12 – Apresentar Política de Privacidade (pág. 27–28)
-- [ ] **Localizar (Fluxo, passo 1):** "disponível no menu lateral e no rodapé" → SUBSTITUIR por
+- [x] **Localizar (Fluxo, passo 1):** "disponível no menu lateral e no rodapé" → SUBSTITUIR por
   "disponível no rodapé de todas as telas".
-- [ ] **Localizar (RN01):** "(cadastro, autenticação, logs, integração com ViaCEP)" →
+- [x] **Localizar (RN01):** "(cadastro, autenticação, logs, integração com ViaCEP)" →
   SUBSTITUIR por "(cadastro, autenticação, verificação em duas etapas, logs, integração com
   ViaCEP, quiz e ranking, notas e faltas e materiais compartilhados)".
 
