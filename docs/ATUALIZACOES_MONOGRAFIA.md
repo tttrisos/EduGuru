@@ -347,7 +347,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 - [x] Sem alteração.
 
 ### RF10 – Excluir automaticamente logs de auditoria com mais de 90 dias (pág. 25–26)
-- [ ] **Ação:** SUBSTITUIR o RF10 inteiro (do título até a linha "Status: A exclusão manual...")
+- [x] **Ação:** SUBSTITUIR o RF10 inteiro (do título até a linha "Status: A exclusão manual...")
   por:
 
 > **RF10 – Excluir automaticamente logs de auditoria com mais de 90 dias**
@@ -398,21 +398,21 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   ViaCEP, quiz e ranking, notas e faltas e materiais compartilhados)".
 
 ### RF13 – Registrar consentimento do usuário no cadastro (pág. 28–29)
-- [ ] **Localizar (Pós-condições):** "Consentimento do usuário registrado no momento da criação
+- [x] **Localizar (Pós-condições):** "Consentimento do usuário registrado no momento da criação
   da conta." → SUBSTITUIR por "Aceite registrado no perfil do usuário com data, hora e versão
   dos documentos."
-- [ ] **Ação:** ACRESCENTAR DEPOIS de RN01: "RN02 – Quando o Termo ou a Política mudam de
+- [x] **Ação:** ACRESCENTAR DEPOIS de RN01: "RN02 – Quando o Termo ou a Política mudam de
   versão, o usuário deve aceitar a nova versão no acesso seguinte (RF22)."
 
 ### RF14 – Controlar acesso por perfil de usuário (pág. 29)
-- [ ] **Localizar:** "RN01 – Toda tabela sensível (disciplinas, perguntas, materiais, perfis,
+- [x] **Localizar:** "RN01 – Toda tabela sensível (disciplinas, perguntas, materiais, perfis,
   logs) possui política de RLS própria." → SUBSTITUIR por: "RN01 – Toda tabela sensível
   (disciplinas, perguntas, gabaritos, materiais, denúncias, perfis, rodadas e respostas do quiz,
   notas e logs) possui política de RLS própria, e todas exigem sessão com verificação em duas
   etapas concluída (aal2)."
 
 ### RF15 – Excluir conta de usuário (pág. 29–30)
-- [ ] **Ação:** SUBSTITUIR o RF15 inteiro (o parágrafo curto que diz "em etapa futura" e "Ainda não
+- [x] **Ação:** SUBSTITUIR o RF15 inteiro (o parágrafo curto que diz "em etapa futura" e "Ainda não
   implementado") por:
 
 > **RF15 – Excluir conta de usuário**
@@ -447,7 +447,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > deverá negar.
 
 ### RF16 – Responder quiz (pág. 30)
-- [ ] **Ação:** SUBSTITUIR o RF16 inteiro (do título até a linha "Status:" vazia) por:
+- [x] **Ação:** SUBSTITUIR o RF16 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF16 – Responder quiz**
 >
@@ -508,7 +508,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > deverá recusar.
 
 ### RF17 – Calcular pontuação do quiz (pág. 30–31)
-- [ ] **Ação:** SUBSTITUIR o RF17 inteiro (do título até a linha "Status:" vazia) por:
+- [x] **Ação:** SUBSTITUIR o RF17 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF17 – Calcular pontuação do quiz**
 >
@@ -540,7 +540,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > respostas corretas.
 
 ### RF18 – Exibir ranking (pág. 31–32)
-- [ ] **Ação:** SUBSTITUIR o RF18 inteiro (do título até a linha "Status:" vazia) por:
+- [x] **Ação:** SUBSTITUIR o RF18 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF18 – Exibir ranking**
 >
@@ -573,7 +573,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > consultar o ranking, então deverá ver "Aluno anônimo" na posição dele.
 
 ### RF19 – Recomendar conteúdo (Guru) (pág. 32–33)
-- [ ] **Ação:** SUBSTITUIR o RF19 inteiro (do título até a linha "Status:" vazia) por:
+- [x] **Ação:** SUBSTITUIR o RF19 inteiro (do título até a linha "Status:" vazia) por:
 
 > **RF19 – Recomendar conteúdo (Guru)**
 >
@@ -608,7 +608,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > deverá exibir os materiais da disciplina como "Dica do Guru".
 
 ### RF20 – Registrar notas e faltas (pág. 33)
-- [ ] **Ação:** SUBSTITUIR o RF20 inteiro (do título até a linha "Status:" vazia) por (atenção:
+- [x] **Ação:** SUBSTITUIR o RF20 inteiro (do título até a linha "Status:" vazia) por (atenção:
   no PDF quem registra é o administrador; no sistema é o **próprio aluno**):
 
 > **RF20 – Registrar notas e faltas**
@@ -669,7 +669,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > CA07 – Dado que o aluno informe 3 faltas, então o sistema deverá recusar.
 
 ### INSERIR RF21 a RF29 (pág. 33, depois do RF20 e antes do RNF01)
-- [ ] **Ação:** INSERIR os nove RFs abaixo, nesta ordem, depois do RF20.
+- [x] **Ação:** INSERIR os nove RFs abaixo, nesta ordem, depois do RF20.
 
 > **RF21 – Exercer direitos do titular (Minha conta)**
 >
@@ -864,26 +864,26 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > deverá ver só o nome abreviado, o curso e os materiais aprovados.
 
 ### RNF01 – Segurança no armazenamento de senhas (pág. 33–34)
-- [ ] Sem alteração.
+- [x] Sem alteração.
 
 ### RNF02 – Autenticação multifator obrigatória (pág. 34)
-- [ ] **Localizar (Critério de aceite):** "...então o sistema deverá obrigar a configuração do
+- [x] **Localizar (Critério de aceite):** "...então o sistema deverá obrigar a configuração do
   MFA antes de liberar o acesso." **Ação:** ACRESCENTAR no fim: " e o banco de dados deverá
   recusar requisições de sessões sem MFA concluído."
 
 ### RNF03 – Rastreabilidade das operações (pág. 34)
-- [ ] **Localizar:** "Dado o cancelamento de uma pergunta feito diretamente via API" →
+- [x] **Localizar:** "Dado o cancelamento de uma pergunta feito diretamente via API" →
   SUBSTITUIR por "Dada a exclusão de uma pergunta feita diretamente via API".
 
 ### RNF04 – Usabilidade e clareza das mensagens (pág. 34)
-- [ ] **Localizar:** "devem indicar visualmente quais regras ainda não foram atendidas." **Ação:**
+- [x] **Localizar:** "devem indicar visualmente quais regras ainda não foram atendidas." **Ação:**
   ACRESCENTAR DEPOIS: " Ações que apagam dados ou encerram a sessão pedem confirmação em uma
   janela própria do sistema (no lugar do aviso padrão do navegador), que segue o tema escolhido,
   diz o que vai acontecer e traz o nome da ação no botão (ex.: "Excluir", "Sair"); a exclusão de
   conta só é liberada depois de digitar EXCLUIR."
 
 ### RNF05 – Portabilidade e responsividade (pág. 35)
-- [ ] **Localizar (Critério de aceite):** "Dado o acesso ao sistema por um navegador mobile,
+- [x] **Localizar (Critério de aceite):** "Dado o acesso ao sistema por um navegador mobile,
   quando navegar pelas telas, então o layout deverá se adaptar sem quebrar elementos."
   **Ação:** SUBSTITUIR por: "Todas as telas devem funcionar sem rolagem horizontal da página em
   larguras de 360 px a 1920 px, nos navegadores Chrome, Edge e Firefox em suas versões atuais;
@@ -891,7 +891,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   recolhido em um botão."
 
 ### RNF06 – Disponibilidade e infraestrutura em nuvem (pág. 35)
-- [ ] **Localizar (Critério de aceite):** "Dado o ambiente de produção, quando qualquer
+- [x] **Localizar (Critério de aceite):** "Dado o ambiente de produção, quando qualquer
   integrante do grupo acessar o sistema publicado, então ele deverá responder sem necessidade
   de infraestrutura local ligada." **Ação:** SUBSTITUIR por (pedido do orientador: critério
   mensurável): "Com todos os computadores do grupo desligados, o endereço publicado
@@ -899,20 +899,20 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
   (com verificação em duas etapas) em pelo menos duas redes diferentes (Wi-Fi e 4G)."
 
 ### RNF07 – Minimização de dados pessoais (pág. 35)
-- [ ] **Ação:** ACRESCENTAR no fim do texto do RNF07 (antes do critério): "Pelo mesmo
+- [x] **Ação:** ACRESCENTAR no fim do texto do RNF07 (antes do critério): "Pelo mesmo
   princípio, o ranking e os materiais compartilhados mostram apenas o nome abreviado, e o
   filtro de materiais recusa CPF, e-mail e telefone."
 
 ### RNF08 – Retenção e descarte controlado de dados de auditoria (pág. 35–36)
-- [ ] **Localizar:** "Os dados de auditoria devem ter prazo de retenção de 90 dias. Nesta
+- [x] **Localizar:** "Os dados de auditoria devem ter prazo de retenção de 90 dias. Nesta
   etapa, o descarte é feito manualmente por um administrador, com o prazo mínimo garantido
   pela própria função do banco." **Ação:** SUBSTITUIR por: "Os dados de auditoria têm prazo de retenção de 90 dias,
   com descarte automático diário por tarefa agendada no banco (pg_cron) e descarte manual como
   reforço, sempre respeitando o prazo mínimo."
-- [ ] Critério de aceite: sem alteração (só acrescentar o ponto final que falta).
+- [x] Critério de aceite: sem alteração (só acrescentar o ponto final que falta).
 
 ### INSERIR RNF09 – Desempenho (pág. 36, depois do RNF08)
-- [ ] **Ação:** INSERIR:
+- [x] **Ação:** INSERIR:
 
 > **RNF09 – Desempenho**
 >
@@ -922,7 +922,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > de cada resposta do quiz deve ser exibida em até 2 segundos após clicar em "Verificar".
 
 ### INSERIR RNF10 – Acessibilidade visual (pág. 36, depois do RNF09)
-- [ ] **Ação:** INSERIR:
+- [x] **Ação:** INSERIR:
 
 > **RNF10 – Acessibilidade visual**
 >
@@ -941,8 +941,8 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 36–37 — 3.2 Diagrama de Classes
 
-- [ ] **Título:** trocar "3.2 Diagrama de Classes" por "3.2 Diagramas de Classes".
-- [ ] **Localizar:** "O diagrama de classes do EduGuru foi dividido em duas figuras" (o
+- [x] **Título:** trocar "3.2 Diagrama de Classes" por "3.2 Diagramas de Classes".
+- [x] **Localizar:** "O diagrama de classes do EduGuru foi dividido em duas figuras" (o
   parágrafo todo). **Ação:** SUBSTITUIR por:
 
 > O diagrama de classes do EduGuru foi dividido em duas figuras para facilitar a leitura. A
@@ -950,7 +950,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > módulo de gamificação e acompanhamento (quiz, pontuação, ranking, Guru e notas). Todas as
 > classes correspondem a tabelas ou funções que existem no banco de dados.
 
-- [ ] **Figura 2 (pág. 36):** SUBSTITUIR pela figura do bloco "Figura 2" de
+- [x] **Figura 2 (pág. 36):** SUBSTITUIR pela figura do bloco "Figura 2" de
   `docs/diagramas/diagrama_classes.md` (exportar em PNG 3x/4x ou SVG).
   **Legenda:** "Figura 2 - Diagrama de Classes: conta, conteúdo, comunidade e auditoria."
 - [ ] **Localizar:** "A Figura 2 mostra as classes atualmente implementadas" (o parágrafo
@@ -964,11 +964,11 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > denúncias e que cada pergunta tem no máximo um gabarito. A autoria só é guardada no
 > material; quem cadastrou disciplinas e perguntas fica registrado no log de auditoria.
 
-- [ ] **Figura 3 (pág. 37):** SUBSTITUIR pela figura do bloco "Figura 3" de
+- [x] **Figura 3 (pág. 37):** SUBSTITUIR pela figura do bloco "Figura 3" de
   `docs/diagramas/diagrama_classes.md` (a figura atual tem "\n", acentuação errada e marca as
   classes como planejadas). **Legenda:** "Figura 3 - Diagrama de Classes: quiz, pontuação,
   ranking, Guru e notas."
-- [ ] **Localizar:** "A Figura 3 representa o módulo de gamificação planejado para as próximas
+- [x] **Localizar:** "A Figura 3 representa o módulo de gamificação planejado para as próximas
   etapas" (o parágrafo todo). **Ação:** SUBSTITUIR por:
 
 > A Figura 3 representa o módulo de gamificação e acompanhamento. A classe Quiz (rodada)
@@ -982,20 +982,20 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 38–39 — 3.3 Diagrama de Processo de Autenticação (BPMN)
 
-- [ ] **Título:** trocar por "3.3 Diagramas de Processo (BPMN)".
-- [ ] **Localizar:** "O diagrama distingue, por estilo de linha e preenchimento, o que já está
+- [x] **Título:** trocar por "3.3 Diagramas de Processo (BPMN)".
+- [x] **Localizar:** "O diagrama distingue, por estilo de linha e preenchimento, o que já está
   implementado nesta entrega do que está para uma próxima etapa (verificação em duas etapas /
   MFA), conforme legenda na própria figura." **Ação:** SUBSTITUIR por: "Todo o fluxo
   representado está implementado, inclusive a verificação em duas etapas."
-- [ ] **Figura 4 (pág. 38):** REDESENHAR conforme `docs/diagramas/bpmn.md` (Figura 4: fluxos
+- [x] **Figura 4 (pág. 38):** REDESENHAR conforme `docs/diagramas/bpmn.md` (Figura 4: fluxos
   em linha contínua, sem cruzamentos, log das falhas, limite de 5 tentativas e gateway do novo
   aceite; sem a legenda "previsto"). **Legenda:** "Figura 4 - Diagrama de processo (BPMN) do
   login com verificação em duas etapas."
-- [ ] **Localizar:** "O processo começa quando o usuário informa e-mail e senha." (o parágrafo
+- [x] **Localizar:** "O processo começa quando o usuário informa e-mail e senha." (o parágrafo
   todo, até "Nenhuma dessas etapas de MFA está implementada em código nesta entrega.").
   **Ação:** SUBSTITUIR pelo texto "Texto abaixo da figura" da Figura 4 em
   `docs/diagramas/bpmn.md`.
-- [ ] **Ação:** INSERIR depois desse parágrafo a **Figura 5** (desenhar conforme a Figura 5 de
+- [X] **Ação:** INSERIR depois desse parágrafo a **Figura 5** (desenhar conforme a Figura 5 de
   `docs/diagramas/bpmn.md`), com a legenda "Figura 5 - Diagrama de processo (BPMN) do quiz, da
   pontuação e das indicações do Guru." e, abaixo dela, o "Texto abaixo da figura" da Figura 5
   no mesmo arquivo.
@@ -1004,7 +1004,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 39–40 — APÊNDICE A — Termo de Aceite
 
-- [ ] **Ação:** SUBSTITUIR todo o conteúdo do Apêndice A (do "Texto vigente..." até o item 7)
+- [x] **Ação:** SUBSTITUIR todo o conteúdo do Apêndice A (do "Texto vigente..." até o item 7)
   por:
 
 > Texto vigente na página /termos do sistema EduGuru (versão 1.3, 05/11/2026). Reproduzido
@@ -1084,7 +1084,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 40–43 — APÊNDICE B — Política de Privacidade
 
-- [ ] **Ação:** SUBSTITUIR todo o conteúdo do Apêndice B (do "Texto vigente..." até o fim do
+- [x] **Ação:** SUBSTITUIR todo o conteúdo do Apêndice B (do "Texto vigente..." até o fim do
   item 8) por:
 
 > Texto vigente na página /privacidade do sistema EduGuru (versão 1.3, 05/11/2026).
@@ -1238,7 +1238,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 
 ## Pág. 43 — APÊNDICE C — Plano de Retenção e Descarte de Dados
 
-- [ ] **Ação:** SUBSTITUIR a tabela inteira por:
+- [x] **Ação:** SUBSTITUIR a tabela inteira por:
 
 | Dado pessoal | Retenção | Forma de descarte |
 |---|---|---|
@@ -1252,15 +1252,15 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 | Preferência de exibição no ranking | Enquanto a conta existir | Junto com a exclusão da conta |
 | Notas e faltas | Até o aluno apagar o registro ou excluir a conta | Exclusão na tela Notas ou junto com a conta |
 
-- [ ] **Localizar:** "A escolha por retenção manual dos logs nesta etapa (em vez de automática)
+- [x] **Localizar:** "A escolha por retenção manual dos logs nesta etapa (em vez de automática)
   é uma limitação temporária" (o parágrafo depois da tabela). **Ação:** APAGAR (a exclusão
   automática já existe).
 
 ## Pág. 44 — 4. REFERÊNCIAS BIBLIOGRÁFICAS
 
-- [ ] **Título:** trocar "4. REFERÊNCIAS BIBLIOGRÁFICAS" por "REFERÊNCIAS" (sem número, como
+- [x] **Título:** trocar "4. REFERÊNCIAS BIBLIOGRÁFICAS" por "REFERÊNCIAS" (sem número, como
   pede a ABNT NBR 14724).
-- [ ] **Ação:** SUBSTITUIR a lista inteira por esta, já em ordem alfabética (ABNT NBR 6023). As
+- [x] **Ação:** SUBSTITUIR a lista inteira por esta, já em ordem alfabética (ABNT NBR 6023). As
   entradas DETERDING, HAMARI, KAPP e WERBACH são novas (seção 2.5); SOUZA substitui LEITE
   (seção 1.2); ALMEIDA e SILVA ganharam as páginas:
 
@@ -1305,7 +1305,7 @@ APÊNDICE C — PLANO DE RETENÇÃO E DESCARTE DE DADOS
 > WERBACH, Kevin; HUNTER, Dan. **For the win**: how game thinking can revolutionize your
 > business. Philadelphia: Wharton Digital Press, 2012.
 
-- [ ] Ajustem o "Acesso em:" para a data em que vocês conferirem os sites.
+- [x] Ajustem o "Acesso em:" para a data em que vocês conferirem os sites.
 
 ---
 
