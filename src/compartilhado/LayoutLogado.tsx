@@ -11,6 +11,7 @@ import { aplicarTema, temaSalvo, type Tema } from './tema'
 const itensAluno = [
   { path: '/quiz', label: 'Quiz' },
   { path: '/ranking', label: 'Ranking' },
+  { path: '/carreiras', label: 'Carreiras' },
   { path: '/disciplinas', label: 'Disciplinas' },
 ]
 
@@ -18,6 +19,7 @@ const itensAdmin = [
   { path: '/disciplinas', label: 'Disciplinas' },
   { path: '/perguntas', label: 'Perguntas' },
   { path: '/ranking', label: 'Ranking' },
+  { path: '/carreiras', label: 'Carreiras' },
   { path: '/usuarios', label: 'Usuários' },
   { path: '/logs', label: 'Logs' },
 ]

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import {
   BarChart3,
   BookOpen,
+  Briefcase,
   GraduationCap,
   Lightbulb,
   ShieldCheck,
@@ -37,6 +38,12 @@ const RECURSOS = [
     icone: Lightbulb,
     titulo: 'Guru',
     texto: 'Foi mal no quiz? O Guru indica materiais da mesma disciplina para revisar.',
+    disponivel: true,
+  },
+  {
+    icone: Briefcase,
+    titulo: 'Carreiras',
+    texto: 'Vagas de tecnologia ligadas às disciplinas em que você vai bem no quiz.',
     disponivel: true,
   },
   {

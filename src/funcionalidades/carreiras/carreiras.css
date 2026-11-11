@@ -1,0 +1,203 @@
+/* EduGuru Carreiras */
+
+.areas-aluno,
+.areas-admin {
+  margin-bottom: 16px;
+}
+
+.areas-aluno h3,
+.areas-admin h3,
+.vagas h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.areas-aluno-quiz {
+  display: inline-flex;
+  align-items: center;
+  margin: 12px 0 16px;
+  text-decoration: none;
+}
+
+.areas-sugeridas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.areas-sugeridas li {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.areas-sugeridas .selo {
+  margin-left: 8px;
+}
+
+.areas-materiais {
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.areas-materiais p {
+  margin: 0 0 6px;
+}
+
+.areas-materiais ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.areas-materiais a {
+  color: var(--roxo-texto);
+}
+
+.item-meta-inline {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.selo-certo {
+  background: color-mix(in srgb, var(--certo) 16%, transparent);
+  color: var(--certo);
+}
+
+.selo-neutro {
+  background: var(--bg-hover);
+  color: var(--text-suave);
+}
+
+.aviso.alerta {
+  color: var(--amarelo-texto);
+}
+
+/* Formulário de áreas (admin) */
+.form-area {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0 8px;
+}
+
+.form-area-inteiro {
+  grid-column: 1 / -1;
+}
+
+.areas-disciplinas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+  padding: 10px 14px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.areas-disciplinas legend {
+  padding: 0 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Lista de vagas */
+.vagas-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vagas-topo .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.abas-rolagem {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.abas-rolagem .aba {
+  white-space: nowrap;
+}
+
+.vagas-nivel {
+  flex: 0 0 200px;
+}
+
+.vagas-erro {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vaga {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vaga-info {
+  min-width: 0;
+}
+
+.vaga-info strong {
+  overflow-wrap: anywhere;
+}
+
+.vaga-selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.vaga-selos .selo {
+  margin-left: 0;
+}
+
+.vaga-candidatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.vagas-mais {
+  margin-top: 16px;
+  width: 100%;
+}
+
+@media (max-width: 820px) {
+  .form-area {
+    grid-template-columns: 1fr;
+  }
+
+  .vaga {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vaga-candidatar {
+    justify-content: center;
+  }
+
+  .vagas-nivel {
+    flex: 1 1 100%;
+  }
+}

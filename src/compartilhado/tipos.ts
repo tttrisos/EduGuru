@@ -235,3 +235,36 @@ export type EstatisticasAdmin = {
   quizzes_por_dia: { dia: string; total: number }[]
   aproveitamento_por_disciplina: { disciplina: string; aproveitamento: number }[]
 }
+
+// EduGuru Carreiras
+
+// Área de carreira (tabela areas_carreira); as palavras-chave filtram as vagas.
+export type AreaCarreira = {
+  id: number
+  nome: string
+  descricao: string | null
+  palavras_chave: string[]
+}
+
+// Ligação disciplina → área (tabela disciplinas_areas).
+export type DisciplinaArea = {
+  disciplina_id: number
+  area_id: number
+}
+
+// Linha devolvida por minhas_areas_carreira(): áreas em que o aluno vai bem no quiz.
+export type AreaSugerida = {
+  area_id: number
+  area: string
+  aproveitamento: number
+  disciplinas: string[]
+}
+
+// Devolvido por estatisticas_carreiras() (só admin).
+export type EstatisticasCarreiras = {
+  cliques: number
+  cliques_30_dias: number
+  alunos_que_clicaram: number
+  cliques_por_area: { area: string; total: number }[]
+  vagas_mais_clicadas: { titulo: string; total: number }[]
+}
