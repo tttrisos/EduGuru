@@ -157,7 +157,19 @@ from (values
   ('Análise Orientada aos Objetos', 'Gestão e Produto'),
   ('Análise e Implementação de Software', 'Gestão e Produto'),
   ('Inovação e Estratégia em Inteligência Artificial', 'Inteligência Artificial'),
-  ('Automação Inteligente com Low-Code', 'Inteligência Artificial')
+  ('Automação Inteligente com Low-Code', 'Inteligência Artificial'),
+  ('Inteligência Artificial', 'Inteligência Artificial'),
+  ('Inteligência Artificial', 'Dados'),
+  ('Internet das Coisas (IoT)', 'Infraestrutura e Segurança'),
+  ('Segurança da Informação', 'Infraestrutura e Segurança'),
+  ('Desenvolvimento de Software Corporativo', 'Back-end'),
+  ('Desenvolvimento de Software Corporativo', 'Full Stack'),
+  ('Padrões de Projetos', 'Back-end'),
+  ('Padrões de Projetos Orientados a Objetos - Orientação', 'Back-end'),
+  ('Análise e Projeto de Software', 'Gestão e Produto'),
+  ('Implementação e Testes de Projetos de Software I - Orientação', 'Qualidade e Testes'),
+  ('Implementação e Testes de Projetos de Software II - Orientação', 'Qualidade e Testes'),
+  ('Implementação e Testes de Projetos de Software III - Orientação', 'Qualidade e Testes')
 ) as v(disciplina, area)
 join public.disciplinas d on lower(d.nome) = lower(v.disciplina)
 join public.areas_carreira a on a.nome = v.area
