@@ -16,11 +16,12 @@ type DadosExtras = {
   materiais: Material[]
   notas: Nota[]
   tentativas: TentativaQuiz[]
+  cliquesVagas: Record<string, unknown>[]
   mfaAtivoDesde: string | null
 }
 
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
-  const [logs, materiais, notas, tentativas, fatores] = await Promise.all([
+  const [logs, materiais, notas, tentativas, fatores, cliques] = await Promise.all([
     supabase
       .from('logs_auditoria')
       .select('*')
@@ -31,12 +32,18 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
     supabase.from('notas').select('*'),
     supabase.from('tentativas_quiz').select('*').order('iniciada_em', { ascending: false }),
     supabase.auth.mfa.listFactors(),
+    // Vagas abertas em Carreiras (só a vaga e a data; vazio antes do script 17).
+    supabase
+      .from('cliques_vagas')
+      .select('fonte, vaga_numero, vaga_titulo, clicado_em')
+      .order('clicado_em', { ascending: false }),
   ])
   return {
     logs: (logs.data as LogAuditoria[]) ?? [],
     materiais: (materiais.data as Material[]) ?? [],
     notas: (notas.data as Nota[]) ?? [],
     tentativas: (tentativas.data as TentativaQuiz[]) ?? [],
+    cliquesVagas: (cliques.data as Record<string, unknown>[]) ?? [],
     mfaAtivoDesde: fatores.data?.totp[0]?.created_at ?? null,
   }
 }
@@ -149,6 +156,7 @@ export default function MinhaConta() {
       materiais_enviados: extras?.materiais ?? [],
       notas_e_faltas: extras?.notas ?? [],
       rodadas_de_quiz: extras?.tentativas ?? [],
+      vagas_abertas_em_carreiras: extras?.cliquesVagas ?? [],
       registros_de_atividade: extras?.logs ?? [],
     }
     const blob = new Blob([JSON.stringify(conteudo, null, 2)], { type: 'application/json' })
@@ -228,6 +236,8 @@ export default function MinhaConta() {
           <dd>{extras ? extras.tentativas.length : '...'}</dd>
           <dt>Disciplinas com notas registradas</dt>
           <dd>{extras ? extras.notas.length : '...'}</dd>
+          <dt>Vagas abertas em Carreiras</dt>
+          <dd>{extras ? extras.cliquesVagas.length : '...'}</dd>
         </dl>
         <button type="button" className="btn btn-secundario" onClick={baixarMeusDados} disabled={!extras}>
           Baixar meus dados (JSON)
@@ -336,7 +346,7 @@ export default function MinhaConta() {
         <ul>
           <li>seu perfil, sua conta de acesso e a verificação em duas etapas são apagados;</li>
           <li>os materiais que você enviou (e os arquivos anexados) são apagados;</li>
-          <li>suas notas, faltas, rodadas de quiz e pontos do ranking são apagados;</li>
+          <li>suas notas, faltas, rodadas de quiz, pontos do ranking e o registro das vagas que você abriu são apagados;</li>
           <li>
             os registros de auditoria já feitos ficam guardados até completar 90 dias, por
             segurança, e depois são apagados automaticamente.

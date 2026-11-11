@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.3.
+// Política de Privacidade, versão 1.4.
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -11,9 +11,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.3 — 05/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.4 — 10/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, e materiais compartilhados com perfil público do autor). Finalidade
+          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor e Carreiras, com vagas de tecnologia). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -73,6 +73,13 @@ export default function Privacidade() {
             <strong>Desempenho nos quizzes:</strong> rodadas de quiz jogadas (data,
             disciplina, respostas escolhidas, acertos e pontos) e a sua escolha de
             aparecer ou não com o nome no ranking.
+          </li>
+          <li>
+            <strong>Carreiras:</strong> as áreas sugeridas (ex.: Back-end, Dados) são
+            calculadas na hora, a partir do seu desempenho no quiz, e não ficam gravadas.
+            Quando você clica em &quot;Candidatar-se&quot;, guardamos qual vaga foi aberta e quando
+            (uma vez por vaga). Não recebemos currículo, telefone nem qualquer dado da
+            candidatura, que acontece no site da vaga.
           </li>
           <li>
             <strong>Notas e faltas (opcional):</strong> M1, ND, NI, nota única (MS), nota de exame e
@@ -148,7 +155,7 @@ export default function Privacidade() {
               </tr>
               <tr>
                 <td>Rodadas de quiz, respostas e pontos</td>
-                <td>Corrigir o quiz, calcular a pontuação e o ranking, mostrar seu desempenho no Painel e permitir que o Guru indique materiais quando o aproveitamento em uma disciplina fica abaixo de 60%</td>
+                <td>Corrigir o quiz, calcular a pontuação e o ranking, mostrar seu desempenho no Painel, permitir que o Guru indique materiais quando o aproveitamento em uma disciplina fica abaixo de 60% e sugerir, em Carreiras, áreas e vagas ligadas às disciplinas em que você acerta 60% ou mais</td>
                 <td>Execução de contrato (art. 7º, V) — é a funcionalidade principal da plataforma</td>
                 <td>Enquanto a conta existir</td>
               </tr>
@@ -163,6 +170,12 @@ export default function Privacidade() {
                 <td>Calcular e mostrar, só para você, a situação em cada disciplina (média, exame, limite de faltas)</td>
                 <td>Consentimento (art. 7º, I): registrar é opcional e você pode apagar a qualquer momento na tela Notas</td>
                 <td>Até você apagar o registro ou excluir a conta</td>
+              </tr>
+              <tr>
+                <td>Vagas abertas em Carreiras (qual vaga e quando)</td>
+                <td>Contar quantas vezes cada vaga e cada área foram abertas, para a equipe avaliar se a funcionalidade é útil. O administrador vê só os totais, nunca quem clicou</td>
+                <td>Legítimo interesse (art. 7º, IX), com dado mínimo: só a vaga, que já é pública, e a data</td>
+                <td>12 meses, apagados automaticamente, ou antes, com a exclusão da conta</td>
               </tr>
               <tr>
                 <td>Logs de auditoria</td>
@@ -194,6 +207,16 @@ export default function Privacidade() {
             preencher os campos automaticamente. O ViaCEP não recebe nome, e-mail ou
             qualquer outro dado que identifique a pessoa — apenas o número do CEP.
           </li>
+          <li>
+            <strong>API do GitHub</strong> — na tela Carreiras, o seu navegador consulta a
+            API pública do GitHub para listar as vagas publicadas nos repositórios
+            backend-br/vagas e frontendbr/vagas. A consulta é feita sem login e não envia
+            nome, e-mail, curso nem desempenho; como em qualquer acesso à internet, o GitHub
+            recebe o endereço IP da conexão. Do retorno, o EduGuru usa só o título, as
+            etiquetas, a data e o link de cada vaga (o texto da vaga e quem a publicou são
+            descartados). Ao clicar em &quot;Candidatar-se&quot;, a vaga abre no site do
+            GitHub, que tem a sua própria política de privacidade.
+          </li>
         </ul>
         <p>Nenhum outro serviço externo recebe dados pessoais nesta fase do projeto.</p>
 
@@ -206,7 +229,9 @@ export default function Privacidade() {
           você continuar logado — não é usado para te rastrear em outros sites. O
           navegador também guarda duas preferências suas, que não identificam ninguém e
           não são enviadas ao EduGuru: o tema escolhido (escuro ou claro) e se os sons do
-          quiz estão desligados.
+          quiz estão desligados. Em Carreiras, o navegador guarda por 30 minutos uma cópia
+          da lista de vagas (dados públicos, sem nada sobre você), para não consultar o
+          GitHub a cada visita e para mostrar a última lista quando ele estiver fora do ar.
         </p>
 
         <h2>6. Retenção e descarte</h2>
@@ -236,6 +261,10 @@ export default function Privacidade() {
             As notas de uma disciplina podem ser apagadas por você a qualquer momento;
             tudo é apagado junto com a conta.
           </li>
+          <li>
+            Vagas abertas em Carreiras: <strong>12 meses</strong>, com exclusão automática
+            diária (pg_cron), ou antes, junto com a conta.
+          </li>
         </ul>
 
         <h3>Quem enxerga o quê</h3>
@@ -257,7 +286,8 @@ export default function Privacidade() {
             <strong>Administradores:</strong> veem os perfis de todos os usuários (para
             gerenciar contas) e os logs de auditoria. Não veem suas notas nem suas
             respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
-            foram feitos e a média de acertos por disciplina).
+            foram feitos e a média de acertos por disciplina). Em Carreiras, veem só
+            quantas vezes cada vaga e cada área foram abertas, sem saber por quem.
           </li>
         </ul>
 
@@ -294,7 +324,7 @@ export default function Privacidade() {
           <li>
             <strong>Eliminação:</strong> excluir a conta. Perfil, conta de acesso,
             verificação em duas etapas, materiais enviados (com os arquivos), notas,
-            faltas e rodadas de quiz são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
+            faltas, rodadas de quiz e vagas abertas em Carreiras são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
             dias, por segurança, e então apagados automaticamente.
           </li>
         </ul>
@@ -320,7 +350,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.3, 05/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.4, 10/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

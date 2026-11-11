@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.3.
+// Termo de Aceite, versão 1.4.
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -11,7 +11,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.3 — 05/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.4 — 10/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -28,6 +28,14 @@ export default function TermoDeAceite() {
           da UMC, que reúne quizzes gamificados, materiais de estudo e acompanhamento de
           desempenho para estudantes de Sistemas de Informação, Análise e
           Desenvolvimento de Sistemas e Engenharia de Software.
+        </p>
+        <p>
+          Na área <strong>Carreiras</strong>, o EduGuru mostra vagas de tecnologia publicadas
+          por terceiros em comunidades abertas do GitHub e sugere áreas a partir do seu
+          desempenho no quiz. Essas sugestões são uma orientação simples, não uma avaliação
+          profissional ou psicológica. A candidatura acontece no site de origem da vaga: o
+          EduGuru não recebe currículo nem dados de candidatura e não se responsabiliza pelo
+          conteúdo, pela veracidade ou pelo processo seletivo das vagas.
         </p>
 
         <h2>2. Quem pode usar</h2>
@@ -117,7 +125,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.3, 05/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.4, 10/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>
