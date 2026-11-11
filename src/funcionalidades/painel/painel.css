@@ -53,3 +53,23 @@
       grid-template-columns: 1fr;
     }
 }
+
+.painel-carreiras {
+  margin-bottom: 16px;
+}
+
+.painel-carreiras h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.painel-carreiras .big-number {
+  background: var(--bg);
+}
+
+.painel-carreiras a.item-meta {
+  color: var(--roxo-texto);
+  text-decoration: none;
+}

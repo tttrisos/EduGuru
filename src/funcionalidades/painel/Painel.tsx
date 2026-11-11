@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Lightbulb } from 'lucide-react'
+import { Briefcase, Lightbulb } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
 import { useAuth } from '../../compartilhado/AuthContext'
 import BigNumber from '../../compartilhado/BigNumber'
@@ -11,6 +11,7 @@ import type {
   DesempenhoDisciplina,
   Disciplina,
   EstatisticasAdmin,
+  EstatisticasCarreiras,
   LinhaRanking,
   Nota,
   RecomendacaoGuru,
@@ -251,6 +252,8 @@ function PainelAdmin() {
         </div>
       </div>
 
+      <PainelCarreiras />
+
       <div className="grade-inicio">
         <Link to="/perguntas" className="atalho">
           <h3>Perguntas</h3>
@@ -266,5 +269,47 @@ function PainelAdmin() {
         </Link>
       </div>
     </>
+  )
+}
+
+// EduGuru Carreiras: cliques em "Candidatar-se" (sem identificar quem clicou).
+function PainelCarreiras() {
+  const [dados, setDados] = useState<EstatisticasCarreiras | null>(null)
+
+  useEffect(() => {
+    // Se o script 17 ainda não foi rodado, a seção simplesmente não aparece.
+    supabase.rpc('estatisticas_carreiras').then(({ data, error }) => {
+      if (!error && data) setDados(data as EstatisticasCarreiras)
+    })
+  }, [])
+
+  if (!dados) return null
+
+  return (
+    <div className="cartao painel-carreiras">
+      <h3>
+        <Briefcase size={20} color="#8257e5" aria-hidden="true" /> Carreiras
+      </h3>
+      <div className="grade-big-numbers">
+        <BigNumber valor={dados.cliques} legenda='Cliques em "Candidatar-se"' detalhe="um por aluno e vaga" />
+        <BigNumber valor={dados.cliques_30_dias} legenda="Cliques nos últimos 30 dias" />
+        <BigNumber valor={dados.alunos_que_clicaram} legenda="Alunos que abriram vagas" />
+      </div>
+      <div className="grade-graficos">
+        <GraficoBarras
+          titulo="Cliques por área"
+          itens={dados.cliques_por_area.map((c) => ({ rotulo: c.area, valor: c.total }))}
+          vazio="Nenhum clique registrado ainda."
+        />
+        <GraficoBarras
+          titulo="Vagas mais abertas"
+          itens={dados.vagas_mais_clicadas.map((v) => ({ rotulo: v.titulo, valor: v.total }))}
+          vazio="Nenhum clique registrado ainda."
+        />
+      </div>
+      <Link to="/carreiras" className="item-meta">
+        Gerenciar áreas de carreira →
+      </Link>
+    </div>
   )
 }
