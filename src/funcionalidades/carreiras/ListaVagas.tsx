@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ExternalLink, RefreshCw } from 'lucide-react'
+import { ExternalLink, MapPin, RefreshCw } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
 import type { AreaCarreira, AreaSugerida } from '../../compartilhado/tipos'
 import {
@@ -12,6 +12,7 @@ import {
   type ResultadoVagas,
   type Vaga,
 } from './vagas'
+import { OPCOES_LOCAL, localDaVaga, vagaNoLocal, type FiltroLocal } from './localidade'
 
 const POR_PAGINA = 15
 
@@ -31,6 +32,8 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
   const [aba, setAba] = useState<string>(sugeridas.length > 0 ? 'sugeridas' : 'todas')
   const [nivel, setNivel] = useState<FiltroVagas['nivel']>('todos')
   const [busca, setBusca] = useState('')
+  // Padrão: só remotas e no estado de SP (alunos da UMC, em Mogi das Cruzes).
+  const [local, setLocal] = useState<FiltroLocal>('sp-remoto')
   const [quantas, setQuantas] = useState(POR_PAGINA)
 
   const carregar = useCallback(async (forcar: boolean) => {
@@ -61,10 +64,18 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
     return areas.filter((a) => String(a.id) === aba)
   }, [aba, areas, idsSugeridos])
 
-  const filtradas = useMemo(
+  const semFiltroLocal = useMemo(
     () => filtrarVagas(resultado?.vagas ?? [], { areas: areasDoFiltro, nivel, busca }),
     [resultado, areasDoFiltro, nivel, busca],
   )
+
+  // Filtro de localidade; as vagas perto da UMC (Alto Tietê) vêm primeiro.
+  const filtradas = useMemo(() => {
+    const lista = semFiltroLocal.filter((v) => vagaNoLocal(v, local))
+    return [...lista].sort((a, b) => Number(localDaVaga(b).pertoDaUmc) - Number(localDaVaga(a).pertoDaUmc))
+  }, [semFiltroLocal, local])
+
+  const escondidasPeloLocal = semFiltroLocal.length - filtradas.length
 
   function trocarAba(nova: string) {
     setAba(nova)
@@ -161,6 +172,21 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
             </option>
           ))}
         </select>
+        <select
+          className="campo vagas-local"
+          value={local}
+          onChange={(e) => {
+            setLocal(e.target.value as FiltroLocal)
+            setQuantas(POR_PAGINA)
+          }}
+          aria-label="Localidade da vaga"
+        >
+          {OPCOES_LOCAL.map((o) => (
+            <option key={o.valor} value={o.valor}>
+              {o.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {resultado?.aviso ? <p className="aviso alerta">{resultado.aviso}</p> : null}
@@ -181,13 +207,23 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
             {new Date(resultado.salvoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} · fonte:
             GitHub (backend-br/vagas e frontendbr/vagas)
           </p>
+          {escondidasPeloLocal > 0 && local !== 'todas' ? (
+            <p className="item-meta vagas-escondidas">
+              {escondidasPeloLocal} {escondidasPeloLocal === 1 ? 'vaga de outra região ficou' : 'vagas de outras regiões ficaram'} de
+              fora (outros estados, exterior ou sem local informado).{' '}
+              <button type="button" className="link-botao" onClick={() => setLocal('todas')}>
+                Ver todas
+              </button>
+            </p>
+          ) : null}
 
           {filtradas.length === 0 ? (
-            <p className="vazio">Nenhuma vaga com esses filtros agora. Tente outra área ou outro nível.</p>
+            <p className="vazio">Nenhuma vaga com esses filtros agora. Tente outra área, outro nível ou outra localidade.</p>
           ) : (
             <ul className="lista">
               {filtradas.slice(0, quantas).map((vaga) => {
                 const porque = motivo(vaga)
+                const lugar = localDaVaga(vaga)
                 return (
                   <li key={`${vaga.fonte}#${vaga.numero}`} className="item-lista vaga">
                     <div className="vaga-info">
@@ -197,6 +233,12 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
                       </span>
                       <div className="vaga-selos">
                         {vaga.nivel ? <span className="selo">{vaga.nivel}</span> : null}
+                        {lugar.pertoDaUmc ? <span className="selo selo-umc">Perto da UMC</span> : null}
+                        {lugar.rotulo !== 'Remoto' ? (
+                          <span className="selo selo-neutro selo-local">
+                            <MapPin size={12} aria-hidden="true" /> {lugar.rotulo}
+                          </span>
+                        ) : null}
                         {vaga.modalidade ? <span className="selo selo-neutro">{vaga.modalidade}</span> : null}
                         {porque ? (
                           <span className={`selo ${idsSugeridos.has(porque.area.id) ? 'selo-certo' : 'selo-neutro'}`}>

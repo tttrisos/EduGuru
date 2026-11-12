@@ -22,7 +22,7 @@ quem vai bem em Banco de Dados recebe vagas de Dados e Back-end, por exemplo.
 | Cadastro das áreas e da ligação disciplina → área (admin) | `src/funcionalidades/carreiras/AreasAdmin.tsx`, `areas.ts` |
 | Tabelas, áreas sugeridas, registro de cliques e totais | `supabase/17_carreiras.sql` |
 | Métricas no painel do admin | `src/funcionalidades/painel/Painel.tsx` (`PainelCarreiras`) |
-| Testes (33 casos, com a API simulada) | `testes/vagas.test.ts` |
+| Testes (33 casos, com a API simulada, e 9 de localidade) | `testes/vagas.test.ts`, `testes/localidade.test.ts` |
 
 ## Endpoint consumido
 
@@ -66,6 +66,25 @@ uso bem abaixo do limite.
 4. **Filtra por área:** a vaga é de uma área quando uma palavra-chave da área aparece
    como termo inteiro no título ou nas etiquetas ("java" não casa com "javascript";
    "c#", ".net" e "node.js" funcionam). Sem acento e sem diferenciar maiúsculas.
+
+## Localidade (foco nos alunos da UMC)
+
+O público é de alunos da UMC, em Mogi das Cruzes (SP). Por isso, o filtro padrão mostra
+só **vagas remotas e vagas no estado de SP** (`src/funcionalidades/carreiras/localidade.ts`):
+
+- O local vem do texto entre colchetes no começo do título (`[Remoto]`, `[Híbrido em SP]`,
+  `[Joinville/SC]`) e das etiquetas com nome de estado (o frontendbr usa "São Paulo").
+- **Remota:** "remoto", "remote" ou "home office".
+- **Estado de SP:** "SP", "São Paulo" ou uma cidade paulista conhecida. Vagas do **Alto Tietê**
+  (Mogi das Cruzes, Suzano, Itaquaquecetuba, Poá, Arujá, Ferraz de Vasconcelos, Guararema,
+  Biritiba Mirim, Salesópolis e Santa Isabel) ganham o selo **"Perto da UMC"** e aparecem primeiro.
+- **Outra região:** sigla de outro estado entre colchetes (`/SC`, `- MG`), outra capital ou
+  outro país. Siglas só valem entre colchetes: a etiqueta "Go" é a linguagem, não Goiás.
+- Vaga que cita SP e outra cidade ("Belo Horizonte ou São Paulo") conta como SP. Vaga sem
+  local informado (ex.: só `[Híbrido]`) fica fora do filtro padrão.
+- Opções: "Remotas e no estado de SP" (padrão), "Só remotas", "Só no estado de SP" e "Todas as
+  localidades". A tela informa quantas vagas ficaram de fora e tem o atalho "Ver todas".
+- Em 12/11/2026, 29 das 38 vagas válidas entraram no filtro padrão.
 
 ## Ligação com o desempenho (regra do Carreiras)
 
