@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, MapPin, RefreshCw, Sparkles } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
-import type { AreaCarreira, AreaSugerida } from '../../compartilhado/tipos'
+import type { AreaCarreira } from '../../compartilhado/tipos'
+import { motivoSugestao, type SugestaoArea } from './afinidadeBussola'
 import {
   ErroVagas,
   MSG_SEM_CONEXAO,
@@ -23,8 +24,8 @@ const OPCOES_NIVEL: { valor: FiltroVagas['nivel']; label: string }[] = [
   { valor: 'Sênior', label: 'Sênior' },
 ]
 
-// Lista de vagas da API do GitHub, filtrada pelas áreas. "sugeridas" vem do desempenho no quiz.
-export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]; sugeridas: AreaSugerida[] }) {
+// Lista de vagas da API do GitHub, filtrada pelas áreas. "sugeridas" junta o quiz e a Bússola.
+export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]; sugeridas: SugestaoArea[] }) {
   const [resultado, setResultado] = useState<ResultadoVagas | null>(null)
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(true)
@@ -92,9 +93,7 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
       const sugestao = sugeridas.find((s) => s.area_id === area.id)
       return {
         area,
-        texto: sugestao
-          ? `${area.nome}: você acerta ${sugestao.aproveitamento}% em ${sugestao.disciplinas.slice(0, 2).join(' e ')}`
-          : area.nome,
+        texto: sugestao ? motivoSugestao(sugestao) : area.nome,
       }
     }
     return null

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase } from 'lucide-react'
+import { Briefcase, Compass } from 'lucide-react'
 import Ajuda from '../../compartilhado/Ajuda'
 import { useAuth } from '../../compartilhado/AuthContext'
 import { supabase } from '../../compartilhado/supabase'
@@ -14,34 +14,41 @@ import type {
 import { buscarMateriaisComunidade } from '../materiais/comunidade'
 import AreasAdmin from './AreasAdmin'
 import ListaVagas from './ListaVagas'
+import { combinarSugestoes, type AfinidadeBussola, type SugestaoArea } from './afinidadeBussola'
 import './carreiras.css'
 
 type Dados = {
   areas: AreaCarreira[]
   ligacoes: DisciplinaArea[]
   disciplinas: Disciplina[]
-  sugeridas: AreaSugerida[]
+  sugeridas: SugestaoArea[]
+  fezBussola: boolean
   materiais: MaterialComunidade[]
   urlsArquivos: Record<string, string>
 }
 
+const vazio = Promise.resolve({ data: [], error: null })
+
 async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string }> {
-  const [areas, ligacoes, disciplinas, sugeridas] = await Promise.all([
+  const [areas, ligacoes, disciplinas, desempenho, bussola] = await Promise.all([
     supabase.from('areas_carreira').select('*').order('nome'),
     supabase.from('disciplinas_areas').select('*'),
     supabase.from('disciplinas').select('*').order('nome'),
-    ehAdmin ? Promise.resolve({ data: [], error: null }) : supabase.rpc('minhas_areas_carreira'),
+    ehAdmin ? vazio : supabase.rpc('minhas_areas_carreira'),
+    // Antes do script 18 a função não existe: a tela segue só com o desempenho.
+    ehAdmin ? vazio : supabase.rpc('minha_bussola'),
   ])
-  const erro = areas.error?.message ?? ligacoes.error?.message ?? disciplinas.error?.message ?? sugeridas.error?.message ?? ''
+  const erro = areas.error?.message ?? ligacoes.error?.message ?? disciplinas.error?.message ?? desempenho.error?.message ?? ''
 
-  const listaSugeridas = (sugeridas.data as AreaSugerida[]) ?? []
+  const listaBussola = bussola.error ? [] : ((bussola.data as AfinidadeBussola[]) ?? [])
+  const sugeridas = combinarSugestoes((desempenho.data as AreaSugerida[]) ?? [], listaBussola)
   const listaLigacoes = (ligacoes.data as DisciplinaArea[]) ?? []
 
   // Materiais aprovados das disciplinas das áreas sugeridas ("área sugerida → vagas e materiais").
   let materiais: MaterialComunidade[] = []
   let urlsArquivos: Record<string, string> = {}
-  if (!ehAdmin && listaSugeridas.length > 0) {
-    const idsAreas = new Set(listaSugeridas.map((s) => s.area_id))
+  if (!ehAdmin && sugeridas.length > 0) {
+    const idsAreas = new Set(sugeridas.map((s) => s.area_id))
     const idsDisciplinas = new Set(listaLigacoes.filter((l) => idsAreas.has(l.area_id)).map((l) => l.disciplina_id))
     const { lista, urls } = await buscarMateriaisComunidade({})
     materiais = lista.filter((m) => m.disciplina_id !== null && idsDisciplinas.has(m.disciplina_id)).slice(0, 6)
@@ -53,7 +60,8 @@ async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string
       areas: (areas.data as AreaCarreira[]) ?? [],
       ligacoes: listaLigacoes,
       disciplinas: (disciplinas.data as Disciplina[]) ?? [],
-      sugeridas: listaSugeridas,
+      sugeridas,
+      fezBussola: listaBussola.length > 0,
       materiais,
       urlsArquivos,
     },
@@ -61,7 +69,7 @@ async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string
   }
 }
 
-// EduGuru Carreiras: vagas de tecnologia ligadas ao desempenho no quiz.
+// EduGuru Carreiras: vagas de tecnologia ligadas ao desempenho no quiz e à Bússola EduGuru.
 // A candidatura acontece no site de origem; o EduGuru não recebe currículo nem dados de candidatura.
 export default function Carreiras() {
   const { ehAdmin } = useAuth()
@@ -91,7 +99,7 @@ export default function Carreiras() {
           <span className="assinatura">EduGuru</span>
           Carreiras
         </h2>
-        <p>Vagas de tecnologia ligadas às disciplinas em que você vai bem no quiz.</p>
+        <p>Vagas de tecnologia ligadas ao seu desempenho no quiz e aos seus interesses.</p>
         <p className="pagina-fatos">
           <span>Vagas remotas e no estado de SP, perto da UMC</span>
           <span>Vagas das comunidades backend-br e frontendbr no GitHub</span>
@@ -112,7 +120,12 @@ export default function Carreiras() {
               aoMudar={recarregar}
             />
           ) : (
-            <AreasDoAluno sugeridas={dados.sugeridas} materiais={dados.materiais} urls={dados.urlsArquivos} />
+            <AreasDoAluno
+              sugeridas={dados.sugeridas}
+              fezBussola={dados.fezBussola}
+              materiais={dados.materiais}
+              urls={dados.urlsArquivos}
+            />
           )}
           <ListaVagas areas={dados.areas} sugeridas={dados.sugeridas} />
         </>
@@ -123,10 +136,12 @@ export default function Carreiras() {
 
 function AreasDoAluno({
   sugeridas,
+  fezBussola,
   materiais,
   urls,
 }: {
-  sugeridas: AreaSugerida[]
+  sugeridas: SugestaoArea[]
+  fezBussola: boolean
   materiais: MaterialComunidade[]
   urls: Record<string, string>
 }) {
@@ -135,11 +150,28 @@ function AreasDoAluno({
       <h3>
         <Briefcase size={20} color="#8257e5" aria-hidden="true" /> Suas áreas em destaque
       </h3>
+
+      <Link to="/carreiras/bussola" className="bussola-chamada">
+        <Compass size={28} aria-hidden="true" className="bussola-chamada-icone" />
+        <span>
+          <strong>
+            <span className="assinatura">EduGuru</span> Bússola
+          </strong>
+          <small>
+            {fezBussola
+              ? 'Seus interesses já entram nas sugestões abaixo. Mudou de ideia? Refaça quando quiser.'
+              : 'Autoavaliação de interesses em 3 minutos: descubra quais áreas combinam com você.'}
+          </small>
+        </span>
+        <span className="btn btn-secundario btn-pequeno">{fezBussola ? 'Ver ou refazer' : 'Começar'}</span>
+      </Link>
+
       {sugeridas.length === 0 ? (
         <>
           <p className="vazio">
-            Ainda não há áreas sugeridas. Elas aparecem quando você acerta 60% ou mais em uma disciplina, com pelo
-            menos 5 perguntas respondidas. Enquanto isso, explore as vagas de todas as áreas abaixo.
+            Ainda não há áreas sugeridas. Elas aparecem quando você acerta 60% ou mais em uma disciplina (com pelo
+            menos 5 perguntas respondidas) ou quando responde a Bússola. Enquanto isso, explore as vagas de todas as
+            áreas abaixo.
           </p>
           <Link to="/quiz" className="btn btn-primario areas-aluno-quiz">
             Fazer um quiz
@@ -149,17 +181,29 @@ function AreasDoAluno({
         <>
           <ul className="areas-sugeridas">
             {sugeridas.map((s) => (
-              <li key={s.area_id}>
+              <li key={s.area_id} className={s.aproveitamento !== null && s.afinidade !== null ? 'combina' : ''}>
                 <strong>{s.area}</strong>
-                <span className="selo selo-certo">{s.aproveitamento}% de acertos</span>
-                <span className="item-meta">Pelo seu desempenho em {s.disciplinas.join(', ')}</span>
+                {s.aproveitamento !== null && s.afinidade !== null ? (
+                  <span className="selo selo-umc">Combina com você</span>
+                ) : null}
+                <div className="areas-motivos">
+                  {s.aproveitamento !== null ? (
+                    <span className="selo selo-certo">Quiz: {s.aproveitamento}% de acertos</span>
+                  ) : null}
+                  {s.afinidade !== null ? <span className="selo">Bússola: {s.afinidade}% de afinidade</span> : null}
+                </div>
+                {s.disciplinas.length > 0 ? (
+                  <span className="item-meta">Pelo seu desempenho em {s.disciplinas.join(', ')}</span>
+                ) : (
+                  <span className="item-meta">Pelos seus interesses na Bússola</span>
+                )}
               </li>
             ))}
           </ul>
           {materiais.length > 0 ? (
             <div className="areas-materiais">
               <p>
-                <strong>Para se preparar</strong> — materiais aprovados dessas disciplinas:
+                <strong>Para se preparar</strong> — materiais aprovados das disciplinas dessas áreas:
               </p>
               <ul>
                 {materiais.map((m) => {
@@ -185,7 +229,7 @@ function AreasDoAluno({
       <Ajuda
         titulo="Como funciona"
         itens={[
-          'As sugestões são uma orientação simples, calculada pelos seus acertos no quiz. Não são uma avaliação profissional.',
+          'As sugestões juntam seus acertos no quiz (60% ou mais) e a Bússola. São uma orientação simples, não uma avaliação profissional ou psicológica.',
           'Ao clicar em "Candidatar-se", a vaga abre no GitHub, em outra aba. O EduGuru não recebe currículo nem dados da candidatura.',
           'Contamos apenas quantas vezes cada vaga foi aberta, para o painel da equipe (sem mostrar quem clicou).',
         ]}

@@ -19,6 +19,7 @@ import PerfilAutor from './funcionalidades/materiais/PerfilAutor'
 import Quiz from './funcionalidades/quiz/Quiz'
 import Ranking from './funcionalidades/quiz/Ranking'
 import Carreiras from './funcionalidades/carreiras/Carreiras'
+import Bussola from './funcionalidades/carreiras/Bussola'
 import Usuarios from './funcionalidades/admin/Usuarios'
 import Logs from './funcionalidades/admin/Logs'
 
@@ -52,6 +53,7 @@ function App() {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/carreiras" element={<Carreiras />} />
+          <Route path="/carreiras/bussola" element={<Bussola />} />
           <Route path="/minha-conta" element={<MinhaConta />} />
 
           {/* Somente administradores */}
