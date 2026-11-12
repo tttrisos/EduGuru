@@ -1001,3 +1001,70 @@ a.btn {
   color: var(--text);
   border-bottom-color: var(--roxo);
 }
+
+/* ---------- Assinatura "EduGuru" (menu Carreiras e título da tela) ----------
+   Fonte manuscrita roxa, inclinada, com um brilho que passa de vez em quando. */
+.assinatura {
+  font-family: "Pacifico", "Brush Script MT", cursive;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  background: linear-gradient(100deg, var(--roxo) 0%, var(--roxo-texto) 45%, #fff 50%, var(--roxo-texto) 55%, var(--roxo) 100%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: assinatura-brilho 6s ease-in-out infinite;
+}
+
+:root[data-tema="claro"] .assinatura {
+  background-image: linear-gradient(100deg, var(--roxo) 0%, #8b5cf6 45%, #c4b5fd 50%, #8b5cf6 55%, var(--roxo) 100%);
+}
+
+@keyframes assinatura-brilho {
+  0%, 70% { background-position: 100% 0; }
+  100% { background-position: 0% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assinatura { animation: none; }
+}
+
+/* No menu: a assinatura fica pequena, em cima e à esquerda da palavra */
+.topo-link-marca {
+  position: relative;
+}
+
+.topo-link-marca .assinatura {
+  position: absolute;
+  top: -7px;
+  left: 6px;
+  font-size: 11px;
+  transform: rotate(-7deg);
+  pointer-events: none;
+}
+
+@media (max-width: 820px) {
+  .topo-link-marca {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .topo-link-marca .assinatura {
+    position: static;
+    display: inline-block;
+    font-size: 13px;
+    transform: rotate(-5deg);
+  }
+}
+
+/* Botão com cara de link (ex.: "Ver todas") */
+.link-botao {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--roxo-texto);
+  font: inherit;
+  text-decoration: underline;
+}

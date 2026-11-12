@@ -8,18 +8,21 @@ import { aplicarTema, temaSalvo, type Tema } from './tema'
 
 // Menu de cada papel. O Painel abre pelo botão "Minha conta";
 // Notas e Materiais ficam no menu que abre sobre ele.
-const itensAluno = [
+// "marca": item com a assinatura "EduGuru" em cima (produto próprio, como o EduGuru Carreiras).
+type ItemMenu = { path: string; label: string; marca?: boolean }
+
+const itensAluno: ItemMenu[] = [
   { path: '/quiz', label: 'Quiz' },
   { path: '/ranking', label: 'Ranking' },
-  { path: '/carreiras', label: 'Carreiras' },
   { path: '/disciplinas', label: 'Disciplinas' },
+  { path: '/carreiras', label: 'Carreiras', marca: true },
 ]
 
-const itensAdmin = [
+const itensAdmin: ItemMenu[] = [
   { path: '/disciplinas', label: 'Disciplinas' },
   { path: '/perguntas', label: 'Perguntas' },
   { path: '/ranking', label: 'Ranking' },
-  { path: '/carreiras', label: 'Carreiras' },
+  { path: '/carreiras', label: 'Carreiras', marca: true },
   { path: '/usuarios', label: 'Usuários' },
   { path: '/logs', label: 'Logs' },
 ]
@@ -73,9 +76,15 @@ export default function LayoutLogado() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`topo-link${rotaAtiva(item.path) ? ' ativo' : ''}`}
+                className={`topo-link${item.marca ? ' topo-link-marca' : ''}${rotaAtiva(item.path) ? ' ativo' : ''}`}
                 onClick={() => setMenuAberto(false)}
+                aria-label={item.marca ? `EduGuru ${item.label}` : undefined}
               >
+                {item.marca ? (
+                  <span className="assinatura" aria-hidden="true">
+                    EduGuru
+                  </span>
+                ) : null}
                 {item.label}
               </Link>
             ))}

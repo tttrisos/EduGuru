@@ -87,9 +87,13 @@ export default function Carreiras() {
   return (
     <section className="pagina pagina-larga">
       <header className="pagina-topo">
-        <h2>Carreiras</h2>
+        <h2 className="carreiras-titulo">
+          <span className="assinatura">EduGuru</span>
+          Carreiras
+        </h2>
         <p>Vagas de tecnologia ligadas às disciplinas em que você vai bem no quiz.</p>
         <p className="pagina-fatos">
+          <span>Vagas remotas e no estado de SP, perto da UMC</span>
           <span>Vagas das comunidades backend-br e frontendbr no GitHub</span>
           <span>A candidatura é feita no site da vaga</span>
         </p>
