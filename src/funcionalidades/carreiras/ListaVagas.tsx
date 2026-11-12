@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ExternalLink, MapPin, RefreshCw } from 'lucide-react'
+import { ExternalLink, MapPin, RefreshCw, Sparkles } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
 import type { AreaCarreira, AreaSugerida } from '../../compartilhado/tipos'
 import {
@@ -110,11 +110,23 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
     })
   }
 
-  const abas = [
-    ...(sugeridas.length > 0 ? [{ valor: 'sugeridas', label: 'Sugeridas para você' }] : []),
-    { valor: 'todas', label: 'Todas as áreas' },
-    ...areas.map((a) => ({ valor: String(a.id), label: a.nome })),
-  ]
+  // Chips de área com o total de vagas de cada uma (já com nível, busca e localidade aplicados).
+  const vagasNoLocal = useMemo(
+    () => filtrarVagas(resultado?.vagas ?? [], { areas: [], nivel, busca }).filter((v) => vagaNoLocal(v, local)),
+    [resultado, nivel, busca, local],
+  )
+  const chips = useMemo(() => {
+    const contar = (lista: AreaCarreira[]) =>
+      lista.length === 0 ? vagasNoLocal.length : filtrarVagas(vagasNoLocal, { areas: lista, nivel: 'todos', busca: '' }).length
+    const areasSugeridas = areas.filter((a) => idsSugeridos.has(a.id))
+    return [
+      ...(areasSugeridas.length > 0
+        ? [{ valor: 'sugeridas', label: 'Sugeridas para você', total: contar(areasSugeridas), destaque: true }]
+        : []),
+      { valor: 'todas', label: 'Todas as áreas', total: contar([]), destaque: false },
+      ...areas.map((a) => ({ valor: String(a.id), label: a.nome, total: contar([a]), destaque: false })),
+    ]
+  }, [areas, idsSugeridos, vagasNoLocal])
 
   return (
     <div className="cartao vagas">
@@ -130,17 +142,18 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
         </button>
       </div>
 
-      <div className="abas abas-rolagem" role="tablist" aria-label="Filtrar vagas por área">
-        {abas.map((a) => (
+      <div className="chips-areas" role="group" aria-label="Filtrar vagas por área">
+        {chips.map((c) => (
           <button
-            key={a.valor}
+            key={c.valor}
             type="button"
-            role="tab"
-            aria-selected={aba === a.valor}
-            className={`aba${aba === a.valor ? ' ativa' : ''}`}
-            onClick={() => trocarAba(a.valor)}
+            aria-pressed={aba === c.valor}
+            className={`chip${aba === c.valor ? ' ativo' : ''}${c.destaque ? ' chip-destaque' : ''}${c.total === 0 ? ' chip-vazio' : ''}`}
+            onClick={() => trocarAba(c.valor)}
           >
-            {a.label}
+            {c.destaque ? <Sparkles size={14} aria-hidden="true" /> : null}
+            {c.label}
+            {resultado ? <span className="chip-total">{c.total}</span> : null}
           </button>
         ))}
       </div>
