@@ -1,7 +1,21 @@
 import { useState } from 'react'
 import { useDialogo } from './Dialogo'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
-import { BookOpen, ChevronDown, CircleUserRound, ClipboardList, GraduationCap, LogOut, Menu, Moon, ShieldCheck, Sun, X } from 'lucide-react'
+import {
+  BookOpen,
+  ChevronDown,
+  CircleUserRound,
+  ClipboardList,
+  GraduationCap,
+  LogOut,
+  Menu,
+  Moon,
+  ShieldCheck,
+  Sun,
+  Trophy,
+  X,
+  Zap,
+} from 'lucide-react'
 import { useAuth } from './AuthContext'
 import Rodape from './Rodape'
 import { aplicarTema, temaSalvo, type Tema } from './tema'
@@ -9,11 +23,19 @@ import { aplicarTema, temaSalvo, type Tema } from './tema'
 // Menu de cada papel. O Painel abre pelo botão "Minha conta";
 // Notas e Materiais ficam no menu que abre sobre ele.
 // "marca": item com a assinatura "EduGuru" em cima (produto próprio, como o EduGuru Carreiras).
-type ItemMenu = { path: string; label: string; marca?: boolean }
+// "filhos": submenu que abre ao passar o mouse (ou com Tab), como o do Quiz (Quiz e Ranking).
+type ItemMenu = { path: string; label: string; marca?: boolean; filhos?: SubItem[] }
+type SubItem = { path: string; label: string; icone: typeof Zap }
 
 const itensAluno: ItemMenu[] = [
-  { path: '/quiz', label: 'Quiz' },
-  { path: '/ranking', label: 'Ranking' },
+  {
+    path: '/quiz',
+    label: 'Quiz',
+    filhos: [
+      { path: '/quiz', label: 'Quiz', icone: Zap },
+      { path: '/ranking', label: 'Ranking', icone: Trophy },
+    ],
+  },
   { path: '/disciplinas', label: 'Disciplinas' },
   { path: '/bussola', label: 'Bússola', marca: true },
   { path: '/carreiras', label: 'Carreiras', marca: true },
@@ -73,7 +95,31 @@ export default function LayoutLogado() {
           </button>
 
           <nav className={`topo-nav${menuAberto ? ' aberto' : ''}`}>
-            {itens.map((item) => (
+            {itens.map((item) =>
+              item.filhos ? (
+                <div key={item.path} className="topo-grupo">
+                  <Link
+                    to={item.path}
+                    className={`topo-link${item.filhos.some((f) => rotaAtiva(f.path)) ? ' ativo' : ''}`}
+                    onClick={() => setMenuAberto(false)}
+                  >
+                    {item.label}
+                    <ChevronDown size={14} aria-hidden="true" />
+                  </Link>
+                  <div className="topo-grupo-menu">
+                    {item.filhos.map((f) => (
+                      <Link
+                        key={f.path}
+                        to={f.path}
+                        className={`topo-link${rotaAtiva(f.path) ? ' ativo' : ''}`}
+                        onClick={() => setMenuAberto(false)}
+                      >
+                        <f.icone size={16} aria-hidden="true" /> {f.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
               <Link
                 key={item.path}
                 to={item.path}
@@ -88,7 +134,8 @@ export default function LayoutLogado() {
                 ) : null}
                 {item.label}
               </Link>
-            ))}
+              ),
+            )}
 
             <div className="topo-usuario">
               {/* "Minha conta" leva ao Painel; o menu abre ao passar o mouse (ou com Tab) */}

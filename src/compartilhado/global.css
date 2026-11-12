@@ -153,11 +153,20 @@ a {
 }
 
 /* Menu "Minha conta": Painel e tema aparecem ao passar o mouse ou focar com o teclado */
-.topo-conta {
+.topo-conta,
+.topo-grupo {
   position: relative;
 }
 
-.topo-conta-menu {
+/* Submenu do Quiz (Quiz e Ranking): mesmo visual, alinhado à esquerda */
+.topo-grupo .topo-grupo-menu {
+  left: 0;
+  right: auto;
+  min-width: 170px;
+}
+
+.topo-conta-menu,
+.topo-grupo-menu {
   position: absolute;
   top: 100%;
   right: 0;
@@ -174,7 +183,9 @@ a {
 }
 
 .topo-conta:hover .topo-conta-menu,
-.topo-conta:focus-within .topo-conta-menu {
+.topo-conta:focus-within .topo-conta-menu,
+.topo-grupo:hover .topo-grupo-menu,
+.topo-grupo:focus-within .topo-grupo-menu {
   display: flex;
 }
 
@@ -187,13 +198,15 @@ a {
   border-top: 1px solid var(--border);
 }
 
-.topo-conta-menu .topo-link {
+.topo-conta-menu .topo-link,
+.topo-grupo-menu .topo-link {
   width: 100%;
   justify-content: flex-start;
   cursor: pointer;
 }
 
-.topo-conta-menu .topo-link.ativo {
+.topo-conta-menu .topo-link.ativo,
+.topo-grupo-menu .topo-link.ativo {
   box-shadow: inset 2px 0 0 var(--roxo);
 }
 
@@ -606,8 +619,9 @@ p.item-meta {
       padding-top: 8px;
     }
 
-  /* No celular não existe "passar o mouse": o menu da conta fica sempre aberto */
-  .topo-conta-menu {
+  /* No celular não existe "passar o mouse": os submenus ficam sempre abertos */
+  .topo-conta-menu,
+  .topo-grupo-menu {
       position: static;
       display: flex;
       min-width: 0;
