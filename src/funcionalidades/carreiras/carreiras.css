@@ -14,11 +14,22 @@
   margin: 0 0 12px;
 }
 
-.areas-aluno-quiz {
+.areas-aluno-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.areas-aluno-acoes .btn {
   display: inline-flex;
   align-items: center;
-  margin: 12px 0 16px;
   text-decoration: none;
+}
+
+.bussola-icone {
+  flex-shrink: 0;
+  color: var(--roxo-texto);
 }
 
 .areas-sugeridas {
@@ -300,60 +311,6 @@
 
 /* ---------- Bússola EduGuru ---------- */
 
-/* Chamada no Carreiras */
-.bussola-chamada {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-  padding: 14px 16px;
-  border: 1px solid color-mix(in srgb, var(--roxo) 55%, transparent);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--roxo) 9%, var(--bg));
-  color: var(--text);
-  text-decoration: none;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.bussola-chamada:hover {
-  border-color: var(--roxo);
-  background: color-mix(in srgb, var(--roxo) 14%, var(--bg));
-}
-
-.bussola-chamada > span:nth-child(2) {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.bussola-chamada strong {
-  font-size: 16px;
-}
-
-.bussola-chamada strong .assinatura {
-  font-size: 14px;
-  padding: 0 0.15em 0 0;
-}
-
-.bussola-chamada small {
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.bussola-chamada-icone,
-.bussola-icone {
-  flex-shrink: 0;
-  color: var(--roxo-texto);
-}
-
-.bussola-chamada .btn {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
 .areas-sugeridas li.combina {
   border-color: var(--roxo);
 }
@@ -370,20 +327,6 @@
 }
 
 /* Tela da Bússola */
-.bussola-voltar {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 8px;
-  color: var(--text-muted);
-  font-size: 14px;
-  text-decoration: none;
-}
-
-.bussola-voltar:hover {
-  color: var(--text-forte);
-}
-
 .bussola-inicio {
   display: flex;
   flex-direction: column;
@@ -581,9 +524,6 @@
     font-size: 19px;
   }
 
-  .bussola-chamada {
-    flex-wrap: wrap;
-  }
 
   .bussola-acoes .btn-perigo {
     margin-left: 0;

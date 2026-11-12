@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Compass } from 'lucide-react'
+import { Compass } from 'lucide-react'
 import Ajuda from '../../compartilhado/Ajuda'
 import { useDialogo } from '../../compartilhado/Dialogo'
 import GraficoBarras from '../../compartilhado/GraficoBarras'
@@ -123,9 +123,6 @@ export default function Bussola() {
   return (
     <section className="pagina">
       <header className="pagina-topo">
-        <Link to="/carreiras" className="bussola-voltar">
-          <ArrowLeft size={16} aria-hidden="true" /> Carreiras
-        </Link>
         <h2 className="carreiras-titulo">
           <span className="assinatura">EduGuru</span>
           Bússola

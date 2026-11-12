@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, Compass } from 'lucide-react'
+import { Briefcase } from 'lucide-react'
 import Ajuda from '../../compartilhado/Ajuda'
 import { useAuth } from '../../compartilhado/AuthContext'
 import { supabase } from '../../compartilhado/supabase'
@@ -22,7 +22,6 @@ type Dados = {
   ligacoes: DisciplinaArea[]
   disciplinas: Disciplina[]
   sugeridas: SugestaoArea[]
-  fezBussola: boolean
   materiais: MaterialComunidade[]
   urlsArquivos: Record<string, string>
 }
@@ -61,7 +60,6 @@ async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string
       ligacoes: listaLigacoes,
       disciplinas: (disciplinas.data as Disciplina[]) ?? [],
       sugeridas,
-      fezBussola: listaBussola.length > 0,
       materiais,
       urlsArquivos,
     },
@@ -120,12 +118,7 @@ export default function Carreiras() {
               aoMudar={recarregar}
             />
           ) : (
-            <AreasDoAluno
-              sugeridas={dados.sugeridas}
-              fezBussola={dados.fezBussola}
-              materiais={dados.materiais}
-              urls={dados.urlsArquivos}
-            />
+            <AreasDoAluno sugeridas={dados.sugeridas} materiais={dados.materiais} urls={dados.urlsArquivos} />
           )}
           <ListaVagas areas={dados.areas} sugeridas={dados.sugeridas} />
         </>
@@ -136,12 +129,10 @@ export default function Carreiras() {
 
 function AreasDoAluno({
   sugeridas,
-  fezBussola,
   materiais,
   urls,
 }: {
   sugeridas: SugestaoArea[]
-  fezBussola: boolean
   materiais: MaterialComunidade[]
   urls: Record<string, string>
 }) {
@@ -151,21 +142,6 @@ function AreasDoAluno({
         <Briefcase size={20} color="#8257e5" aria-hidden="true" /> Suas áreas em destaque
       </h3>
 
-      <Link to="/carreiras/bussola" className="bussola-chamada">
-        <Compass size={28} aria-hidden="true" className="bussola-chamada-icone" />
-        <span>
-          <strong>
-            <span className="assinatura">EduGuru</span> Bússola
-          </strong>
-          <small>
-            {fezBussola
-              ? 'Seus interesses já entram nas sugestões abaixo. Mudou de ideia? Refaça quando quiser.'
-              : 'Autoavaliação de interesses em 3 minutos: descubra quais áreas combinam com você.'}
-          </small>
-        </span>
-        <span className="btn btn-secundario btn-pequeno">{fezBussola ? 'Ver ou refazer' : 'Começar'}</span>
-      </Link>
-
       {sugeridas.length === 0 ? (
         <>
           <p className="vazio">
@@ -173,9 +149,14 @@ function AreasDoAluno({
             menos 5 perguntas respondidas) ou quando responde a Bússola. Enquanto isso, explore as vagas de todas as
             áreas abaixo.
           </p>
-          <Link to="/quiz" className="btn btn-primario areas-aluno-quiz">
-            Fazer um quiz
-          </Link>
+          <div className="areas-aluno-acoes">
+            <Link to="/quiz" className="btn btn-primario">
+              Fazer um quiz
+            </Link>
+            <Link to="/bussola" className="btn btn-secundario">
+              Responder a Bússola
+            </Link>
+          </div>
         </>
       ) : (
         <>
@@ -229,7 +210,7 @@ function AreasDoAluno({
       <Ajuda
         titulo="Como funciona"
         itens={[
-          'As sugestões juntam seus acertos no quiz (60% ou mais) e a Bússola. São uma orientação simples, não uma avaliação profissional ou psicológica.',
+          'As sugestões juntam seus acertos no quiz (60% ou mais) e a Bússola EduGuru (no menu, ao lado de Disciplinas). São uma orientação simples, não uma avaliação profissional ou psicológica.',
           'Ao clicar em "Candidatar-se", a vaga abre no GitHub, em outra aba. O EduGuru não recebe currículo nem dados da candidatura.',
           'Contamos apenas quantas vezes cada vaga foi aberta, para o painel da equipe (sem mostrar quem clicou).',
         ]}

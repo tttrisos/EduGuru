@@ -53,7 +53,8 @@ function App() {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/carreiras" element={<Carreiras />} />
-          <Route path="/carreiras/bussola" element={<Bussola />} />
+          <Route path="/bussola" element={<Bussola />} />
+          <Route path="/carreiras/bussola" element={<Navigate to="/bussola" replace />} />
           <Route path="/minha-conta" element={<MinhaConta />} />
 
           {/* Somente administradores */}

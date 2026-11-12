@@ -15,6 +15,7 @@ const itensAluno: ItemMenu[] = [
   { path: '/quiz', label: 'Quiz' },
   { path: '/ranking', label: 'Ranking' },
   { path: '/disciplinas', label: 'Disciplinas' },
+  { path: '/bussola', label: 'Bússola', marca: true },
   { path: '/carreiras', label: 'Carreiras', marca: true },
 ]
 
