@@ -11,6 +11,7 @@ import type {
   DesempenhoDisciplina,
   Disciplina,
   EstatisticasAdmin,
+  EstatisticasBussola,
   EstatisticasCarreiras,
   LinhaRanking,
   Nota,
@@ -275,11 +276,15 @@ function PainelAdmin() {
 // EduGuru Carreiras: cliques em "Candidatar-se" (sem identificar quem clicou).
 function PainelCarreiras() {
   const [dados, setDados] = useState<EstatisticasCarreiras | null>(null)
+  const [bussola, setBussola] = useState<EstatisticasBussola | null>(null)
 
   useEffect(() => {
-    // Se o script 17 ainda não foi rodado, a seção simplesmente não aparece.
+    // Se os scripts 17 e 18 ainda não foram rodados, a seção (ou a parte da Bússola) não aparece.
     supabase.rpc('estatisticas_carreiras').then(({ data, error }) => {
       if (!error && data) setDados(data as EstatisticasCarreiras)
+    })
+    supabase.rpc('estatisticas_bussola').then(({ data, error }) => {
+      if (!error && data) setBussola(data as EstatisticasBussola)
     })
   }, [])
 
@@ -294,6 +299,7 @@ function PainelCarreiras() {
         <BigNumber valor={dados.cliques} legenda='Cliques em "Candidatar-se"' detalhe="um por aluno e vaga" />
         <BigNumber valor={dados.cliques_30_dias} legenda="Cliques nos últimos 30 dias" />
         <BigNumber valor={dados.alunos_que_clicaram} legenda="Alunos que abriram vagas" />
+        {bussola ? <BigNumber valor={bussola.respondidas} legenda="Bússolas respondidas" detalhe="autoavaliação de interesses" /> : null}
       </div>
       <div className="grade-graficos">
         <GraficoBarras
@@ -306,6 +312,13 @@ function PainelCarreiras() {
           itens={dados.vagas_mais_clicadas.map((v) => ({ rotulo: v.titulo, valor: v.total }))}
           vazio="Nenhum clique registrado ainda."
         />
+        {bussola ? (
+          <GraficoBarras
+            titulo="Área de maior interesse na Bússola (alunos)"
+            itens={bussola.area_preferida.map((a) => ({ rotulo: a.area, valor: a.total }))}
+            vazio="Nenhuma Bússola respondida ainda."
+          />
+        ) : null}
       </div>
       <Link to="/carreiras" className="item-meta">
         Gerenciar áreas de carreira →

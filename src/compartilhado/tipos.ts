@@ -268,3 +268,9 @@ export type EstatisticasCarreiras = {
   cliques_por_area: { area: string; total: number }[]
   vagas_mais_clicadas: { titulo: string; total: number }[]
 }
+
+// Devolvido por estatisticas_bussola() (só admin): totais, sem identificar ninguém.
+export type EstatisticasBussola = {
+  respondidas: number
+  area_preferida: { area: string; total: number }[]
+}
