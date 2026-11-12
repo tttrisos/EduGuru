@@ -17,11 +17,12 @@ type DadosExtras = {
   notas: Nota[]
   tentativas: TentativaQuiz[]
   cliquesVagas: Record<string, unknown>[]
+  bussola: Record<string, unknown> | null
   mfaAtivoDesde: string | null
 }
 
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
-  const [logs, materiais, notas, tentativas, fatores, cliques] = await Promise.all([
+  const [logs, materiais, notas, tentativas, fatores, cliques, bussola] = await Promise.all([
     supabase
       .from('logs_auditoria')
       .select('*')
@@ -37,6 +38,8 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
       .from('cliques_vagas')
       .select('fonte, vaga_numero, vaga_titulo, clicado_em')
       .order('clicado_em', { ascending: false }),
+    // Resultado da Bússola EduGuru (vazio antes do script 18 ou se não respondeu).
+    supabase.from('bussola_resultados').select('respostas, afinidades, respondida_em').maybeSingle(),
   ])
   return {
     logs: (logs.data as LogAuditoria[]) ?? [],
@@ -44,6 +47,7 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
     notas: (notas.data as Nota[]) ?? [],
     tentativas: (tentativas.data as TentativaQuiz[]) ?? [],
     cliquesVagas: (cliques.data as Record<string, unknown>[]) ?? [],
+    bussola: (bussola.data as Record<string, unknown> | null) ?? null,
     mfaAtivoDesde: fatores.data?.totp[0]?.created_at ?? null,
   }
 }
@@ -157,6 +161,7 @@ export default function MinhaConta() {
       notas_e_faltas: extras?.notas ?? [],
       rodadas_de_quiz: extras?.tentativas ?? [],
       vagas_abertas_em_carreiras: extras?.cliquesVagas ?? [],
+      bussola_eduguru: extras?.bussola ?? null,
       registros_de_atividade: extras?.logs ?? [],
     }
     const blob = new Blob([JSON.stringify(conteudo, null, 2)], { type: 'application/json' })
@@ -238,6 +243,14 @@ export default function MinhaConta() {
           <dd>{extras ? extras.notas.length : '...'}</dd>
           <dt>Vagas abertas em Carreiras</dt>
           <dd>{extras ? extras.cliquesVagas.length : '...'}</dd>
+          <dt>Bússola EduGuru</dt>
+          <dd>
+            {extras
+              ? extras.bussola
+                ? `Respondida em ${formatarData(extras.bussola.respondida_em as string)} (apague na própria Bússola)`
+                : 'Não respondida'
+              : '...'}
+          </dd>
         </dl>
         <button type="button" className="btn btn-secundario" onClick={baixarMeusDados} disabled={!extras}>
           Baixar meus dados (JSON)
@@ -346,7 +359,7 @@ export default function MinhaConta() {
         <ul>
           <li>seu perfil, sua conta de acesso e a verificação em duas etapas são apagados;</li>
           <li>os materiais que você enviou (e os arquivos anexados) são apagados;</li>
-          <li>suas notas, faltas, rodadas de quiz, pontos do ranking e o registro das vagas que você abriu são apagados;</li>
+          <li>suas notas, faltas, rodadas de quiz, pontos do ranking, o resultado da Bússola e o registro das vagas que você abriu são apagados;</li>
           <li>
             os registros de auditoria já feitos ficam guardados até completar 90 dias, por
             segurança, e depois são apagados automaticamente.

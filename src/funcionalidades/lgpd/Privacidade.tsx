@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.4.
+// Política de Privacidade, versão 1.5.
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -11,9 +11,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.4 — 10/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.5 — 12/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor e Carreiras, com vagas de tecnologia). Finalidade
+          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, e Bússola EduGuru). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -80,6 +80,11 @@ export default function Privacidade() {
             Quando você clica em &quot;Candidatar-se&quot;, guardamos qual vaga foi aberta e quando
             (uma vez por vaga). Não recebemos currículo, telefone nem qualquer dado da
             candidatura, que acontece no site da vaga.
+          </li>
+          <li>
+            <strong>Bússola EduGuru (opcional):</strong> as notas de 1 a 5 que você dá às
+            afirmações da autoavaliação de interesses, a afinidade calculada com cada área e a
+            data. Guardamos só o resultado mais recente: refazer substitui o anterior.
           </li>
           <li>
             <strong>Notas e faltas (opcional):</strong> M1, ND, NI, nota única (MS), nota de exame e
@@ -178,6 +183,12 @@ export default function Privacidade() {
                 <td>12 meses, apagados automaticamente, ou antes, com a exclusão da conta</td>
               </tr>
               <tr>
+                <td>Respostas e resultado da Bússola EduGuru</td>
+                <td>Mostrar a você a sua afinidade com cada área e usá-la nas sugestões de vagas e materiais do Carreiras. Não é teste vocacional nem avaliação psicológica, e não é usado para classificar ou ranquear alunos. O administrador vê só totais (quantos responderam e quantos têm cada área como a preferida)</td>
+                <td>Consentimento (art. 7º, I): responder é opcional, e você pode apagar o resultado a qualquer momento na própria Bússola</td>
+                <td>Até você apagar, refazer (substitui o anterior) ou excluir a conta</td>
+              </tr>
+              <tr>
                 <td>Logs de auditoria</td>
                 <td>Segurança, rastreabilidade e investigação de incidentes</td>
                 <td>Legítimo interesse (segurança da aplicação) / cumprimento de obrigação legal</td>
@@ -262,6 +273,10 @@ export default function Privacidade() {
             tudo é apagado junto com a conta.
           </li>
           <li>
+            Resultado da Bússola EduGuru: só o mais recente, até você apagá-lo na própria
+            Bússola ou excluir a conta.
+          </li>
+          <li>
             Vagas abertas em Carreiras: <strong>12 meses</strong>, com exclusão automática
             diária (pg_cron), ou antes, junto com a conta.
           </li>
@@ -287,7 +302,8 @@ export default function Privacidade() {
             gerenciar contas) e os logs de auditoria. Não veem suas notas nem suas
             respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
             foram feitos e a média de acertos por disciplina). Em Carreiras, veem só
-            quantas vezes cada vaga e cada área foram abertas, sem saber por quem.
+            quantas vezes cada vaga e cada área foram abertas, sem saber por quem, e na
+            Bússola só quantos alunos responderam e quantos têm cada área como a preferida.
           </li>
         </ul>
 
@@ -324,7 +340,7 @@ export default function Privacidade() {
           <li>
             <strong>Eliminação:</strong> excluir a conta. Perfil, conta de acesso,
             verificação em duas etapas, materiais enviados (com os arquivos), notas,
-            faltas, rodadas de quiz e vagas abertas em Carreiras são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
+            faltas, rodadas de quiz, resultado da Bússola e vagas abertas em Carreiras são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
             dias, por segurança, e então apagados automaticamente.
           </li>
         </ul>
@@ -350,7 +366,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.4, 10/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.5, 12/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

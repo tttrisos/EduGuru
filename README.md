@@ -19,6 +19,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 - **Guru:** indica materiais da disciplina quando o aproveitamento fica abaixo de 60%.
 - **Materiais da comunidade:** cada aluno cadastra os próprios links e arquivos; os aprovados aparecem para os colegas no fim do quiz e no perfil público de quem enviou (nome abreviado e curso). Filtro automático (sites permitidos, termos impróprios e dados pessoais), análise dos arquivos pelo admin e denúncias.
 - **Carreiras:** vagas de tecnologia das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho no quiz: quem acerta 60% ou mais em uma disciplina recebe as vagas das áreas ligadas a ela (ex.: Banco de Dados → Dados e Back-end), com os materiais dessas disciplinas. Filtros por área, nível e busca; cache de 30 minutos e aviso amigável quando o GitHub está fora do ar. O botão "Candidatar-se" abre a vaga no site de origem (o EduGuru não recebe currículo) e os cliques aparecem no painel do admin.
+- **Bússola EduGuru:** autoavaliação de interesses opcional (16 afirmações de 1 a 5, cerca de 3 minutos), que calcula a afinidade com cada área e entra nas sugestões do Carreiras ao lado do desempenho no quiz. Não é teste vocacional: é uma orientação simples, e o aluno pode refazer ou apagar o resultado.
 - **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e controle das faltas (limite de 40 por disciplina).
 - **Painel:** indicadores e gráficos do aluno e, para o administrador, da plataforma.
 - **Cadastros:** disciplinas, banco de perguntas (120 iniciais) e materiais (links e arquivos PDF/DOCX).
@@ -62,12 +63,12 @@ eduguru/
 │       ├── perguntas/            Banco de perguntas do quiz (admin)
 │       ├── materiais/            Meus materiais, filtro, moderação, denúncias e perfil público
 │       ├── quiz/                 Quiz, efeitos (sons e comemorações) e ranking
-│       ├── carreiras/            Carreiras: vagas do GitHub, áreas sugeridas e cadastro das áreas
+│       ├── carreiras/            Carreiras (vagas do GitHub, localidade, áreas) e Bússola EduGuru
 │       ├── notas/                Notas e faltas + cálculo (calculoNotas.ts)
 │       ├── painel/               Painel do aluno e do admin
 │       └── admin/                Usuários e logs
-├── testes/                       Testes unitários (Vitest): notas, senha, negrito, filtro de materiais, efeitos do quiz e vagas
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 17)
+├── testes/                       Testes unitários (Vitest): notas, senha, negrito, filtro de materiais, efeitos do quiz, vagas, localidade e Bússola
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 18)
 ├── docs/                         Integrações com as APIs externas (GitHub e ViaCEP)
 ├── public/                       Ícone do site e ilustrações das perguntas (ilustracoes/)
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -98,6 +99,7 @@ eduguru/
 | Carreiras: vagas ligadas ao desempenho (RF30) | `carreiras/Carreiras.tsx`, `carreiras/ListaVagas.tsx`, `carreiras/vagas.ts` | `17_carreiras.sql` (`minhas_areas_carreira`, `registrar_clique_vaga`) |
 | Áreas de carreira e ligação com as disciplinas, admin (RF31) | `carreiras/AreasAdmin.tsx`, `carreiras/areas.ts` | `17_carreiras.sql` (`areas_carreira`, `disciplinas_areas`) |
 | Cliques em "Candidatar-se" no painel do admin (RF32) | `painel/Painel.tsx` (`PainelCarreiras`) | `17_carreiras.sql` (`estatisticas_carreiras`) |
+| Bússola EduGuru: autoavaliação de interesses (RF33) | `carreiras/Bussola.tsx`, `carreiras/afinidadeBussola.ts` | `18_bussola.sql` (`salvar_bussola`, `minha_bussola`, `estatisticas_bussola`) |
 | Regras de acesso, RLS (RF14) | — | `02` (perfis e cadastros), `04` (perfis e materiais), `05` (MFA em todas as tabelas) |
 
 ## Banco de dados
@@ -123,6 +125,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `15_materiais_comunidade_quiz.sql` | Materiais da comunidade (filtro, moderação, denúncias, perfil público), dica 50/50 e ilustrações das perguntas |
 | `16_editar_perguntas.sql` | Edição de perguntas (pergunta, gabarito e explicação juntos), completando o CRUD |
 | `17_carreiras.sql` | EduGuru Carreiras: áreas de carreira, ligação disciplina → área, áreas sugeridas pelo desempenho, cliques em "Candidatar-se" (retenção de 12 meses) e totais do painel |
+| `18_bussola.sql` | Bússola EduGuru: afirmações por área, resultado do aluno (só o mais recente), cálculo da afinidade e totais do painel |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 
