@@ -15,6 +15,7 @@ import {
   type Afirmacao,
   type Respostas,
 } from './afinidadeBussola'
+import { iconeDaArea } from './iconesAreas'
 import './carreiras.css'
 
 type Etapa = 'carregando' | 'inicio' | 'perguntas' | 'resultado'
@@ -29,13 +30,19 @@ export default function Bussola() {
   const [resultado, setResultado] = useState<AfinidadeBussola[]>([])
   const [erro, setErro] = useState('')
   const [salvando, setSalvando] = useState(false)
+  // Descrição de cada área ("Servidores, APIs e regras de negócio."), para o pódio do resultado.
+  const [descricoes, setDescricoes] = useState<Record<number, string>>({})
 
   useEffect(() => {
     Promise.all([
       supabase.from('bussola_afirmacoes').select('id, texto, area_id, ordem').eq('ativa', true).order('ordem'),
       supabase.rpc('minha_bussola'),
+      supabase.from('areas_carreira').select('id, descricao'),
     ])
-      .then(([afs, meu]) => {
+      .then(([afs, meu, areas]) => {
+        setDescricoes(
+          Object.fromEntries(((areas.data as { id: number; descricao: string | null }[]) ?? []).map((a) => [a.id, a.descricao ?? ''])),
+        )
         if (afs.error) {
           setErro('A Bússola ainda não está disponível (o script 18 do banco não foi aplicado).')
           setEtapa('inicio')
@@ -207,17 +214,49 @@ export default function Bussola() {
 
       {etapa === 'resultado' ? (
         <>
-          <div className="cartao bussola-resultado">
-            <Compass size={48} className="bussola-icone girando" aria-hidden="true" />
-            <div>
-              <p className="item-meta">Sua bússola aponta para</p>
-              <h3>{top.length > 0 ? top.map((t) => t.area).join(' · ') : 'Nenhuma área em destaque'}</h3>
-              <p className="item-meta">
-                {top.length > 0
-                  ? 'Essas áreas já aparecem em "Sugeridas para você" no Carreiras, com vagas e materiais.'
-                  : 'Suas respostas ficaram baixas em todas as áreas. Explore as vagas e refaça quando quiser.'}
-              </p>
+          <div className="bussola-destaque">
+            <div className="bussola-destaque-topo">
+              <div className="bussola-rosa" aria-hidden="true">
+                <Compass size={64} className="bussola-icone girando" />
+              </div>
+              <div>
+                <p className="bussola-eyebrow">Sua bússola aponta para</p>
+                <h3 className="bussola-principal">{top[0]?.area ?? 'Nenhuma área em destaque'}</h3>
+                <p className="bussola-subtitulo">
+                  {top.length > 0
+                    ? 'Essas áreas já aparecem em "Sugeridas para você" no Carreiras, com vagas e materiais para começar.'
+                    : 'Suas respostas ficaram baixas em todas as áreas. Explore as vagas e refaça quando quiser.'}
+                </p>
+              </div>
             </div>
+
+            {top.length > 0 ? (
+              <ol className="bussola-podio">
+                {top.map((t, i) => {
+                  const Icone = iconeDaArea(t.area)
+                  return (
+                    <li key={t.area_id} className={`bussola-podio-item${i === 0 ? ' primeiro' : ''}`}>
+                      <span className="bussola-podio-posicao">{i + 1}º</span>
+                      <span className="bussola-podio-icone" aria-hidden="true">
+                        <Icone size={24} />
+                      </span>
+                      <strong>{t.area}</strong>
+                      {descricoes[t.area_id] ? <span className="bussola-podio-desc">{descricoes[t.area_id]}</span> : null}
+                      <span className="bussola-podio-valor">
+                        <span className="bussola-podio-barra">
+                          <span style={{ width: `${t.afinidade}%` }} />
+                        </span>
+                        {t.afinidade}% de afinidade
+                      </span>
+                    </li>
+                  )
+                })}
+              </ol>
+            ) : null}
+
+            <Link to="/carreiras" className="btn btn-primario bussola-destaque-cta">
+              Ver vagas dessas áreas
+            </Link>
           </div>
 
           <div className="cartao">
@@ -232,9 +271,6 @@ export default function Bussola() {
               não uma avaliação profissional ou psicológica.
             </p>
             <div className="bussola-acoes">
-              <Link to="/carreiras" className="btn btn-primario">
-                Ver vagas dessas áreas
-              </Link>
               <button type="button" className="btn btn-secundario" onClick={comecar}>
                 Refazer
               </button>

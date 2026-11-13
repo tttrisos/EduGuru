@@ -80,3 +80,15 @@ describe('combinarSugestoes (quiz + Bússola)', () => {
     expect(motivoSugestao(front)).toBe('Front-end: 65% de afinidade na Bússola')
   })
 })
+
+describe('iconeDaArea', () => {
+  it('ícone próprio para as áreas iniciais e a bússola para áreas novas', async () => {
+    const { iconeDaArea } = await import('../src/funcionalidades/carreiras/iconesAreas')
+    const { Bug, Compass, Database, Server, ShieldCheck } = await import('lucide-react')
+    expect(iconeDaArea('Qualidade e Testes')).toBe(Bug)
+    expect(iconeDaArea('BACK-END')).toBe(Server)
+    expect(iconeDaArea('Dados')).toBe(Database)
+    expect(iconeDaArea('Infraestrutura e Segurança')).toBe(ShieldCheck)
+    expect(iconeDaArea('Mobile')).toBe(Compass)
+  })
+})
