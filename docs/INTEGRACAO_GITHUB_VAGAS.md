@@ -19,7 +19,6 @@ quem vai bem em Banco de Dados recebe vagas de Dados e Back-end, por exemplo.
 |---|---|
 | Chamada à API, conversão, filtro por área, cache e mensagens de erro | `src/funcionalidades/carreiras/vagas.ts` (`buscarVagas`) |
 | Tela do aluno (áreas sugeridas, filtros, botão "Candidatar-se") | `src/funcionalidades/carreiras/Carreiras.tsx`, `ListaVagas.tsx` |
-| Cadastro das áreas e da ligação disciplina → área (admin) | `src/funcionalidades/carreiras/AreasAdmin.tsx`, `areas.ts` |
 | Tabelas, áreas sugeridas, registro de cliques e totais | `supabase/17_carreiras.sql` |
 | Métricas no painel do admin | `src/funcionalidades/painel/Painel.tsx` (`PainelCarreiras`) |
 | Testes (33 casos, com a API simulada, e 9 de localidade) | `testes/vagas.test.ts`, `testes/localidade.test.ts` |
@@ -88,9 +87,9 @@ só **vagas remotas e vagas no estado de SP** (`src/funcionalidades/carreiras/lo
 
 ## Ligação com o desempenho (regra do Carreiras)
 
-- O admin cadastra as **áreas** (nome, descrição, palavras-chave) e marca quais
-  **disciplinas** levam a cada área (`areas_carreira` e `disciplinas_areas`). O script
-  17 já traz 8 áreas e liga as disciplinas da grade.
+- As **áreas** (nome, descrição, palavras-chave) e as **disciplinas** que levam a cada
+  área (`areas_carreira` e `disciplinas_areas`) vêm prontas do script 17: 8 áreas ligadas
+  às disciplinas da grade. Não há cadastro pela tela; para mudar, edita-se o script 17.
 - A função `minhas_areas_carreira()` devolve as áreas das disciplinas em que o aluno
   tem **60% ou mais de acertos com pelo menos 5 respostas**, que é o contrário do
   Guru (abaixo de 60%), ordenadas pelo aproveitamento.

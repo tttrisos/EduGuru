@@ -4,15 +4,8 @@ import { Briefcase } from 'lucide-react'
 import Ajuda from '../../compartilhado/Ajuda'
 import { useAuth } from '../../compartilhado/AuthContext'
 import { supabase } from '../../compartilhado/supabase'
-import type {
-  AreaCarreira,
-  AreaSugerida,
-  Disciplina,
-  DisciplinaArea,
-  MaterialComunidade,
-} from '../../compartilhado/tipos'
+import type { AreaCarreira, AreaSugerida, DisciplinaArea, MaterialComunidade } from '../../compartilhado/tipos'
 import { buscarMateriaisComunidade } from '../materiais/comunidade'
-import AreasAdmin from './AreasAdmin'
 import ListaVagas from './ListaVagas'
 import { combinarSugestoes, type AfinidadeBussola, type SugestaoArea } from './afinidadeBussola'
 import './carreiras.css'
@@ -20,7 +13,6 @@ import './carreiras.css'
 type Dados = {
   areas: AreaCarreira[]
   ligacoes: DisciplinaArea[]
-  disciplinas: Disciplina[]
   sugeridas: SugestaoArea[]
   materiais: MaterialComunidade[]
   urlsArquivos: Record<string, string>
@@ -28,16 +20,17 @@ type Dados = {
 
 const vazio = Promise.resolve({ data: [], error: null })
 
+// As áreas de carreira e a ligação disciplina → área vêm prontas do script 17
+// (8 áreas ligadas à grade); não há cadastro pela tela.
 async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string }> {
-  const [areas, ligacoes, disciplinas, desempenho, bussola] = await Promise.all([
+  const [areas, ligacoes, desempenho, bussola] = await Promise.all([
     supabase.from('areas_carreira').select('*').order('nome'),
     supabase.from('disciplinas_areas').select('*'),
-    supabase.from('disciplinas').select('*').order('nome'),
     ehAdmin ? vazio : supabase.rpc('minhas_areas_carreira'),
     // Antes do script 18 a função não existe: a tela segue só com o desempenho.
     ehAdmin ? vazio : supabase.rpc('minha_bussola'),
   ])
-  const erro = areas.error?.message ?? ligacoes.error?.message ?? disciplinas.error?.message ?? desempenho.error?.message ?? ''
+  const erro = areas.error?.message ?? ligacoes.error?.message ?? desempenho.error?.message ?? ''
 
   const listaBussola = bussola.error ? [] : ((bussola.data as AfinidadeBussola[]) ?? [])
   const sugeridas = combinarSugestoes((desempenho.data as AreaSugerida[]) ?? [], listaBussola)
@@ -58,7 +51,6 @@ async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string
     dados: {
       areas: (areas.data as AreaCarreira[]) ?? [],
       ligacoes: listaLigacoes,
-      disciplinas: (disciplinas.data as Disciplina[]) ?? [],
       sugeridas,
       materiais,
       urlsArquivos,
@@ -73,13 +65,6 @@ export default function Carreiras() {
   const { ehAdmin } = useAuth()
   const [dados, setDados] = useState<Dados | null>(null)
   const [erro, setErro] = useState('')
-
-  function recarregar() {
-    consultar(ehAdmin).then((r) => {
-      setDados(r.dados)
-      setErro(r.erro)
-    })
-  }
 
   useEffect(() => {
     consultar(ehAdmin)
@@ -110,14 +95,7 @@ export default function Carreiras() {
 
       {dados ? (
         <>
-          {ehAdmin ? (
-            <AreasAdmin
-              areas={dados.areas}
-              disciplinas={dados.disciplinas}
-              ligacoes={dados.ligacoes}
-              aoMudar={recarregar}
-            />
-          ) : (
+          {ehAdmin ? null : (
             <AreasDoAluno sugeridas={dados.sugeridas} materiais={dados.materiais} urls={dados.urlsArquivos} />
           )}
           <ListaVagas areas={dados.areas} sugeridas={dados.sugeridas} />

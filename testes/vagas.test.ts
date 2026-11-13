@@ -21,7 +21,6 @@ import {
   type IssueGitHub,
   type Vaga,
 } from '../src/funcionalidades/carreiras/vagas'
-import { separarPalavras, validarArea } from '../src/funcionalidades/carreiras/areas'
 
 const AGORA = Date.parse('2026-11-10T12:00:00Z')
 
@@ -323,33 +322,5 @@ describe('buscarVagas', () => {
       'frontendbr/vagas': async () => respostaJson({ message: 'Not Found' }),
     })
     await expect(buscarVagas({ fetchFn, armazenamento: null, agora: AGORA })).rejects.toThrow(MSG_SEM_CONEXAO)
-  })
-})
-
-describe('formulário de áreas', () => {
-  it('separa, normaliza e tira repetidas as palavras-chave', () => {
-    expect(separarPalavras('React, front-end ,, CSS, react, Segurança')).toEqual(['css', 'front-end', 'react', 'seguranca'])
-  })
-
-  const existentes = [{ id: 1, nome: 'Back-end' }]
-  const ok = { nome: 'Dados', descricao: '', palavras: 'sql, bi' }
-
-  it('aceita uma área válida', () => {
-    expect(validarArea(ok, existentes, null)).toBe('')
-  })
-
-  it('recusa nome curto, longo ou repetido', () => {
-    expect(validarArea({ ...ok, nome: ' a ' }, existentes, null)).toMatch(/nome da área/)
-    expect(validarArea({ ...ok, nome: 'x'.repeat(61) }, existentes, null)).toMatch(/60 letras/)
-    expect(validarArea({ ...ok, nome: 'BACK-END' }, existentes, null)).toMatch(/Já existe/)
-    expect(validarArea({ ...ok, nome: 'Back-end' }, existentes, 1)).toBe('')
-  })
-
-  it('recusa descrição longa e palavras-chave inválidas', () => {
-    expect(validarArea({ ...ok, descricao: 'x'.repeat(301) }, existentes, null)).toMatch(/300/)
-    expect(validarArea({ ...ok, palavras: ' , ' }, existentes, null)).toMatch(/pelo menos uma/)
-    const muitas = Array.from({ length: 41 }, (_, i) => `p${i}`).join(',')
-    expect(validarArea({ ...ok, palavras: muitas }, existentes, null)).toMatch(/40 palavras/)
-    expect(validarArea({ ...ok, palavras: 'x'.repeat(41) }, existentes, null)).toMatch(/40 letras/)
   })
 })

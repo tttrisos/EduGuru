@@ -97,7 +97,7 @@ eduguru/
 | Usuários e redefinição de MFA (RF26) | `admin/Usuarios.tsx` | `07_minha_conta.sql`, `10_ajustes_seguranca.sql` |
 | Logs de auditoria e limpeza (RF09, RF10) | `admin/Logs.tsx` | `02_perfis_e_logs.sql`, `06_limpeza_automatica_logs.sql`, `10_ajustes_seguranca.sql` |
 | Carreiras: vagas ligadas ao desempenho (RF30) | `carreiras/Carreiras.tsx`, `carreiras/ListaVagas.tsx`, `carreiras/vagas.ts` | `17_carreiras.sql` (`minhas_areas_carreira`, `registrar_clique_vaga`) |
-| Áreas de carreira e ligação com as disciplinas, admin (RF31) | `carreiras/AreasAdmin.tsx`, `carreiras/areas.ts` | `17_carreiras.sql` (`areas_carreira`, `disciplinas_areas`) |
+| Áreas de carreira e ligação com as disciplinas (pré-cadastradas, RF31) | — | `17_carreiras.sql` (`areas_carreira`, `disciplinas_areas`) |
 | Cliques em "Candidatar-se" no painel do admin (RF32) | `painel/Painel.tsx` (`PainelCarreiras`) | `17_carreiras.sql` (`estatisticas_carreiras`) |
 | Bússola EduGuru: autoavaliação de interesses (RF33) | `carreiras/Bussola.tsx`, `carreiras/afinidadeBussola.ts` | `18_bussola.sql` (`salvar_bussola`, `minha_bussola`, `estatisticas_bussola`) |
 | Regras de acesso, RLS (RF14) | — | `02` (perfis e cadastros), `04` (perfis e materiais), `05` (MFA em todas as tabelas) |

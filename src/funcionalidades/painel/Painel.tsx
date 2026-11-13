@@ -321,7 +321,7 @@ function PainelCarreiras() {
         ) : null}
       </div>
       <Link to="/carreiras" className="item-meta">
-        Gerenciar áreas de carreira →
+        Ver as vagas no Carreiras →
       </Link>
     </div>
   )
