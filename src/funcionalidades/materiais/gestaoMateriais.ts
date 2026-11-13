@@ -59,3 +59,45 @@ export function filtrarMateriaisAdmin(
 export function ordenarMateriaisAdmin(lista: MaterialAdmin[]) {
   return [...lista].sort((a, b) => b.denuncias - a.denuncias || b.criado_em.localeCompare(a.criado_em))
 }
+
+// Ações em massa de cada situação (valem para todos os materiais da lista filtrada, não só a página).
+export type AcaoMassa = 'publicar' | 'retirar' | 'excluir'
+
+export const ACOES_POR_STATUS: Record<FiltroStatus, AcaoMassa[]> = {
+  aprovado: ['retirar', 'excluir'],
+  pendente: ['publicar', 'excluir'],
+  recusado: ['publicar', 'excluir'],
+  todos: ['excluir'],
+}
+
+export const ROTULO_ACAO: Record<AcaoMassa, string> = {
+  publicar: 'Publicar todos',
+  retirar: 'Retirar todos do ar',
+  excluir: 'Excluir todos',
+}
+
+// Texto exato que o admin precisa digitar para confirmar (ex.: "EXCLUIR 5").
+export function textoConfirmacao(acao: AcaoMassa, quantidade: number) {
+  return `${acao === 'excluir' ? 'EXCLUIR' : acao === 'publicar' ? 'PUBLICAR' : 'RETIRAR'} ${quantidade}`
+}
+
+// Resumo do que a ação em massa vai atingir, para o aviso ao admin.
+export function resumoAlvo(
+  lista: MaterialAdmin[],
+  filtro: { status: FiltroStatus; disciplina: string; busca: string },
+  nomeDisciplina: (id: string) => string,
+) {
+  const situacao = OPCOES_STATUS.find((o) => o.valor === filtro.status)?.label ?? 'Todos'
+  const filtros: string[] = []
+  if (filtro.disciplina === 'sem') filtros.push('sem disciplina')
+  else if (filtro.disciplina) filtros.push(`disciplina "${nomeDisciplina(filtro.disciplina)}"`)
+  if (filtro.busca.trim()) filtros.push(`busca "${filtro.busca.trim()}"`)
+  return {
+    quantidade: lista.length,
+    situacao,
+    filtros: filtros.length > 0 ? filtros.join(' e ') : 'nenhum',
+    comArquivo: lista.filter((m) => m.arquivo_path).length,
+    denunciados: lista.filter((m) => m.denuncias > 0).length,
+    autores: new Set(lista.map((m) => m.enviado_por ?? m.autor_nome)).size,
+  }
+}

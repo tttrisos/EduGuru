@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Library } from 'lucide-react'
+import { AlertTriangle, Library } from 'lucide-react'
 import { useDialogo } from '../../compartilhado/Dialogo'
 import { supabase } from '../../compartilhado/supabase'
 import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/arquivos'
 import type { Disciplina, Material, UsuarioAdmin } from '../../compartilhado/tipos'
 import {
+  ACOES_POR_STATUS,
   OPCOES_STATUS,
+  ROTULO_ACAO,
+  resumoAlvo,
+  textoConfirmacao,
+  type AcaoMassa,
   ROTULO_STATUS,
   contarPorStatus,
   filtrarMateriaisAdmin,
@@ -66,6 +71,9 @@ export default function TodosMateriais({
   const [disciplina, setDisciplina] = useState('')
   const [busca, setBusca] = useState('')
   const [quantos, setQuantos] = useState(POR_PAGINA)
+  // Ações em massa: andamento ("Excluindo 3 de 10...") e resultado.
+  const [processando, setProcessando] = useState('')
+  const [sucesso, setSucesso] = useState('')
 
   useEffect(() => {
     consultar(disciplinas)
@@ -117,6 +125,99 @@ export default function TodosMateriais({
     const { error } = await supabase.from('materiais').delete().eq('id', item.id)
     if (error) setErro(error.message)
     else aoMudar()
+  }
+
+  // Ação em massa sobre TODOS os materiais da lista filtrada (não só os da página).
+  // Sempre mostra um aviso detalhado e exige que o admin digite a confirmação (ex.: "EXCLUIR 5").
+  async function executarEmMassa(acao: AcaoMassa) {
+    const alvo = filtrados
+    if (alvo.length === 0) return
+    const r = resumoAlvo(alvo, { status, disciplina, busca }, (id) => disciplinas.find((d) => String(d.id) === id)?.nome ?? id)
+    const plural = r.quantidade === 1 ? 'material' : 'materiais'
+    const exigir = textoConfirmacao(acao, r.quantidade)
+
+    const cabecalho = [
+      `Situação: ${r.situacao}`,
+      `Filtros aplicados: ${r.filtros}`,
+      `Materiais atingidos: ${r.quantidade} (de ${r.autores} ${r.autores === 1 ? 'autor' : 'autores'})`,
+      r.comArquivo > 0 ? `Com arquivo anexado: ${r.comArquivo}` : '',
+      r.denunciados > 0 ? `Com denúncias: ${r.denunciados}` : '',
+    ].filter(Boolean)
+
+    const consequencia: Record<AcaoMassa, string[]> = {
+      excluir: [
+        `ATENÇÃO: os ${r.quantidade} ${plural} serão APAGADOS PARA SEMPRE, com os arquivos anexados.`,
+        'Não existe lixeira: a exclusão NÃO pode ser desfeita.',
+        'Os materiais somem do fim do quiz, do Guru, do Carreiras, do perfil dos autores e da lista dos próprios autores.',
+      ],
+      publicar: [
+        `ATENÇÃO: os ${r.quantidade} ${plural} ficarão VISÍVEIS PARA TODOS OS ALUNOS (fim do quiz, Guru, Carreiras e perfil de quem enviou).`,
+        status === 'pendente'
+          ? 'Materiais em análise podem ter arquivos que você ainda NÃO abriu. Confira antes de publicar.'
+          : 'Materiais recusados tinham sido barrados por um motivo. Confira antes de publicar.',
+        r.denunciados > 0 ? 'As denúncias desses materiais serão apagadas.' : '',
+      ].filter(Boolean),
+      retirar: [
+        `ATENÇÃO: os ${r.quantidade} ${plural} deixarão de aparecer para os alunos e ficarão como "Recusado".`,
+        'Os autores verão o motivo que você informar no próximo passo. Dá para publicar de novo depois.',
+      ],
+    }
+
+    const confirmado = await pedirTexto({
+      titulo:
+        acao === 'excluir'
+          ? `Excluir PARA SEMPRE ${r.quantidade} ${plural}?`
+          : `${ROTULO_ACAO[acao]}: ${r.quantidade} ${plural}?`,
+      mensagem: [...consequencia[acao], '', ...cabecalho].join('\n'),
+      rotulo: `Para confirmar, digite ${exigir}`,
+      valorInicial: '',
+      exigir,
+      textoConfirmar: `${ROTULO_ACAO[acao].replace(' todos', '')} ${r.quantidade} ${plural}`,
+      perigo: acao !== 'publicar',
+    })
+    if (confirmado === null) return
+
+    let motivo: string | null = null
+    if (acao === 'retirar') {
+      motivo = await pedirTexto({
+        titulo: 'Motivo para os autores',
+        mensagem: `Este motivo aparece para os autores dos ${r.quantidade} ${plural}.`,
+        rotulo: 'Motivo',
+        valorInicial: 'Não segue as regras de uso.',
+        textoConfirmar: 'Retirar do ar',
+        perigo: true,
+      })
+      if (motivo === null) return
+    }
+
+    setErro('')
+    setSucesso('')
+    const falhas: string[] = []
+    if (acao === 'excluir') {
+      setProcessando(`Excluindo ${r.quantidade} ${plural}...`)
+      const caminhos = alvo.map((m) => m.arquivo_path).filter((c): c is string => !!c)
+      if (caminhos.length > 0) await supabase.storage.from('materiais').remove(caminhos)
+      const { error } = await supabase.from('materiais').delete().in('id', alvo.map((m) => m.id))
+      if (error) falhas.push(error.message)
+    } else {
+      for (let i = 0; i < alvo.length; i++) {
+        setProcessando(`${acao === 'publicar' ? 'Publicando' : 'Retirando do ar'} ${i + 1} de ${alvo.length}...`)
+        const { error } = await supabase.rpc('moderar_material', {
+          p_material_id: alvo[i].id,
+          p_aprovar: acao === 'publicar',
+          p_motivo: motivo,
+        })
+        if (error) falhas.push(`"${alvo[i].titulo}": ${error.message}`)
+      }
+    }
+    setProcessando('')
+    if (falhas.length > 0) setErro(`Alguns materiais não foram alterados: ${falhas.join('; ')}`)
+    const feitos = acao === 'excluir' ? (falhas.length ? 0 : r.quantidade) : r.quantidade - falhas.length
+    if (feitos > 0) {
+      const verbo = acao === 'excluir' ? 'excluído(s)' : acao === 'publicar' ? 'publicado(s)' : 'retirado(s) do ar'
+      setSucesso(`${feitos} ${feitos === 1 ? 'material' : 'materiais'} ${verbo}.`)
+    }
+    aoMudar()
   }
 
   function filtrar(acao: () => void) {
@@ -174,6 +275,34 @@ export default function TodosMateriais({
         </select>
       </div>
 
+      {filtrados.length > 0 ? (
+        <div className="acoes-massa">
+          <p>
+            <AlertTriangle size={16} aria-hidden="true" />
+            <span>
+              <strong>Ações em massa:</strong> valem para os <strong>{filtrados.length}</strong>{' '}
+              {filtrados.length === 1 ? 'material' : 'materiais'} desta lista
+              {disciplina || busca.trim() ? ' (com os filtros aplicados)' : ''}, inclusive os que não aparecem na página.
+            </span>
+          </p>
+          <div className="acoes-massa-botoes">
+            {ACOES_POR_STATUS[status].map((acao) => (
+              <button
+                key={acao}
+                type="button"
+                className={`btn ${acao === 'publicar' ? 'btn-primario' : acao === 'excluir' ? 'btn-perigo' : 'btn-secundario'}`}
+                onClick={() => executarEmMassa(acao)}
+                disabled={!!processando}
+              >
+                {ROTULO_ACAO[acao]} ({filtrados.length})
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {processando ? <p className="status">{processando}</p> : null}
+      {sucesso ? <p className="aviso sucesso">{sucesso}</p> : null}
       {erro ? <p className="aviso erro">{erro}</p> : null}
       {carregando ? <p className="status">Carregando...</p> : null}
 
