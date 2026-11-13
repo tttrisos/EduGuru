@@ -7,6 +7,7 @@ import { useAuth } from '../../compartilhado/AuthContext'
 import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/arquivos'
 import { DOMINIOS_PERMITIDOS, motivoBloqueio } from './filtroMateriais'
 import Moderacao from './Moderacao'
+import TodosMateriais from './TodosMateriais'
 import './materiais.css'
 
 // Materiais: cada um cadastra os seus; os aprovados aparecem para os colegas
@@ -61,6 +62,8 @@ export default function Materiais() {
   const [enviando, setEnviando] = useState(false)
   // Material em edição (null = cadastrando um novo). O arquivo não é trocado na edição.
   const [editando, setEditando] = useState<Material | null>(null)
+  // Admin: aumenta quando a Moderação ou "Todos os materiais" mudam algo, para as listas recarregarem juntas.
+  const [versaoAdmin, setVersaoAdmin] = useState(0)
 
   async function buscar() {
     try {
@@ -234,6 +237,11 @@ export default function Materiais() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  function aoMudarAdmin() {
+    setVersaoAdmin((v) => v + 1)
+    buscar()
+  }
+
   async function excluir(item: Material) {
     const ok = await confirmar({
       titulo: `Excluir o material "${item.titulo}"?`,
@@ -403,7 +411,12 @@ export default function Materiais() {
         )}
       </div>
 
-      {ehAdmin ? <Moderacao disciplinas={disciplinas} /> : null}
+      {ehAdmin ? (
+        <>
+          <Moderacao disciplinas={disciplinas} versao={versaoAdmin} aoMudar={aoMudarAdmin} />
+          <TodosMateriais disciplinas={disciplinas} versao={versaoAdmin} aoMudar={aoMudarAdmin} />
+        </>
+      ) : null}
     </section>
   )
 }

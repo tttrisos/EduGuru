@@ -13,7 +13,15 @@ async function consultarModeracao() {
 }
 
 // Moderação (admin): arquivos novos e materiais denunciados esperam aprovação.
-export default function Moderacao({ disciplinas }: { disciplinas: Disciplina[] }) {
+export default function Moderacao({
+  disciplinas,
+  versao,
+  aoMudar,
+}: {
+  disciplinas: Disciplina[]
+  versao: number
+  aoMudar: () => void
+}) {
   const { pedirTexto } = useDialogo()
   const [lista, setLista] = useState<MaterialModeracao[]>([])
   const [urls, setUrls] = useState<Record<string, string>>({})
@@ -27,9 +35,10 @@ export default function Moderacao({ disciplinas }: { disciplinas: Disciplina[] }
     })
   }
 
+  // Recarrega quando "Todos os materiais" (ou esta lista) muda algo.
   useEffect(() => {
     carregar()
-  }, [])
+  }, [versao])
 
   async function decidir(item: MaterialModeracao, aprovar: boolean) {
     const motivo = aprovar
@@ -49,7 +58,7 @@ export default function Moderacao({ disciplinas }: { disciplinas: Disciplina[] }
       p_motivo: motivo,
     })
     if (error) setErro(error.message)
-    else carregar()
+    else aoMudar()
   }
 
   return (

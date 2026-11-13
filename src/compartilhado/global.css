@@ -1082,3 +1082,72 @@ a.btn {
   font: inherit;
   text-decoration: underline;
 }
+
+/* ---------- Chips de filtro (áreas do Carreiras, situação dos materiais) ---------- */
+/* Quebram a linha (sem barra de rolagem) e mostram o total ao lado */
+.chips-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 6px 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text-suave);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--roxo);
+  color: var(--text-forte);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--roxo);
+  outline-offset: 2px;
+}
+
+.chip-total {
+  min-width: 24px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip.ativo {
+  border-color: var(--roxo);
+  background: var(--roxo);
+  color: #fff;
+}
+
+.chip.ativo .chip-total {
+  background: rgb(255 255 255 / 22%);
+  color: #fff;
+}
+
+/* "Sugeridas para você": contorno roxo e ícone de brilho, mesmo sem estar selecionado */
+.chip-destaque {
+  border-color: color-mix(in srgb, var(--roxo) 60%, transparent);
+  color: var(--roxo-texto);
+}
+
+.chip-vazio:not(.ativo) {
+  opacity: 0.55;
+}
