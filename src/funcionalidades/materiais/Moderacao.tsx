@@ -4,6 +4,7 @@ import { ShieldAlert } from 'lucide-react'
 import { supabase } from '../../compartilhado/supabase'
 import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/arquivos'
 import type { Disciplina, MaterialModeracao } from '../../compartilhado/tipos'
+import { linkCurto } from './filtroMateriais'
 
 async function consultarModeracao() {
   const { data, error } = await supabase.rpc('materiais_em_moderacao')
@@ -88,8 +89,8 @@ export default function Moderacao({
                 {item.descricao ? <span className="item-meta">{item.descricao}</span> : null}
                 <span className="item-meta">
                   {item.link ? (
-                    <a href={item.link} target="_blank" rel="noreferrer noopener">
-                      {item.link}
+                    <a href={item.link} target="_blank" rel="noreferrer noopener" title={item.link}>
+                      {linkCurto(item.link)}
                     </a>
                   ) : null}
                   {item.arquivo_path && urls[item.arquivo_path] ? (

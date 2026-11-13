@@ -6,6 +6,7 @@ import {
   MOTIVO_TERMOS,
   dominioDoLink,
   dominioPermitido,
+  linkCurto,
   motivoBloqueio,
   semAcento,
 } from '../src/funcionalidades/materiais/filtroMateriais'
@@ -67,5 +68,28 @@ describe('motivoBloqueio', () => {
 describe('semAcento', () => {
   it('tira acentos e deixa minúsculo', () => {
     expect(semAcento('Programação')).toBe('programacao')
+  })
+})
+
+describe('linkCurto', () => {
+  it('tira www, parâmetros de rastreamento e a barra final', () => {
+    const longo =
+      'https://pt.khanacademy.org/computing/computer-programming/html-css-js?utm_account=Grant&utm_campaignname=&gad_source=1&gclid=EAIaIQobChMI7cna2fDilw'
+    expect(linkCurto(longo)).toBe('pt.khanacademy.org/computing/computer-programming/html-css-js')
+    expect(linkCurto('https://www.github.com/')).toBe('github.com')
+  })
+
+  it('mantém o vídeo do YouTube', () => {
+    expect(linkCurto('https://www.youtube.com/watch?v=abc123&t=30s')).toBe('youtube.com/watch?v=abc123')
+  })
+
+  it('corta textos longos com reticências', () => {
+    const r = linkCurto(`https://site.com/${'a'.repeat(100)}`)
+    expect(r).toHaveLength(70)
+    expect(r.endsWith('…')).toBe(true)
+  })
+
+  it('link inválido volta como veio', () => {
+    expect(linkCurto('nao é link')).toBe('nao é link')
   })
 })

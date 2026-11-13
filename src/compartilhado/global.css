@@ -547,6 +547,28 @@ p.item-meta {
   background: var(--bg);
 }
 
+/* O texto ocupa o espaço que sobra e quebra a linha (links e títulos longos não empurram os botões) */
+.item-lista > div:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Botões das listas: mesma altura, sem quebrar o texto e sem encolher */
+.item-lista .acoes-item,
+.item-lista .acoes-moderacao {
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.item-lista .acoes-item .btn,
+.item-lista .acoes-moderacao .btn {
+  height: 36px;
+  min-width: 96px;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
 .item-lista strong {
   display: block;
   font-size: 15px;
@@ -637,7 +659,17 @@ p.item-meta {
 
   .item-lista {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
+    }
+
+  .item-lista .acoes-item,
+  .item-lista .acoes-moderacao {
+      width: 100%;
+    }
+
+  .item-lista .acoes-item .btn,
+  .item-lista .acoes-moderacao .btn {
+      flex: 1;
     }
 }
 

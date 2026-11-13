@@ -13,6 +13,7 @@ import {
   type FiltroStatus,
   type MaterialAdmin,
 } from './gestaoMateriais'
+import { linkCurto } from './filtroMateriais'
 
 const POR_PAGINA = 15
 
@@ -199,8 +200,8 @@ export default function TodosMateriais({
                 ) : null}
                 <span className="item-meta">
                   {item.link ? (
-                    <a href={item.link} target="_blank" rel="noreferrer noopener">
-                      {item.link}
+                    <a href={item.link} target="_blank" rel="noreferrer noopener" title={item.link}>
+                      {linkCurto(item.link)}
                     </a>
                   ) : null}
                   {item.arquivo_path && urls[item.arquivo_path] ? (

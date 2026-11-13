@@ -5,7 +5,7 @@ import { supabase } from '../../compartilhado/supabase'
 import { cursosDa, type Disciplina, type Material, type StatusMaterial } from '../../compartilhado/tipos'
 import { useAuth } from '../../compartilhado/AuthContext'
 import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/arquivos'
-import { DOMINIOS_PERMITIDOS, motivoBloqueio } from './filtroMateriais'
+import { DOMINIOS_PERMITIDOS, linkCurto, motivoBloqueio } from './filtroMateriais'
 import Moderacao from './Moderacao'
 import TodosMateriais from './TodosMateriais'
 import './materiais.css'
@@ -383,8 +383,8 @@ export default function Materiais() {
                   {item.descricao ? <span className="item-meta">{item.descricao}</span> : null}
                   <span className="item-meta">
                     {item.link ? (
-                      <a href={item.link} target="_blank" rel="noreferrer noopener">
-                        {item.link}
+                      <a href={item.link} target="_blank" rel="noreferrer noopener" title={item.link}>
+                        {linkCurto(item.link)}
                       </a>
                     ) : null}
                     {item.arquivo_path && urlsArquivos[item.arquivo_path] ? (

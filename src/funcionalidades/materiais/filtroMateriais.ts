@@ -39,6 +39,21 @@ export function dominioDoLink(link: string) {
   return resultado ? resultado[1].toLowerCase().replace(/^www\./, '') : ''
 }
 
+// Texto curto para exibir um link (o href continua completo):
+// "https://pt.khanacademy.org/computing/html-css?utm_source=x&gclid=y" -> "pt.khanacademy.org/computing/html-css"
+// Tira o "www.", os parâmetros de rastreamento e o "#"; mantém só o "v=" do YouTube. Corta em 70 letras.
+export function linkCurto(link: string, limite = 70) {
+  let texto: string
+  try {
+    const url = new URL(link)
+    const video = url.searchParams.get('v')
+    texto = url.hostname.replace(/^www\./, '') + url.pathname.replace(/\/$/, '') + (video ? `?v=${video}` : '')
+  } catch {
+    texto = link
+  }
+  return texto.length > limite ? `${texto.slice(0, limite - 1)}…` : texto
+}
+
 export function dominioPermitido(dominio: string) {
   return DOMINIOS_PERMITIDOS.some((d) => dominio === d || dominio.endsWith(`.${d}`))
 }
