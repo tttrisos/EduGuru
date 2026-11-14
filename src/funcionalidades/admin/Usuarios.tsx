@@ -63,6 +63,12 @@ export default function Usuarios() {
   async function excluir(alvo: UsuarioAdmin) {
     setErro('')
     setMensagem('')
+    // Conta de administrador não pode ser excluída por aqui (o banco também recusa: script 20).
+    // A checagem vem ANTES de apagar os arquivos, para não apagar nada de um admin.
+    if (alvo.papel === 'admin') {
+      setErro('Contas de administrador não podem ser excluídas.')
+      return
+    }
     const digitado = await pedirTexto({
       titulo: `Excluir a conta de ${alvo.nome}?`,
       mensagem:
@@ -99,7 +105,8 @@ export default function Usuarios() {
         <h2>Usuários</h2>
         <p>Contas cadastradas na plataforma.</p>
         <p className="pagina-fatos">
-          <span>Excluir apaga perfil, acesso e materiais da pessoa</span>
+          <span>Excluir apaga perfil, acesso e materiais do aluno</span>
+          <span>Contas de administrador não podem ser excluídas</span>
           <span>Toda exclusão fica no log</span>
           <span>A sua própria conta é excluída em Meus dados e privacidade</span>
         </p>
@@ -135,14 +142,19 @@ export default function Usuarios() {
                         Redefinir MFA
                       </button>
                     ) : null}
-                    <button
-                      type="button"
-                      className="btn btn-perigo"
-                      onClick={() => excluir(u)}
-                      disabled={excluindoId === u.id}
-                    >
-                      {excluindoId === u.id ? 'Excluindo...' : 'Excluir conta'}
-                    </button>
+                    {/* Admin não exclui conta de admin: no lugar do botão aparece um aviso. */}
+                    {u.papel === 'admin' ? (
+                      <span className="item-meta">Conta de administrador protegida</span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-perigo"
+                        onClick={() => excluir(u)}
+                        disabled={excluindoId === u.id}
+                      >
+                        {excluindoId === u.id ? 'Excluindo...' : 'Excluir conta'}
+                      </button>
+                    )}
                   </div>
                 ) : null}
               </li>
