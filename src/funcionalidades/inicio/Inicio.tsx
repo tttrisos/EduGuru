@@ -67,7 +67,7 @@ const RECURSOS = [
   {
     icone: ShieldCheck,
     titulo: 'Segurança e privacidade',
-    texto: 'Login com verificação em duas etapas e controle total dos seus dados (LGPD).',
+    texto: 'Verificação em duas etapas (opcional) e controle total dos seus dados (LGPD).',
     disponivel: true,
   },
 ]
@@ -84,8 +84,8 @@ function rolarPara(id: string) {
 }
 
 export default function Inicio() {
-  const { usuario, mfaConcluido } = useAuth()
-  const logado = !!usuario && mfaConcluido
+  const { usuario, verificacaoOk } = useAuth()
+  const logado = !!usuario && verificacaoOk
 
   return (
     <div className="home">

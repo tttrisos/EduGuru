@@ -45,15 +45,15 @@ export default function Usuarios() {
     })
   }, [])
 
-  // Perdeu o celular: apaga o autenticador; no próximo login cadastra de novo.
+  // Perdeu o celular: apaga o autenticador. Aluno volta a entrar só com a senha; admin cadastra de novo.
   async function redefinirMfa(alvo: UsuarioAdmin) {
     setErro('')
     setMensagem('')
     const confirmou = await confirmar({
       titulo: `Redefinir a verificação em duas etapas de ${alvo.nome}?`,
       mensagem:
-        'Faça isso só se a própria pessoa pediu (ex.: perdeu o celular). No próximo login ela ' +
-        'precisará cadastrar o aplicativo autenticador de novo.',
+        'Faça isso só se a própria pessoa pediu (ex.: perdeu o celular). No próximo login ela entra ' +
+        'só com a senha (aluno) ou cadastra o aplicativo de novo (administrador).',
       textoConfirmar: 'Redefinir',
     })
     if (!confirmou) return

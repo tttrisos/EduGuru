@@ -6,7 +6,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.6 (mesmo texto da 1.5; muda junto com a Política).
+// Termo de Aceite, versão 1.6 (1.6: verificação em duas etapas opcional para alunos).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -68,13 +68,15 @@ export default function TermoDeAceite() {
           </li>
         </ul>
         <p>
-          <strong>Verificação em duas etapas (obrigatória):</strong> além da senha, todo
-          acesso exige o código de 6 dígitos de um aplicativo autenticador (ex.: Google
-          Authenticator, Microsoft Authenticator), configurado no primeiro login. Você é
-          responsável por manter sua senha em sigilo e o aplicativo autenticador sob seu
-          controle. Se perder o acesso ao aplicativo, peça a um administrador para
-          redefinir a verificação. Avise a equipe do projeto imediatamente se suspeitar
-          de acesso indevido à sua conta.
+          <strong>Verificação em duas etapas (opcional para alunos, obrigatória para
+          administradores):</strong> em Minha conta, você pode ativar um aplicativo
+          autenticador (ex.: Google Authenticator, Microsoft Authenticator); a partir daí,
+          além da senha, todo login pede o código de 6 dígitos do aplicativo. Recomendamos
+          ativar. Você pode desativar quando quiser, confirmando com a senha atual; sem
+          ela, a sua conta fica protegida só pela senha. Você é responsável por manter sua
+          senha em sigilo e o aplicativo autenticador sob seu controle. Se perder o acesso
+          ao aplicativo, peça a um administrador para redefinir a verificação. Avise a
+          equipe do projeto imediatamente se suspeitar de acesso indevido à sua conta.
         </p>
         <p>
           Você pode excluir sua conta a qualquer momento, na tela <strong>Minha

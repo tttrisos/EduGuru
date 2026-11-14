@@ -2,7 +2,8 @@
 // compartilhado/sessao/ContextoSessao.tsx
 // SESSÃO DO USUÁRIO: guarda quem está logado e deixa isso disponível para todas as telas (useAuth()).
 // Supabase Auth: login (signInWithPassword), cadastro (signUp), sair (signOut) e nível da sessão
-// (aal1 = só senha; aal2 = senha + código de duas etapas).
+// (aal1 = só senha; aal2 = senha + código de duas etapas). A regra de quando o código é exigido
+// (MFA opcional para aluno, obrigatório para admin) está em nivelSessao.ts.
 // Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
 // Usado por: quase todas as telas (ex.: ehAdmin decide o que mostrar).
 // ============================================================
@@ -12,14 +13,18 @@ import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../banco/supabase'
 import { VERSAO_TERMOS, type Perfil } from '../tipos'
 import { registrarLogEvento, registrarLoginFalhou } from '../banco/log'
+import { situacaoDaSessao } from './nivelSessao'
 
 type AuthContextValor = {
   usuario: User | null
   perfil: Perfil | null
   carregando: boolean
   ehAdmin: boolean
-  // true só quando a sessão passou pelo 2º fator (nível "aal2").
-  mfaConcluido: boolean
+  // true quando a sessão cumpre a verificação que a conta exige (nivelSessao.ts):
+  // aluno sem MFA = só a senha; quem ativou o MFA (e todo admin) = senha + código.
+  verificacaoOk: boolean
+  // a conta tem o MFA (aplicativo autenticador) ativo?
+  temMfa: boolean
   atualizarMfa: () => Promise<void>
   recarregarPerfil: () => Promise<void>
   entrar: (email: string, senha: string) => Promise<{ erro: string | null }>
@@ -36,17 +41,21 @@ type AuthContextValor = {
 
 const AuthContext = createContext<AuthContextValor | null>(null)
 
-// O perfil só é lido depois do MFA (antes disso o banco não devolve nada).
-async function lerDadosSessao(
-  session: Session | null,
-): Promise<{ mfaConcluido: boolean; perfil: Perfil | null }> {
-  if (!session?.user) return { mfaConcluido: false, perfil: null }
+type DadosSessao = { verificacaoOk: boolean; temMfa: boolean; perfil: Perfil | null }
+
+// Quem ativou o MFA e ainda não digitou o código: o banco não devolve nada, então nem lê o perfil.
+async function lerDadosSessao(session: Session | null): Promise<DadosSessao> {
+  if (!session?.user) return { verificacaoOk: false, temMfa: false, perfil: null }
 
   const { data: nivel } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
-  if (nivel?.currentLevel !== 'aal2') return { mfaConcluido: false, perfil: null }
+  const antes = situacaoDaSessao(nivel?.currentLevel, nivel?.nextLevel, null)
+  if (!antes.liberada) return { verificacaoOk: false, temMfa: antes.temMfa, perfil: null }
 
   const { data } = await supabase.from('perfis').select('*').eq('id', session.user.id).single()
-  return { mfaConcluido: true, perfil: (data as Perfil) ?? null }
+  const perfil = (data as Perfil) ?? null
+  // Com o papel em mãos: administrador sem o código não é liberado (precisa cadastrar o MFA).
+  const depois = situacaoDaSessao(nivel?.currentLevel, nivel?.nextLevel, perfil?.papel ?? null)
+  return { verificacaoOk: depois.liberada, temMfa: depois.temMfa, perfil }
 }
 
 // Guarda quem está logado e o papel (aluno/admin). As páginas usam useAuth().
@@ -54,12 +63,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null)
   const [perfil, setPerfil] = useState<Perfil | null>(null)
   const [carregando, setCarregando] = useState(true)
-  const [mfaConcluido, setMfaConcluido] = useState(false)
+  const [verificacaoOk, setVerificacaoOk] = useState(false)
+  const [temMfa, setTemMfa] = useState(false)
+
+  function aplicar(dados: DadosSessao) {
+    setVerificacaoOk(dados.verificacaoOk)
+    setTemMfa(dados.temMfa)
+    setPerfil(dados.perfil)
+  }
 
   async function carregarDadosSessao(session: Session | null) {
     const dados = await lerDadosSessao(session)
-    setMfaConcluido(dados.mfaConcluido)
-    setPerfil(dados.perfil)
+    aplicar(dados)
+    return dados
   }
 
   async function atualizarMfa() {
@@ -71,8 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
       const dados = await lerDadosSessao(session)
       setUsuario(session?.user ?? null)
-      setMfaConcluido(dados.mfaConcluido)
-      setPerfil(dados.perfil)
+      aplicar(dados)
       setCarregando(false)
     })
 
@@ -80,22 +95,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: assinatura } = supabase.auth.onAuthStateChange((_evento: string, session: Session | null) => {
       setUsuario(session?.user ?? null)
       setTimeout(async () => {
-        const dados = await lerDadosSessao(session)
-        setMfaConcluido(dados.mfaConcluido)
-        setPerfil(dados.perfil)
+        aplicar(await lerDadosSessao(session))
       }, 0)
     })
 
     return () => assinatura.subscription.unsubscribe()
   }, [])
 
-  // Só confere a senha; o login termina na tela /mfa.
+  // Confere a senha. Quem não tem MFA já entra aqui; quem tem (e o admin) termina na tela /mfa.
   async function entrar(email: string, senha: string) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha })
     if (error || !data.user) {
       await registrarLoginFalhou(email)
       return { erro: 'E-mail ou senha inválidos.' }
     }
+    // Lê a situação ANTES de voltar, para a próxima tela já saber se precisa do código.
+    setUsuario(data.user)
+    const dados = await carregarDadosSessao(data.session)
+    if (dados.verificacaoOk) await registrarLogEvento('login', { mfa: 'nao' })
     return { erro: null }
   }
 
@@ -136,7 +153,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     perfil,
     carregando,
     ehAdmin: perfil?.papel === 'admin',
-    mfaConcluido,
+    verificacaoOk,
+    temMfa,
     atualizarMfa,
     recarregarPerfil: atualizarMfa,
     entrar,

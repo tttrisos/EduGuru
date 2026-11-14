@@ -1,7 +1,8 @@
 // ============================================================
 // funcionalidades/conta/MinhaConta.tsx
 // MINHA CONTA (endereço /minha-conta) — direitos do titular pela LGPD (RF15, RF21).
-// Ver os dados, corrigir, trocar a senha (TrocarSenha.tsx), sair do ranking, revogar a localização,
+// Ver os dados, corrigir, trocar a senha (TrocarSenha.tsx), ativar ou desativar a verificação em duas
+// etapas (VerificacaoDuasEtapas.tsx), sair do ranking, revogar a localização,
 // baixar tudo em JSON e excluir a conta (excluir_minha_conta, supabase/07).
 // Banco: lê perfis, materiais, notas, tentativas_quiz, cliques_vagas, bussola_resultados e logs_auditoria.
 // ============================================================
@@ -13,6 +14,7 @@ import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { CURSOS, type LogAuditoria, type Material, type Nota, type TentativaQuiz } from '../../compartilhado/tipos'
 import { removerArquivosDoUsuario } from './arquivosDoUsuario'
 import TrocarSenha from './TrocarSenha'
+import VerificacaoDuasEtapas from './VerificacaoDuasEtapas'
 import { ROTULO_ACAO } from '../../compartilhado/banco/log'
 import './conta.css'
 
@@ -304,6 +306,8 @@ export default function MinhaConta() {
       </div>
 
       <TrocarSenha />
+
+      <VerificacaoDuasEtapas />
 
       {perfil.papel === 'aluno' ? (
         <div className="cartao conta-secao">

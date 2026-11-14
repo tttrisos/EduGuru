@@ -6,7 +6,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.6 (1.6: envio de e-mails pelo Brevo).
+// Política de Privacidade, versão 1.6 (1.6: envio de e-mails pelo Brevo e verificação em duas etapas opcional).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -18,7 +18,7 @@ export default function Privacidade() {
         <p className="aviso">
           Versão 1.6 — 14/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru e envio de e-mails pelo Brevo). Finalidade
+          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo e verificação em duas etapas opcional). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -49,9 +49,10 @@ export default function Privacidade() {
             de qualquer gravação).
           </li>
           <li>
-            <strong>Verificação em duas etapas (MFA):</strong> o registro do aplicativo
-            autenticador vinculado à sua conta (a chave secreta é guardada pelo Supabase
-            Auth; o EduGuru não vê nem armazena os códigos de 6 dígitos).
+            <strong>Verificação em duas etapas (MFA), se você ativar:</strong> o registro
+            do aplicativo autenticador vinculado à sua conta (a chave secreta é guardada pelo
+            Supabase Auth; o EduGuru não vê nem armazena os códigos de 6 dígitos). Para alunos
+            é opcional e pode ser desativada em Minha conta; para administradores é obrigatória.
           </li>
           <li>
             <strong>Registro do aceite:</strong> data, hora e versão do Termo de Aceite e
@@ -98,8 +99,8 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Registros de auditoria:</strong> login concluído, tentativas de login
-            malsucedidas, códigos de verificação em duas etapas inválidos, ativação da
-            verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
+            malsucedidas, códigos de verificação em duas etapas inválidos, ativação e
+            desativação da verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
             redefinição da verificação em duas etapas por um administrador, quizzes
             finalizados (acertos e pontos), criação/edição/exclusão de disciplinas,
             perguntas e materiais, registro de notas (apenas que houve a alteração, sem
@@ -134,8 +135,8 @@ export default function Privacidade() {
                 <td>Enquanto a conta existir</td>
               </tr>
               <tr>
-                <td>Fator de verificação em duas etapas (MFA)</td>
-                <td>Proteger a conta contra acesso com senha vazada ou descoberta</td>
+                <td>Fator de verificação em duas etapas (MFA), quando ativado</td>
+                <td>Proteger a conta contra acesso com senha vazada ou descoberta (opcional para alunos; obrigatório para administradores)</td>
                 <td>Execução de contrato (art. 7º, V), em atendimento ao dever de segurança (art. 46)</td>
                 <td>Enquanto a conta existir</td>
               </tr>
@@ -369,9 +370,10 @@ export default function Privacidade() {
 
         <h2>8. Segurança e resposta a incidentes</h2>
         <p>
-          Senhas passam por hash (nunca texto puro). Todo acesso exige verificação em
-          duas etapas (senha + código do aplicativo autenticador), e o próprio banco de
-          dados recusa sessões que não concluíram essa verificação. O acesso a cada
+          Senhas passam por hash (nunca texto puro). A verificação em duas etapas (senha +
+          código do aplicativo autenticador) é obrigatória para administradores e opcional,
+          mas recomendada, para alunos: quem a ativa precisa do código em todo login, e o
+          próprio banco de dados recusa as sessões dessa conta que não informaram o código. O acesso a cada
           funcionalidade é controlado por regras de segurança no próprio banco de dados
           (Row Level Security), não apenas pela interface. Arquivos anexados não são
           públicos: só podem ser abertos por usuários logados, por links temporários

@@ -92,3 +92,16 @@
 .trocar-senha-form .lista-regras-senha span {
   margin-right: 6px;
 }
+
+/* Verificação em duas etapas: QR Code e código ao ativar */
+.mfa-ativar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.mfa-ativar ol {
+  margin: 0;
+  padding-left: 20px;
+}

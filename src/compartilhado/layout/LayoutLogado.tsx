@@ -84,7 +84,7 @@ export default function LayoutLogado() {
   const { confirmar } = useDialogo()
   const location = useLocation()
   const navigate = useNavigate()
-  const { perfil, ehAdmin, sair } = useAuth()
+  const { perfil, ehAdmin, temMfa, sair } = useAuth()
   const [menuAberto, setMenuAberto] = useState(false)
   const [tema, setTema] = useState<Tema>(temaSalvo)
 
@@ -92,7 +92,7 @@ export default function LayoutLogado() {
 
   // Sair pede confirmação (janela do EduGuru, em compartilhado/Dialogo.tsx).
   async function aoSair() {
-    if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.', textoConfirmar: 'Sair' }))) return
+    if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: temMfa ? 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.' : 'Para entrar de novo, você vai precisar da sua senha.', textoConfirmar: 'Sair' }))) return
     await sair()
     navigate('/login', { replace: true })
   }

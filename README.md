@@ -30,7 +30,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 - **EduGuru Carreiras:** vagas das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho e aos interesses, com filtros de área, nível e localidade.
 - **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e limite de 40 faltas.
 - **Minha conta:** ver, corrigir, baixar e excluir os dados, **trocar a senha estando logado** (com a senha atual; a nova precisa ser diferente) e sair do ranking.
-- **Segurança e LGPD:** verificação em duas etapas obrigatória, RLS em todas as tabelas, logs de auditoria (90 dias), Termo e Política com novo aceite a cada versão; conta de administrador protegida contra exclusão.
+- **Segurança e LGPD:** verificação em duas etapas **opcional para alunos** (ativada e desativada em Minha conta; quem ativa precisa do código em todo login) e **obrigatória para administradores**, RLS em todas as tabelas, logs de auditoria (90 dias), Termo e Política com novo aceite a cada versão; conta de administrador protegida contra exclusão.
 
 ## Tecnologias
 
@@ -74,7 +74,7 @@ eduguru/
 │       ├── carreiras/            EduGuru Carreiras: API do GitHub, localidade, vagas
 │       └── administracao/        Usuários e logs (admin)
 ├── testes/                       Testes (Vitest), nas mesmas pastas das funcionalidades
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 22)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 23)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -86,7 +86,7 @@ eduguru/
 |---|---|---|
 | Página inicial (RF23) | `inicio/Inicio.tsx` | — |
 | Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `acesso/Login.tsx`, `acesso/regrasSenha.ts` | `02`, `04` |
-| Verificação em duas etapas (RF03, RF04) | `acesso/Mfa.tsx` | `05` |
+| Verificação em duas etapas (RF03, RF04): código no login e ativar/desativar em Minha conta | `acesso/Mfa.tsx`, `acesso/fatoresMfa.ts`, `conta/VerificacaoDuasEtapas.tsx`, regra em `compartilhado/sessao/nivelSessao.ts` | `05`, `23` |
 | Esqueci minha senha (RF24) | `acesso/EsqueciSenha.tsx`, `acesso/RedefinirSenha.tsx` | `09` |
 | Trocar a senha estando logado | `conta/TrocarSenha.tsx` | `21` (`conferir_senha_atual`) |
 | Termo, Política e novo aceite (RF11 a RF13, RF22) | `lgpd/` | `08` |
@@ -106,7 +106,7 @@ eduguru/
 | Logs de auditoria e limpeza (RF09, RF10) | `administracao/Logs.tsx` | `02`, `06`, `10` |
 | Carreiras (RF30 a RF32) | `carreiras/` (`apiVagasGithub.ts` = API do GitHub) | `17` |
 | Bússola EduGuru (RF33) | `bussola/` | `18` |
-| Regras de acesso, RLS (RF14) | — | `02`, `04`, `05` (MFA em todas as tabelas) |
+| Regras de acesso, RLS (RF14) | — | `02`, `04`, `05`, `23` (MFA exigido de quem ativou e do admin) |
 
 ## Banco de dados
 
@@ -118,7 +118,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `02_perfis_e_logs.sql` | Perfis (aluno/admin), regras de acesso e logs de auditoria |
 | `03_arquivos_materiais.sql` | Envio de arquivos PDF/DOCX (bucket privado) |
 | `04_seguranca_lgpd.sql` | Cidade/estado, aceite dos termos, permissões do perfil, dono dos materiais |
-| `05_verificacao_duas_etapas.sql` | MFA exigido pelo banco em todas as tabelas |
+| `05_verificacao_duas_etapas.sql` | MFA exigido pelo banco em todas as tabelas (regra suavizada no 23) |
 | `06_limpeza_automatica_logs.sql` | Exclusão diária dos logs com mais de 90 dias |
 | `07_minha_conta.sql` | Exclusão de conta pelo titular e pelo admin |
 | `08_novo_aceite.sql` | Novo aceite quando os termos mudam de versão |
@@ -136,6 +136,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `20_proteger_admin.sql` | Administrador não pode excluir a conta de outro administrador |
 | `21_trocar_senha.sql` | Conferência da senha atual para trocar a senha estando logado |
 | `22_filtro_gerenciavel.sql` | Filtro de materiais em tabelas editáveis pelo admin; site novo vai para a análise |
+| `23_mfa_opcional.sql` | Verificação em duas etapas opcional para alunos e obrigatória para administradores |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

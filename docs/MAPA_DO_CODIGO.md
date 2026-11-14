@@ -33,14 +33,17 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 | 1 | `index.html` | Página base; carrega `src/principal.tsx` |
 | 2 | `src/principal.tsx` | Aplica o tema, liga a sessão (`AuthProvider`) e as janelas de confirmação |
 | 3 | `src/Rotas.tsx` | Decide qual tela abre em cada endereço (`#/painel`, `#/quiz`...) |
-| 4 | `src/compartilhado/sessao/RotaProtegida.tsx` | Porteiro: login? duas etapas? aceite dos termos? admin? |
+| 4 | `src/compartilhado/sessao/RotaProtegida.tsx` | Porteiro: login? código das duas etapas (se a conta exige)? aceite dos termos? admin? |
 | 5 | `src/compartilhado/layout/LayoutLogado.tsx` | Barra do topo com o menu; a tela aparece embaixo |
 
 ## 3. O caminho de cada ação
 
 ### O aluno entra no sistema
 1. `acesso/Login.tsx`: e-mail e senha → `entrar()` em `sessao/ContextoSessao.tsx` → Supabase Auth.
-2. `acesso/Mfa.tsx`: código de 6 dígitos → a sessão vira **aal2** (o banco só libera dados com aal2: `sessao_mfa_ok`, script 05).
+2. A regra das duas etapas está em `sessao/nivelSessao.ts` (com testes) e no banco (`sessao_mfa_ok` e `eh_admin`, script 23):
+   - aluno **sem** MFA: entra só com a senha (aal1);
+   - quem **ativou** o MFA: vai para `acesso/Mfa.tsx`, digita o código e a sessão vira **aal2**; sem o código, o banco não devolve nada;
+   - **administrador**: código obrigatório; sem MFA cadastrado, `Mfa.tsx` obriga a cadastrar.
 3. `sessao/RotaProtegida.tsx`: confere o aceite da versão atual dos termos (`VERSAO_TERMOS` em `tipos.ts`); se mudou, manda para `lgpd/NovoAceite.tsx`.
 4. Abre `painel/Painel.tsx` → aluno vê `MinhaEvolucao.tsx`; admin vê `PainelAdmin.tsx`.
 
@@ -90,6 +93,11 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 1. `notas/Notas.tsx` grava na tabela `notas` (12). O RLS deixa só o próprio aluno ler e gravar.
 2. `notas/calculoNotas.ts`: M2 = ND × 70% + NI × 30%; MD = (M1 + 2 × M2) ÷ 3; exame e MF; mais de 40 faltas reprova.
 
+### O aluno ativa ou desativa a verificação em duas etapas
+1. `conta/VerificacaoDuasEtapas.tsx` (em Minha conta) usa `acesso/fatoresMfa.ts`.
+2. **Ativar:** `iniciarCadastroTotp()` gera o QR Code → o aluno digita um código → `confirmarCodigo()` → sessão aal2 e log `mfa_ativado`. A partir daí, o banco exige o código em todo login dessa conta.
+3. **Desativar:** senha atual (**`conferir_senha_atual`**, 21) + sessão que digitou o código (o Supabase exige) → `mfa.unenroll()` → log `mfa_desativado`. O admin não vê o botão.
+
 ### O usuário troca a senha estando logado
 1. `conta/TrocarSenha.tsx` → `validarTrocaDeSenha()` em `acesso/regrasSenha.ts` (regras, confirmação, nova ≠ atual).
 2. **`conferir_senha_atual`** (script 21): compara a senha atual com o hash guardado; 5 erros em 15 min bloqueiam.
@@ -103,7 +111,8 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 
 | Proteção | Onde |
 |---|---|
-| Sem duas etapas, nenhuma tabela é lida | Política `mfa_obrigatorio` em todas as tabelas (scripts 05 em diante) e `sessao_mfa_ok()` (05) |
+| Quem ativou as duas etapas não entra só com a senha | Política `mfa_obrigatorio` em todas as tabelas (05 em diante), que chama `sessao_mfa_ok()`: aal2 **ou** conta sem MFA (23) |
+| Admin sempre com o código | `eh_admin()` exige aal2 (`sessao_aal2()`, 23) |
 | Cada um só vê o que é seu (ex.: notas) | Políticas RLS de cada tabela (ex.: `notas_proprias`, script 12) |
 | O aluno não vê o gabarito | Tabela `gabaritos` só para admin (11); correção só nas funções do quiz (19) |
 | Regras que não podem ser burladas | Funções `security definer` que conferem quem chama (é admin? tem MFA?) |

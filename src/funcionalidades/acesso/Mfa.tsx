@@ -1,53 +1,39 @@
 // ============================================================
 // funcionalidades/acesso/Mfa.tsx
-// VERIFICAÇÃO EM DUAS ETAPAS (endereço /mfa) — RF03, RF04.
-// 1º acesso: gera o QR Code (mfa.enroll) para o aplicativo autenticador. Depois: pede o código de 6 dígitos.
-// Código certo → sessão vira aal2 (o banco só libera os dados com aal2). 5 códigos errados → sai da conta.
+// VERIFICAÇÃO EM DUAS ETAPAS NO LOGIN (endereço /mfa) — RF03, RF04.
+// Só chega aqui quem precisa do código (ver compartilhado/sessao/nivelSessao.ts):
+// - quem ATIVOU o MFA em Minha conta: digita o código de 6 dígitos do aplicativo;
+// - administrador sem MFA: é obrigado a cadastrar o aplicativo (QR Code) antes de entrar.
+// Código certo → sessão vira aal2. 5 códigos errados → sai da conta. Banco: supabase/05 e 23.
 // ============================================================
 
 import { useEffect, useRef, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
-import { supabase } from '../../compartilhado/banco/supabase'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
 import Rodape from '../../compartilhado/layout/Rodape'
+import { confirmarCodigo, fatorVerificado, iniciarCadastroTotp } from './fatoresMfa'
 import './acesso.css'
 
-// Verificação em duas etapas (TOTP). No 1º acesso mostra o QR Code; depois
-// só pede o código. Após 5 códigos errados, a sessão é encerrada.
 const MAXIMO_TENTATIVAS = 5
 
 type Preparo =
   | { modo: 'verificar'; fatorId: string }
   | { modo: 'cadastrar'; fatorId: string; qrCode: string; segredo: string }
 
-async function prepararMfa(): Promise<Preparo> {
-  const { data, error } = await supabase.auth.mfa.listFactors()
-  if (error) throw error
-
-  const verificado = data.totp[0]
-  if (verificado) return { modo: 'verificar', fatorId: verificado.id }
-
-  // Remove QR Codes gerados e nunca confirmados.
-  const pendentes = data.all.filter((f) => f.factor_type === 'totp' && f.status === 'unverified')
-  for (const fator of pendentes) {
-    await supabase.auth.mfa.unenroll({ factorId: fator.id })
-  }
-
-  const { data: novo, error: erroCadastro } = await supabase.auth.mfa.enroll({
-    factorType: 'totp',
-    friendlyName: `EduGuru ${new Date().toISOString()}`,
-  })
-  if (erroCadastro) throw erroCadastro
-
-  return { modo: 'cadastrar', fatorId: novo.id, qrCode: novo.totp.qr_code, segredo: novo.totp.secret }
+// Tem aplicativo confirmado → pede o código. Não tem → só o admin cadastra aqui (é obrigatório para ele).
+async function prepararMfa(ehAdmin: boolean): Promise<Preparo | null> {
+  const fatorId = await fatorVerificado()
+  if (fatorId) return { modo: 'verificar', fatorId }
+  if (!ehAdmin) return null
+  return { modo: 'cadastrar', ...(await iniciarCadastroTotp()) }
 }
 
 export default function Mfa() {
   const { confirmar } = useDialogo()
-  const { usuario, carregando, mfaConcluido, atualizarMfa, sair } = useAuth()
+  const { usuario, perfil, carregando, verificacaoOk, atualizarMfa, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/painel'
@@ -62,21 +48,29 @@ export default function Mfa() {
   const jaPreparou = useRef(false)
 
   useEffect(() => {
-    if (carregando || !usuario || mfaConcluido || jaPreparou.current) return
+    if (carregando || !usuario || verificacaoOk || jaPreparou.current) return
     jaPreparou.current = true
-    prepararMfa()
-      .then(setPreparo)
+    prepararMfa(perfil?.papel === 'admin')
+      .then((resultado) => {
+        // Sem MFA e sem ser admin: não precisa de código (a sessão é recarregada e segue para o destino).
+        if (resultado) setPreparo(resultado)
+        else {
+          jaPreparou.current = false // o perfil pode chegar depois: tenta de novo quando ele mudar
+          atualizarMfa()
+        }
+      })
       .catch(() =>
         setErro(
           'Não foi possível iniciar a verificação em duas etapas. Confira se o MFA (TOTP) ' +
             'está habilitado no projeto Supabase e tente novamente.',
         ),
       )
-  }, [carregando, usuario, mfaConcluido])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carregando, usuario, verificacaoOk, perfil])
 
   if (carregando) return <p className="status">Carregando...</p>
   if (!usuario) return <Navigate to="/login" replace />
-  if (mfaConcluido) return <Navigate to={destino} replace />
+  if (verificacaoOk) return <Navigate to={destino} replace />
 
   async function aoEnviar(e: React.FormEvent) {
     e.preventDefault()
@@ -90,10 +84,7 @@ export default function Mfa() {
     }
 
     setEnviando(true)
-    const { error } = await supabase.auth.mfa.challengeAndVerify({
-      factorId: preparo.fatorId,
-      code: codigoLimpo,
-    })
+    const error = await confirmarCodigo(preparo.fatorId, codigoLimpo)
 
     if (error) {
       await registrarLogEvento('mfa_falhou', { etapa: preparo.modo })
@@ -148,8 +139,8 @@ export default function Mfa() {
         {preparo?.modo === 'cadastrar' ? (
           <div className="mfa-passos">
             <p>
-              <strong>Primeiro acesso:</strong> para proteger sua conta, ative a verificação em
-              duas etapas.
+              <strong>Conta de administrador:</strong> para alunos a verificação em duas etapas é
+              opcional, mas para administradores ela é obrigatória. Ative para continuar.
             </p>
             <ol>
               <li>Instale um app autenticador (Google Authenticator, Microsoft Authenticator, Authy...).</li>
@@ -196,7 +187,8 @@ export default function Mfa() {
 
         <p className="login-rodape">
           Perdeu acesso ao aplicativo autenticador? Peça a um administrador para redefinir a sua
-          verificação em duas etapas (tela Usuários). No próximo login você cadastra o app de novo.
+          verificação em duas etapas (tela Usuários). Depois disso você entra só com a senha e, se
+          quiser, ativa de novo em Minha conta.
         </p>
       </div>
 

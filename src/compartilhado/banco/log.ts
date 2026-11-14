@@ -17,6 +17,7 @@ export const ROTULO_ACAO: Record<string, string> = {
   login_falhou: 'Login falhou',
   logout: 'Logout',
   mfa_ativado: 'MFA ativado',
+  mfa_desativado: 'MFA desativado',
   mfa_falhou: 'Código MFA inválido',
   mfa_bloqueado: 'MFA bloqueado (muitas tentativas)',
   mfa_redefinido: 'MFA redefinido pelo admin',
@@ -37,6 +38,7 @@ export type EventoAuth =
   | 'login'
   | 'logout'
   | 'mfa_ativado'
+  | 'mfa_desativado'
   | 'mfa_falhou'
   | 'mfa_bloqueado'
   | 'senha_redefinida'

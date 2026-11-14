@@ -11,14 +11,20 @@ import type { EstatisticasAdmin, EstatisticasBussola, EstatisticasCarreiras } fr
 //   - estatisticas_admin()      → supabase/12_notas_e_painel.sql (alunos, quizzes, acertos)
 //   - estatisticas_carreiras()  → supabase/17_carreiras.sql (cliques em "Candidatar-se")
 //   - estatisticas_bussola()    → supabase/18_bussola.sql (quantos responderam, área preferida)
+//   - total_alunos_com_mfa()    → supabase/23_mfa_opcional.sql (quantos alunos ativaram as duas etapas)
 // Todas conferem no banco se quem chama é admin com verificação em duas etapas.
 // ============================================================
 
 export default function PainelAdmin() {
   const [dados, setDados] = useState<EstatisticasAdmin | null>(null)
   const [erro, setErro] = useState('')
+  const [mfa, setMfa] = useState<{ com_mfa: number; alunos: number } | null>(null)
 
   useEffect(() => {
+    supabase.rpc('total_alunos_com_mfa').then(({ data }) => {
+      const linha = (data as { com_mfa: number; alunos: number }[] | null)?.[0]
+      if (linha) setMfa(linha)
+    })
     supabase.rpc('estatisticas_admin').then(({ data, error }) => {
       if (error) setErro(error.message)
       else setDados(data as EstatisticasAdmin)
@@ -37,6 +43,13 @@ export default function PainelAdmin() {
         <NumeroDestaque valor={dados.materiais} legenda="Materiais" />
         <NumeroDestaque valor={dados.quizzes} legenda="Quizzes realizados" />
         <NumeroDestaque valor={`${dados.aproveitamento_geral}%`} legenda="Acertos (média geral)" />
+        {mfa ? (
+          <NumeroDestaque
+            valor={`${mfa.com_mfa} de ${mfa.alunos}`}
+            legenda="Alunos com duas etapas"
+            detalhe="verificação opcional, ativada em Minha conta"
+          />
+        ) : null}
       </div>
 
       <div className="grade-graficos">

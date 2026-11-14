@@ -18,7 +18,7 @@ import './lgpd.css'
 // Pede novo aceite quando o Termo/Política mudam de versão.
 export default function NovoAceite() {
   const { confirmar, pedirTexto } = useDialogo()
-  const { usuario, perfil, carregando, mfaConcluido, recarregarPerfil, sair } = useAuth()
+  const { usuario, perfil, carregando, verificacaoOk, recarregarPerfil, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/painel'
@@ -29,7 +29,7 @@ export default function NovoAceite() {
 
   if (carregando) return <p className="status">Carregando...</p>
   if (!usuario) return <Navigate to="/login" replace />
-  if (!mfaConcluido) return <Navigate to="/mfa" replace />
+  if (!verificacaoOk) return <Navigate to="/mfa" replace />
   if (perfil && perfil.versao_termos === VERSAO_TERMOS) return <Navigate to={destino} replace />
 
   async function aceitar() {
@@ -113,9 +113,9 @@ export default function NovoAceite() {
             </li>
           </ul>
           <p className="item-meta">
-            Principais mudanças: verificação em duas etapas obrigatória, registro da data e da
-            versão do aceite, tela Minha conta (ver, corrigir, baixar e excluir seus dados) e
-            arquivos de materiais acessíveis só por usuários logados.
+            Principais mudanças: a verificação em duas etapas passou a ser opcional para alunos
+            (ative ou desative em Minha conta) e os e-mails de cadastro e de nova senha agora
+            são entregues pelo serviço Brevo.
           </p>
         </div>
 

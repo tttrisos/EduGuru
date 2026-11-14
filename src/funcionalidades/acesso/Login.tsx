@@ -1,7 +1,7 @@
 // ============================================================
 // funcionalidades/acesso/Login.tsx
 // TELA DE LOGIN E CADASTRO (endereço /login) — RF01, RF02, RF05.
-// Login: e-mail e senha → depois vai para a verificação em duas etapas (Mfa.tsx).
+// Login: e-mail e senha → quem ativou a verificação em duas etapas (e todo admin) vai para Mfa.tsx.
 // Cadastro: nome, curso, e-mail, senha (regras em regrasSenha.ts), aceite dos termos e CEP opcional.
 // API externa: ViaCEP (busca cidade/UF pelo CEP) — documentação em docs/INTEGRACAO_VIACEP.md.
 // Sessão: usa entrar/cadastrar de compartilhado/sessao/ContextoSessao.tsx.
@@ -170,7 +170,7 @@ export default function Login() {
           <p className="login-subtitulo">
             {modo === 'entrar'
               ? 'Entre na sua conta e continue estudando.'
-              : 'Leva menos de um minuto. Depois é só ativar a verificação em duas etapas.'}
+              : 'Leva menos de um minuto. Depois, se quiser, ative a verificação em duas etapas em Minha conta.'}
           </p>
         </div>
 
