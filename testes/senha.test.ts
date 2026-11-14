@@ -30,3 +30,18 @@ describe('regras de senha', () => {
     expect(senhaAtendeTodasRegras('eduguru2026')).toBe(false)
   })
 })
+
+describe('validarTrocaDeSenha', () => {
+  it('exige a senha atual', async () => {
+    const { validarTrocaDeSenha } = await import('../src/funcionalidades/acesso/senha')
+    expect(validarTrocaDeSenha('', 'Nova@1234', 'Nova@1234')).toMatch(/senha atual/)
+  })
+
+  it('exige as regras, a confirmação igual e uma senha diferente da atual', async () => {
+    const { validarTrocaDeSenha } = await import('../src/funcionalidades/acesso/senha')
+    expect(validarTrocaDeSenha('Velha@123', 'fraca', 'fraca')).toMatch(/requisitos/)
+    expect(validarTrocaDeSenha('Velha@123', 'Nova@1234', 'Nova@12345')).toMatch(/confirmação/)
+    expect(validarTrocaDeSenha('Velha@123', 'Velha@123', 'Velha@123')).toMatch(/diferente da senha atual/)
+    expect(validarTrocaDeSenha('Velha@123', 'Nova@1234', 'Nova@1234')).toBeNull()
+  })
+})

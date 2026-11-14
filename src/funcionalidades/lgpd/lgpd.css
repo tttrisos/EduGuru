@@ -142,3 +142,28 @@
   width: 18px;
   height: 18px;
 }
+
+/* Trocar senha (Minha conta) */
+.trocar-senha-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.trocar-senha-form .btn {
+  align-self: flex-start;
+}
+
+.trocar-senha-form .lista-regras-senha {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.trocar-senha-form .lista-regras-senha span {
+  margin-right: 6px;
+}

@@ -4,6 +4,7 @@ import { supabase } from '../../compartilhado/supabase'
 import { useAuth } from '../../compartilhado/AuthContext'
 import { CURSOS, type LogAuditoria, type Material, type Nota, type TentativaQuiz } from '../../compartilhado/tipos'
 import { removerArquivosDoUsuario } from './conta'
+import TrocarSenha from './TrocarSenha'
 import { ROTULO_ACAO } from '../../compartilhado/log'
 import './lgpd.css'
 
@@ -293,6 +294,8 @@ export default function MinhaConta() {
         {erro ? <p className="aviso erro">{erro}</p> : null}
         {mensagem ? <p className="aviso sucesso">{mensagem}</p> : null}
       </div>
+
+      <TrocarSenha />
 
       {perfil.papel === 'aluno' ? (
         <div className="cartao conta-secao">

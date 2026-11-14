@@ -17,6 +17,8 @@ export const ROTULO_ACAO: Record<string, string> = {
   quiz_finalizado: 'Quiz finalizado',
   redefinicao_senha_solicitada: 'Pediu redefinição de senha',
   senha_redefinida: 'Senha redefinida',
+  senha_alterada: 'Senha alterada (logado)',
+  senha_atual_incorreta: 'Senha atual incorreta ao trocar',
   conta_excluida: 'Conta excluída',
   criar: 'Criou',
   editar: 'Editou',
@@ -30,6 +32,7 @@ export type EventoAuth =
   | 'mfa_falhou'
   | 'mfa_bloqueado'
   | 'senha_redefinida'
+  | 'senha_alterada'
 
 export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<string, unknown>) {
   try {
