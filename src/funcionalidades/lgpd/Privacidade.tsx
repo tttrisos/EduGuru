@@ -6,7 +6,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.5.
+// Política de Privacidade, versão 1.6 (1.6: envio de e-mails pelo Brevo).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -16,9 +16,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.5 — 12/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.6 — 14/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, e Bússola EduGuru). Finalidade
+          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru e envio de e-mails pelo Brevo). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -211,10 +211,19 @@ export default function Privacidade() {
         <ul>
           <li>
             <strong>Supabase</strong> (hospedagem em nuvem) — fornece o banco de dados, a
-            autenticação (login, inclusive o envio dos e-mails de confirmação de cadastro e de
+            autenticação (login e geração dos e-mails de confirmação de cadastro e de
             redefinição de senha) e o armazenamento dos arquivos anexados em Materiais.
             É o único fornecedor que efetivamente armazena os dados pessoais do
             projeto.
+          </li>
+          <li>
+            <strong>Brevo</strong> (envio de e-mails) — entrega os e-mails de confirmação de
+            cadastro e de redefinição de senha gerados pelo Supabase. Recebe apenas o seu
+            endereço de e-mail e o conteúdo da mensagem (o link de confirmação ou de nova
+            senha), somente para fazer a entrega; não recebe senha, curso, notas nem
+            desempenho, e o EduGuru não o usa para enviar propaganda. O Brevo mantém por um
+            tempo o registro técnico de cada envio (para quem, quando e se foi entregue),
+            conforme a sua própria política de privacidade.
           </li>
           <li>
             <strong>ViaCEP</strong> — serviço público e gratuito de consulta de endereços
@@ -239,7 +248,9 @@ export default function Privacidade() {
         <h2>5. Transferência internacional e cookies</h2>
         <p>
           A infraestrutura do Supabase pode processar/armazenar dados em servidores
-          fora do Brasil, conforme a região configurada no projeto. Não usamos cookies
+          fora do Brasil, conforme a região configurada no projeto. O Brevo, que entrega
+          os e-mails, também processa o endereço de e-mail em servidores fora do Brasil
+          (na União Europeia), apenas para a entrega da mensagem. Não usamos cookies
           de rastreamento nem de publicidade. A sessão de login é mantida pelo Supabase
           Auth usando armazenamento local do navegador, estritamente necessário para
           você continuar logado — não é usado para te rastrear em outros sites. O
@@ -371,7 +382,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.5, 12/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.6, 14/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

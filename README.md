@@ -36,6 +36,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 
 - **Front-end:** React, TypeScript e Vite, com CSS próprio (tema escuro e claro), publicado no GitHub Pages pelo GitHub Actions.
 - **Back-end:** Supabase (Auth, banco PostgreSQL com Row Level Security, Storage e pg_cron).
+- **E-mails (confirmação de cadastro e redefinição de senha):** Brevo, ligado ao Supabase Auth por SMTP (o envio padrão do Supabase tem limite muito baixo). Configuração: Supabase → Authentication → Emails → SMTP Settings; não há chave no código.
 - **APIs externas:** API do GitHub (vagas do EduGuru Carreiras) e ViaCEP (cidade e estado no cadastro, opcional).
 - **Testes:** Vitest (`npm test`).
 

@@ -6,7 +6,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.5.
+// Termo de Aceite, versão 1.6 (mesmo texto da 1.5; muda junto com a Política).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -16,7 +16,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.5 — 12/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.6 — 14/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -131,7 +131,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.5, 12/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.6, 14/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

@@ -123,7 +123,7 @@ export type Perfil = {
 }
 
 // Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo.
-export const VERSAO_TERMOS = '1.5'
+export const VERSAO_TERMOS = '1.6'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).
 export type UsuarioAdmin = {
