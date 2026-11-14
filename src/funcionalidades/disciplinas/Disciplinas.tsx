@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/disciplinas/Disciplinas.tsx
+// DISCIPLINAS (endereço /disciplinas) — RF06. Aluno: consulta por curso. Admin: cadastra, edita e exclui.
+// Banco: tabela disciplinas (supabase/01 e 13; grade real de SI, ADS e ES).
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { supabase } from '../../compartilhado/banco/supabase'

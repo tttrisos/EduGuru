@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/administracao/Usuarios.tsx
+// USUÁRIOS (endereço /usuarios, só admin) — RF26 e exclusão de contas.
+// Banco: listar_usuarios_admin e redefinir_mfa_usuario (supabase/10), excluir_conta_usuario (supabase/07 e 20).
+// Conta de administrador é protegida: o botão não aparece e o banco também recusa.
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { supabase } from '../../compartilhado/banco/supabase'

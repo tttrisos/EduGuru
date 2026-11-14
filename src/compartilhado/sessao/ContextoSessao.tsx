@@ -1,3 +1,12 @@
+// ============================================================
+// compartilhado/sessao/ContextoSessao.tsx
+// SESSÃO DO USUÁRIO: guarda quem está logado e deixa isso disponível para todas as telas (useAuth()).
+// Supabase Auth: login (signInWithPassword), cadastro (signUp), sair (signOut) e nível da sessão
+// (aal1 = só senha; aal2 = senha + código de duas etapas).
+// Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
+// Usado por: quase todas as telas (ex.: ehAdmin decide o que mostrar).
+// ============================================================
+
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../banco/supabase'

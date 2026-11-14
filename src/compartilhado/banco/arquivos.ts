@@ -1,3 +1,10 @@
+// ============================================================
+// compartilhado/banco/arquivos.ts
+// ARQUIVOS DO STORAGE: gera links temporários (1 hora) para abrir PDFs/DOCX e imagens privadas.
+// Banco: buckets "materiais" e "perguntas" (supabase/03 e 11), que não são públicos.
+// Usado por: Materiais, Moderação, Todos os materiais, Guru (Minha evolução), Quiz (imagens).
+// ============================================================
+
 import { supabase } from './supabase'
 
 // Os arquivos são privados: geramos links temporários (1 hora).

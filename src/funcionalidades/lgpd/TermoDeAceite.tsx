@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/lgpd/TermoDeAceite.tsx
+// TERMO DE ACEITE (endereço /termos) — RF11. Regras de uso da plataforma.
+// ============================================================
+
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 

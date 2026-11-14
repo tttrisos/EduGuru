@@ -1,3 +1,11 @@
+// ============================================================
+// funcionalidades/carreiras/Carreiras.tsx
+// EDUGURU CARREIRAS (endereço /carreiras) — RF30 a RF32.
+// Banco (supabase/17): minhas_areas_carreira (áreas das disciplinas com 60%+), areas_carreira e
+// disciplinas_areas (8 áreas pré-cadastradas). Banco (supabase/18): minha_bussola (áreas por interesse).
+// Mostra as áreas sugeridas, materiais dessas disciplinas e a lista de vagas (ListaVagas.tsx).
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase } from 'lucide-react'

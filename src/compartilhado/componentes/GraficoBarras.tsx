@@ -1,3 +1,8 @@
+// ============================================================
+// compartilhado/componentes/GraficoBarras.tsx
+// GRÁFICO DE BARRAS em HTML/CSS (sem biblioteca): usado no painel do aluno, do admin e na Bússola.
+// ============================================================
+
 // Gráfico de barras horizontais em HTML/CSS.
 
 type Item = { rotulo: string; valor: number }

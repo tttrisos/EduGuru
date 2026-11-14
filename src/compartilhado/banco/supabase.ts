@@ -1,3 +1,10 @@
+// ============================================================
+// compartilhado/banco/supabase.ts
+// CONEXÃO COM O BACK-END: cria o cliente do Supabase usado por TODO o site.
+// Toda consulta passa por aqui: supabase.from("tabela") lê/grava tabelas e supabase.rpc("funcao")
+// chama funções do banco (pasta supabase/). A chave é pública: quem protege os dados é o RLS do banco.
+// ============================================================
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = "https://nyyrkuziswydhnukliiy.supabase.co";

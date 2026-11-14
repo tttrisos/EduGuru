@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/acesso/Mfa.tsx
+// VERIFICAÇÃO EM DUAS ETAPAS (endereço /mfa) — RF03, RF04.
+// 1º acesso: gera o QR Code (mfa.enroll) para o aplicativo autenticador. Depois: pede o código de 6 dígitos.
+// Código certo → sessão vira aal2 (o banco só libera os dados com aal2). 5 códigos errados → sai da conta.
+// ============================================================
+
 import { useEffect, useRef, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'

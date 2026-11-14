@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/perguntas/Perguntas.tsx
+// BANCO DE PERGUNTAS (endereço /perguntas, só admin) — RF07.
+// Banco: criar_pergunta (supabase/11) e editar_pergunta (supabase/16) gravam pergunta + gabarito + explicação
+// juntos e validam tudo; imagens vão para o bucket privado "perguntas".
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { supabase } from '../../compartilhado/banco/supabase'

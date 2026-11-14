@@ -1,3 +1,11 @@
+// ============================================================
+// compartilhado/sessao/RotaProtegida.tsx
+// PORTEIRO DAS TELAS LOGADAS: antes de mostrar a tela, confere na ordem:
+// 1) está logado?  2) passou pela verificação em duas etapas?  3) aceitou a versão atual dos termos?
+// 4) (somenteAdmin) é administrador?  Se faltar algo, manda para a tela certa (login, MFA, novo aceite).
+// A tela só esconde; quem garante de verdade é o RLS do banco.
+// ============================================================
+
 import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './ContextoSessao'

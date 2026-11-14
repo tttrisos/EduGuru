@@ -1,3 +1,8 @@
+// ============================================================
+// compartilhado/utilitarios/texto.ts
+// NEGRITO NOS TEXTOS: separa "**texto**" em partes normais e em negrito (testes em testes/compartilhado/texto.test.ts).
+// ============================================================
+
 // Divide o texto em partes normais e em negrito. **assim** vira negrito.
 export type ParteTexto = { texto: string; negrito: boolean }
 

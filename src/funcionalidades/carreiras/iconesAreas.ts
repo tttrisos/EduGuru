@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/carreiras/iconesAreas.ts
+// ÍCONE DE CADA ÁREA de carreira (usado no pódio da Bússola).
+// ============================================================
+
 import { Bot, Bug, Compass, Database, Layers, type LucideIcon, Palette, Server, ShieldCheck, Users } from 'lucide-react'
 import { normalizar } from './apiVagasGithub'
 

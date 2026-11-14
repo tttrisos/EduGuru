@@ -1,3 +1,12 @@
+// ============================================================
+// funcionalidades/bussola/Bussola.tsx
+// BÚSSOLA EDUGURU (endereço /bussola) — RF33. Autoavaliação de interesses (NÃO é teste vocacional).
+// Etapas: início (aviso) → 16 afirmações de 1 a 5 → resultado (pódio e afinidade por área).
+// Banco (supabase/18): lê bussola_afirmacoes; salva com salvar_bussola (que valida e CALCULA a afinidade);
+// lê o resultado com minha_bussola; apaga em bussola_resultados. Descrição das áreas: areas_carreira.
+// Regras de tela (progresso, pódio): afinidadeBussola.ts.
+// ============================================================
+
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Compass } from 'lucide-react'

@@ -1,3 +1,12 @@
+// ============================================================
+// Rotas.tsx
+// MAPA DE TELAS: cada <Route path="..."> liga um endereço (ex.: #/quiz) a uma tela.
+// Telas públicas: início, login, MFA, esqueci/redefinir senha, termos e política.
+// Telas logadas: ficam dentro de RotaProtegida (exige login + MFA + aceite) e de LayoutLogado (barra do topo).
+// Telas só de admin: RotaProtegida com somenteAdmin.
+// Usamos HashRouter (# no endereço) porque o GitHub Pages só serve arquivos estáticos.
+// ============================================================
+
 import { HashRouter, Navigate, Routes, Route } from 'react-router-dom'
 import LayoutLogado from './compartilhado/layout/LayoutLogado'
 import RotaProtegida from './compartilhado/sessao/RotaProtegida'

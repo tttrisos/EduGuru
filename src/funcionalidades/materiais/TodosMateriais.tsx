@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/materiais/TodosMateriais.tsx
+// TODOS OS MATERIAIS (admin, dentro de Materiais) — RF27. Lista por situação, busca, filtros e ações
+// individuais ou em massa (com aviso e confirmação digitada). Regras: gestaoMateriais.ts.
+// Banco: materiais, denuncias_materiais, listar_usuarios_admin e moderar_material.
+// ============================================================
+
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, Library } from 'lucide-react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'

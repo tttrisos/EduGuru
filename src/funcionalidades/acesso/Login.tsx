@@ -1,3 +1,12 @@
+// ============================================================
+// funcionalidades/acesso/Login.tsx
+// TELA DE LOGIN E CADASTRO (endereço /login) — RF01, RF02, RF05.
+// Login: e-mail e senha → depois vai para a verificação em duas etapas (Mfa.tsx).
+// Cadastro: nome, curso, e-mail, senha (regras em regrasSenha.ts), aceite dos termos e CEP opcional.
+// API externa: ViaCEP (busca cidade/UF pelo CEP) — documentação em docs/INTEGRACAO_VIACEP.md.
+// Sessão: usa entrar/cadastrar de compartilhado/sessao/ContextoSessao.tsx.
+// ============================================================
+
 import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'

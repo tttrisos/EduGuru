@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/materiais/comunidade.ts
+// BUSCA DOS MATERIAIS APROVADOS (com o autor). Banco: materiais_da_comunidade (supabase/15).
+// ============================================================
+
 import { supabase } from '../../compartilhado/banco/supabase'
 import { gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import type { MaterialComunidade } from '../../compartilhado/tipos'

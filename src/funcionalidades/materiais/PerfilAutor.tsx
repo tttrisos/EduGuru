@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/materiais/PerfilAutor.tsx
+// PERFIL PÚBLICO DE QUEM COMPARTILHA (endereço /perfil/:id) — RF29. Banco: perfil_publico (supabase/15).
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../../compartilhado/banco/supabase'

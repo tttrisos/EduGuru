@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/bussola/afinidadeBussola.ts
+// REGRAS DA BÚSSOLA na tela: escala 1–5, progresso, áreas em destaque (60%+, até 3)
+// e a junção das sugestões do quiz com as da Bússola (usada no Carreiras e em Minha evolução).
+// O cálculo oficial da afinidade é feito no banco (salvar_bussola). Testes: testes/bussola/.
+// ============================================================
+
 // Bússola EduGuru: autoavaliação de interesses (não é teste vocacional nem psicológico).
 // O cálculo oficial da afinidade fica no banco (salvar_bussola, script 18); aqui ficam as regras
 // de tela: escala, progresso, destaques do resultado e a junção com o desempenho no quiz.

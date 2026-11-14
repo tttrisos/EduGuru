@@ -8,69 +8,74 @@ Projeto Final de Curso (PFC/TCC) de Sistemas de Informação da Universidade de 
 
 ## Sobre o projeto
 
-O EduGuru combate o desengajamento dos alunos com gamificação. O aluno responde quizzes por disciplina, ganha pontos, participa do ranking e recebe do **Guru** indicações de materiais nas disciplinas em que vai mal. A plataforma também centraliza notas e faltas no formato do boletim da UMC.
+O EduGuru coloca o **aluno e a evolução da aprendizagem** no centro. Na tela **Minha evolução**, o aluno acompanha uma jornada em quatro etapas:
+
+1. **Aprender:** pratica as disciplinas do curso (quiz) e vê o que já domina (60% ou mais de acertos).
+2. **Revisar:** abaixo de 60%, o **Guru** indica materiais da disciplina.
+3. **Descobrir:** a **Bússola EduGuru** (autoavaliação de interesses) mostra as áreas da tecnologia que combinam com ele.
+4. **Direcionar:** o **EduGuru Carreiras** mostra vagas reais dessas áreas, remotas ou em SP.
+
+A plataforma também centraliza notas e faltas no formato do boletim da UMC. Pontos e ranking motivam, mas não são o centro.
 
 Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvimento de Sistemas e Engenharia de Software.
 
 ## Funcionalidades
 
-- **Quiz:** até 10 perguntas sorteadas de uma disciplina, mostradas uma por vez, com a correção logo após cada resposta (feita no banco, sem permitir trocar a resposta). Filtro de disciplinas por curso e busca pelo nome, ilustrações nas perguntas (com zoom), dica 50/50 por rodada, sons, comemoração de sequências de acertos.
-- **Pontuação e ranking:** Fácil 10, Médio 20, Difícil 30 pontos; ranking geral e por disciplina, com opção de aparecer como "Aluno anônimo".
+- **Minha evolução (painel do aluno):** jornada Aprender → Revisar → Descobrir → Direcionar, aproveitamento geral, disciplinas dominadas e para revisar, média da faculdade, gráficos e o Guru.
+- **Prática com quiz:** até 10 perguntas de uma disciplina, uma por vez, com correção na hora (feita no banco). Perguntas e **alternativas embaralhadas para cada aluno a cada rodada**, com prioridade para as que ele ainda não acertou, o que impede decorar a posição da resposta. Dica 50/50, ilustrações e sons.
+- **Pontuação e ranking:** Fácil 10, Médio 20, Difícil 30, só no 1º acerto de cada pergunta; ranking geral e por disciplina, com opção de aparecer como "Aluno anônimo".
 - **Guru:** indica materiais da disciplina quando o aproveitamento fica abaixo de 60%.
-- **Materiais da comunidade:** cada aluno cadastra os próprios links e arquivos; os aprovados aparecem para os colegas no fim do quiz e no perfil público de quem enviou (nome abreviado e curso). Filtro automático (sites permitidos, termos impróprios e dados pessoais), análise dos arquivos pelo admin e denúncias.
-- **Carreiras:** vagas de tecnologia das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho no quiz: quem acerta 60% ou mais em uma disciplina recebe as vagas das áreas ligadas a ela (ex.: Banco de Dados → Dados e Back-end), com os materiais dessas disciplinas. Filtros por área, nível e busca; cache de 30 minutos e aviso amigável quando o GitHub está fora do ar. O botão "Candidatar-se" abre a vaga no site de origem (o EduGuru não recebe currículo) e os cliques aparecem no painel do admin.
-- **Bússola EduGuru** (menu, ao lado de Disciplinas): autoavaliação de interesses opcional (16 afirmações de 1 a 5, cerca de 3 minutos), que calcula a afinidade com cada área e entra nas sugestões do Carreiras ao lado do desempenho no quiz. Não é teste vocacional: é uma orientação simples, e o aluno pode refazer ou apagar o resultado.
-- **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e controle das faltas (limite de 40 por disciplina).
-- **Painel:** indicadores e gráficos do aluno e, para o administrador, da plataforma.
-- **Cadastros:** disciplinas, banco de perguntas (120 iniciais) e materiais (links e arquivos PDF/DOCX).
-- **Segurança e LGPD:** verificação em duas etapas obrigatória, logs de auditoria com limpeza automática em 90 dias, Termo de Aceite, Política de Privacidade e tela Minha conta (acesso, correção e exclusão dos dados).
+- **Materiais da comunidade:** links e arquivos dos alunos, com filtro automático, moderação, denúncias e perfil público; o admin gerencia todos, inclusive em massa.
+- **Bússola EduGuru:** autoavaliação de interesses opcional (16 afirmações de 1 a 5). Não é teste vocacional: é uma orientação simples.
+- **EduGuru Carreiras:** vagas das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho e aos interesses, com filtros de área, nível e localidade.
+- **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e limite de 40 faltas.
+- **Minha conta:** ver, corrigir, baixar e excluir os dados, **trocar a senha estando logado** (com a senha atual; a nova precisa ser diferente) e sair do ranking.
+- **Segurança e LGPD:** verificação em duas etapas obrigatória, RLS em todas as tabelas, logs de auditoria (90 dias), Termo e Política com novo aceite a cada versão; conta de administrador protegida contra exclusão.
 
 ## Tecnologias
 
-- **Front-end:** React, TypeScript e Vite, com CSS próprio (tema escuro), publicado no GitHub Pages pelo GitHub Actions.
+- **Front-end:** React, TypeScript e Vite, com CSS próprio (tema escuro e claro), publicado no GitHub Pages pelo GitHub Actions.
 - **Back-end:** Supabase (Auth, banco PostgreSQL com Row Level Security, Storage e pg_cron).
 - **APIs externas:** API do GitHub (vagas do EduGuru Carreiras) e ViaCEP (cidade e estado no cadastro, opcional).
 - **Testes:** Vitest (`npm test`).
 
 ## Estrutura do projeto
 
-Cada pasta de `src/funcionalidades/` reúne **tudo** de uma funcionalidade: as telas, as regras de cálculo e o estilo (CSS). O que é usado por várias telas fica em `src/compartilhado/`, e os testes unitários ficam todos em `testes/`.
+Tudo em português. Cada pasta de `src/funcionalidades/` reúne **tudo** de uma funcionalidade: as telas (`.tsx`), as regras (`.ts`, testáveis) e o estilo (`.css`). O que é usado por várias telas fica em `src/compartilhado/`. Os testes ficam em `testes/`, nas mesmas pastas. **Todo arquivo começa com um cabeçalho** dizendo o que faz, em qual tela aparece e com quais funções do banco conversa. O mapa completo, com o caminho de cada ação (ex.: "o que acontece quando o aluno responde uma pergunta"), está em [`docs/MAPA_DO_CODIGO.md`](docs/MAPA_DO_CODIGO.md).
 
 ```
 eduguru/
+├── index.html                    Página base; carrega src/principal.tsx
 ├── src/
-│   ├── main.tsx                  Ponto de entrada do site
-│   ├── App.tsx                   Rotas (endereço de cada tela)
-│   ├── compartilhado/            Usado por todas as telas
-│   │   ├── supabase.ts           Conexão com o banco
-│   │   ├── tipos.ts              Tipos de dados (Disciplina, Pergunta, Nota...)
-│   │   ├── AuthContext.tsx       Sessão do usuário (login, MFA, aluno ou admin)
-│   │   ├── RotaProtegida.tsx     Bloqueia telas sem login, sem MFA ou sem permissão
-│   │   ├── LayoutLogado.tsx      Barra superior da área logada
-│   │   ├── Dialogo.tsx           Janela de confirmação (no lugar dos avisos do navegador)
-│   │   ├── Ajuda.tsx             Caixa de ajuda dos formulários (regras em tópicos)
-│   │   ├── tema.ts               Modo escuro (padrão) ou claro, salvo no navegador
-│   │   ├── Rodape.tsx, BigNumber.tsx, GraficoBarras.tsx, TextoRico.tsx
-│   │   ├── log.ts                Registro dos logs de acesso
-│   │   ├── arquivos.ts           Links temporários dos arquivos e imagens das perguntas
-│   │   ├── texto.ts              Negrito nos textos (**assim**)
-│   │   └── global.css            Visual comum (cores, botões, campos, tabelas)
+│   ├── principal.tsx             Ponto de entrada: tema, sessão e janelas de confirmação
+│   ├── Rotas.tsx                 Endereço de cada tela (#/quiz, #/carreiras...) e quem pode abrir
+│   ├── compartilhado/            Usado por várias telas
+│   │   ├── banco/                Conexão com o Supabase (supabase.ts), links de arquivos e logs
+│   │   ├── sessao/               Quem está logado (ContextoSessao.tsx) e o porteiro das telas (RotaProtegida.tsx)
+│   │   ├── layout/               Barra superior com o menu (LayoutLogado.tsx) e rodapé
+│   │   ├── componentes/          Peças de tela: Ajuda, Dialogo, GraficoBarras, NumeroDestaque, TextoRico
+│   │   ├── utilitarios/          Tema escuro/claro e negrito nos textos
+│   │   ├── estilos/              global.css (cores, botões, campos, tabelas)
+│   │   └── tipos.ts              Formato dos dados que vêm do banco
 │   └── funcionalidades/
-│       ├── home/                 Página inicial pública
-│       ├── acesso/               Login, cadastro, MFA, esqueci minha senha + regras de senha
-│       ├── lgpd/                 Termo, Política, novo aceite e Minha conta
-│       ├── disciplinas/          Cadastro de disciplinas
-│       ├── perguntas/            Banco de perguntas do quiz (admin)
-│       ├── materiais/            Meus materiais, filtro, moderação, denúncias e perfil público
-│       ├── quiz/                 Quiz, efeitos (sons e comemorações) e ranking
-│       ├── carreiras/            Carreiras (vagas do GitHub, localidade, áreas) e Bússola EduGuru
-│       ├── notas/                Notas e faltas + cálculo (calculoNotas.ts)
-│       ├── painel/               Painel do aluno e do admin
-│       └── admin/                Usuários e logs
-├── testes/                       Testes unitários (Vitest): notas, senha, negrito, filtro de materiais, efeitos do quiz, vagas, localidade e Bússola
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 18)
-├── docs/                         Integrações com as APIs externas (GitHub e ViaCEP)
-├── public/                       Ícone do site e ilustrações das perguntas (ilustracoes/)
+│       ├── inicio/               Página inicial pública
+│       ├── acesso/               Login, cadastro, verificação em duas etapas, esqueci/redefinir senha, regras de senha
+│       ├── conta/                Minha conta: dados, trocar senha, ranking, localização, exclusão
+│       ├── lgpd/                 Termo de Aceite, Política de Privacidade e novo aceite
+│       ├── painel/               Minha evolução (aluno) e painel do admin
+│       ├── quiz/                 Prática com quiz e efeitos (sons, comemorações)
+│       ├── ranking/              Ranking geral e por disciplina
+│       ├── materiais/            Materiais, filtro, comunidade, moderação e gestão pelo admin
+│       ├── notas/                Notas e faltas + cálculo (regra da UMC)
+│       ├── disciplinas/          Disciplinas por curso
+│       ├── perguntas/            Banco de perguntas (admin)
+│       ├── bussola/              Bússola EduGuru (autoavaliação de interesses)
+│       ├── carreiras/            EduGuru Carreiras: API do GitHub, localidade, vagas
+│       └── administracao/        Usuários e logs (admin)
+├── testes/                       Testes (Vitest), nas mesmas pastas das funcionalidades
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 21)
+├── docs/                         Mapa do código e integrações com as APIs externas
+├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
 ```
 
@@ -78,29 +83,28 @@ eduguru/
 
 | Funcionalidade | Pasta em `src/funcionalidades/` | Banco (`supabase/`) |
 |---|---|---|
-| Página inicial (RF23) | `home/` | — |
-| Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `acesso/Login.tsx`, `acesso/senha.ts` | `02_perfis_e_logs.sql`, `04_seguranca_lgpd.sql` |
-| Verificação em duas etapas (RF03, RF04) | `acesso/Mfa.tsx` | `05_verificacao_duas_etapas.sql` |
-| Esqueci minha senha (RF24) | `acesso/EsqueciSenha.tsx`, `acesso/RedefinirSenha.tsx` | `09_esqueci_senha.sql` |
-| Termo, Política e novo aceite (RF11 a RF13, RF22) | `lgpd/TermoDeAceite.tsx`, `lgpd/Privacidade.tsx`, `lgpd/NovoAceite.tsx` | `08_novo_aceite.sql` |
-| Minha conta e exclusão de conta (RF15, RF21) | `lgpd/MinhaConta.tsx`, `lgpd/conta.ts` | `07_minha_conta.sql` |
-| Disciplinas (RF06) | `disciplinas/` | `01_tabelas_base.sql`, `13_disciplinas_cursos.sql` |
-| Banco de perguntas, com imagem e explicação (RF07) | `perguntas/` | `11_quiz_ranking_guru.sql` (`criar_pergunta`), `14_perguntas_iniciais.sql`, `16_editar_perguntas.sql` (`editar_pergunta`) |
-| Meus materiais, links e arquivos (RF08) | `materiais/Materiais.tsx` | `03_arquivos_materiais.sql`, `04_seguranca_lgpd.sql`, `15_materiais_comunidade_quiz.sql` |
-| Filtro de materiais (sites permitidos, termos impróprios, dados pessoais) | `materiais/filtroMateriais.ts` | `15_materiais_comunidade_quiz.sql` (`motivo_bloqueio_material`, gatilho `moderar_material`) |
-| Materiais dos colegas, denúncia e perfil público (RF28, RF29) | `materiais/ListaComunidade.tsx`, `materiais/PerfilAutor.tsx` | `15_materiais_comunidade_quiz.sql` (`materiais_da_comunidade`, `denunciar_material`, `perfil_publico`) |
-| Moderação de materiais, admin (RF27) | `materiais/Moderacao.tsx` | `15_materiais_comunidade_quiz.sql` (`materiais_em_moderacao`, `moderar_material`) |
-| Quiz, pontuação e Guru (RF16, RF17, RF19) | `quiz/Quiz.tsx`, `quiz/efeitos.ts` | `11_quiz_ranking_guru.sql` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `recomendacoes_guru`), `15_materiais_comunidade_quiz.sql` (`pedir_dica`, ilustrações) |
-| Ranking (RF18) | `quiz/Ranking.tsx` | `11_quiz_ranking_guru.sql` (`ranking`) |
-| Notas e faltas (RF20) | `notas/Notas.tsx`, `notas/calculoNotas.ts` | `12_notas_e_painel.sql` |
-| Painel (RF25) | `painel/` | `12_notas_e_painel.sql` (`estatisticas_admin`) |
-| Usuários e redefinição de MFA (RF26) | `admin/Usuarios.tsx` | `07_minha_conta.sql`, `10_ajustes_seguranca.sql` |
-| Logs de auditoria e limpeza (RF09, RF10) | `admin/Logs.tsx` | `02_perfis_e_logs.sql`, `06_limpeza_automatica_logs.sql`, `10_ajustes_seguranca.sql` |
-| Carreiras: vagas ligadas ao desempenho (RF30) | `carreiras/Carreiras.tsx`, `carreiras/ListaVagas.tsx`, `carreiras/vagas.ts` | `17_carreiras.sql` (`minhas_areas_carreira`, `registrar_clique_vaga`) |
-| Áreas de carreira e ligação com as disciplinas (pré-cadastradas, RF31) | — | `17_carreiras.sql` (`areas_carreira`, `disciplinas_areas`) |
-| Cliques em "Candidatar-se" no painel do admin (RF32) | `painel/Painel.tsx` (`PainelCarreiras`) | `17_carreiras.sql` (`estatisticas_carreiras`) |
-| Bússola EduGuru: autoavaliação de interesses (RF33) | `carreiras/Bussola.tsx`, `carreiras/afinidadeBussola.ts` | `18_bussola.sql` (`salvar_bussola`, `minha_bussola`, `estatisticas_bussola`) |
-| Regras de acesso, RLS (RF14) | — | `02` (perfis e cadastros), `04` (perfis e materiais), `05` (MFA em todas as tabelas) |
+| Página inicial (RF23) | `inicio/Inicio.tsx` | — |
+| Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `acesso/Login.tsx`, `acesso/regrasSenha.ts` | `02`, `04` |
+| Verificação em duas etapas (RF03, RF04) | `acesso/Mfa.tsx` | `05` |
+| Esqueci minha senha (RF24) | `acesso/EsqueciSenha.tsx`, `acesso/RedefinirSenha.tsx` | `09` |
+| Trocar a senha estando logado | `conta/TrocarSenha.tsx` | `21` (`conferir_senha_atual`) |
+| Termo, Política e novo aceite (RF11 a RF13, RF22) | `lgpd/` | `08` |
+| Minha conta e exclusão de conta (RF15, RF21) | `conta/MinhaConta.tsx`, `conta/arquivosDoUsuario.ts` | `07` |
+| Minha evolução, painel do aluno (RF25) | `painel/MinhaEvolucao.tsx`, `painel/evolucao.ts` | `11` (`meu_desempenho`), `17`, `18` |
+| Painel do admin (RF25, RF32) | `painel/PainelAdmin.tsx` | `12` (`estatisticas_admin`), `17`, `18` |
+| Disciplinas (RF06) | `disciplinas/` | `01`, `13` |
+| Banco de perguntas (RF07) | `perguntas/` | `11` (`criar_pergunta`), `14`, `16` (`editar_pergunta`) |
+| Materiais, filtro, comunidade, denúncia e perfil (RF08, RF28, RF29) | `materiais/` | `03`, `04`, `15` |
+| Moderação e gestão de todos os materiais (RF27) | `materiais/Moderacao.tsx`, `materiais/TodosMateriais.tsx` | `15` (`moderar_material`) |
+| Quiz embaralhado e pontuação (RF16, RF17) | `quiz/Quiz.tsx` | `11`, `19` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `pedir_dica`) |
+| Guru (RF19) | `painel/MinhaEvolucao.tsx` | `11` (`recomendacoes_guru`) |
+| Ranking (RF18) | `ranking/Ranking.tsx` | `11` (`ranking`) |
+| Notas e faltas (RF20) | `notas/` | `12` |
+| Usuários, MFA e exclusão de contas (RF26) | `administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
+| Logs de auditoria e limpeza (RF09, RF10) | `administracao/Logs.tsx` | `02`, `06`, `10` |
+| Carreiras (RF30 a RF32) | `carreiras/` (`apiVagasGithub.ts` = API do GitHub) | `17` |
+| Bússola EduGuru (RF33) | `bussola/` | `18` |
+| Regras de acesso, RLS (RF14) | — | `02`, `04`, `05` (MFA em todas as tabelas) |
 
 ## Banco de dados
 
@@ -120,12 +124,15 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `10_ajustes_seguranca.sql` | Logs de acesso, limpeza manual, redefinição de MFA e lista de usuários |
 | `11_quiz_ranking_guru.sql` | Quiz, gabaritos, pontuação, ranking e Guru |
 | `12_notas_e_painel.sql` | Notas e faltas e indicadores do painel do admin |
-| `13_disciplinas_cursos.sql` | Disciplinas da grade de SI, ADS e ES (só as da grade da UMC; a comum a mais de um curso guarda todos eles) |
+| `13_disciplinas_cursos.sql` | Disciplinas da grade de SI, ADS e ES |
 | `14_perguntas_iniciais.sql` | Banco inicial de 120 perguntas, com negrito e explicações |
-| `15_materiais_comunidade_quiz.sql` | Materiais da comunidade (filtro, moderação, denúncias, perfil público), dica 50/50 e ilustrações das perguntas |
-| `16_editar_perguntas.sql` | Edição de perguntas (pergunta, gabarito e explicação juntos), completando o CRUD |
-| `17_carreiras.sql` | EduGuru Carreiras: áreas de carreira, ligação disciplina → área, áreas sugeridas pelo desempenho, cliques em "Candidatar-se" (retenção de 12 meses) e totais do painel |
-| `18_bussola.sql` | Bússola EduGuru: afirmações por área, resultado do aluno (só o mais recente), cálculo da afinidade e totais do painel |
+| `15_materiais_comunidade_quiz.sql` | Materiais da comunidade (filtro, moderação, denúncias, perfil público), dica 50/50 e ilustrações |
+| `16_editar_perguntas.sql` | Edição de perguntas (pergunta, gabarito e explicação juntos) |
+| `17_carreiras.sql` | EduGuru Carreiras: áreas, ligação disciplina → área, áreas sugeridas, cliques e totais do painel |
+| `18_bussola.sql` | Bússola EduGuru: afirmações, resultado do aluno, cálculo da afinidade e totais do painel |
+| `19_quiz_embaralhado.sql` | Quiz embaralhado para cada aluno (ordem das alternativas por rodada, prioridade para o que ainda não acertou) |
+| `20_proteger_admin.sql` | Administrador não pode excluir a conta de outro administrador |
+| `21_trocar_senha.sql` | Conferência da senha atual para trocar a senha estando logado |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 
@@ -151,5 +158,6 @@ npm run build        # gera a versão de publicação em dist/
 
 ## Documentação
 
+- `docs/MAPA_DO_CODIGO.md` — onde está cada parte e o caminho de cada ação (para estudar o código).
 - `docs/INTEGRACAO_GITHUB_VAGAS.md` — integração com a API do GitHub (vagas do EduGuru Carreiras).
 - `docs/INTEGRACAO_VIACEP.md` — integração com a API ViaCEP.

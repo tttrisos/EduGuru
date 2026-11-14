@@ -1,3 +1,9 @@
+// ============================================================
+// compartilhado/tipos.ts
+// TIPOS DE DADOS (TypeScript): o formato de cada coisa que vem do banco (Disciplina, Pergunta, Material...).
+// Ajudam o editor a apontar erros antes de rodar. Também guarda constantes como VERSAO_TERMOS e CURSOS.
+// ============================================================
+
 // "cursos" lista todos os cursos que têm a disciplina na grade (ex.: Banco de Dados é de
 // SI, ADS e ES); "curso" é o primeiro deles.
 export type Disciplina = {

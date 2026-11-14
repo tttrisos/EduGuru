@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/carreiras/localidade.ts
+// LOCALIDADE DAS VAGAS: lê "[Remoto]", "[Híbrido em SP]", "[Joinville/SC]" no título e as etiquetas.
+// Filtro padrão: só remotas e no estado de SP (alunos da UMC). Alto Tietê ganha o selo "Perto da UMC".
+// ============================================================
+
 // Localidade das vagas do EduGuru Carreiras.
 // O público é de alunos da UMC (Mogi das Cruzes, SP), então o filtro padrão mostra só
 // vagas remotas ou no estado de São Paulo, e destaca as do Alto Tietê, perto da UMC.

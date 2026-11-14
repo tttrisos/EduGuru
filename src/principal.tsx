@@ -1,3 +1,11 @@
+// ============================================================
+// principal.tsx
+// PONTO DE ENTRADA do site: é o primeiro arquivo que roda (o index.html aponta para ele).
+// O que faz: carrega o CSS global, aplica o tema salvo e "liga" o React na <div id="root">.
+// Envolve tudo com: AuthProvider (quem está logado, em sessao/ContextoSessao.tsx) e DialogoProvider (janelas de confirmação).
+// Próximo passo: Rotas.tsx decide qual tela mostrar.
+// ============================================================
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 // O CSS compartilhado carrega primeiro; o de cada funcionalidade vem com a própria tela.

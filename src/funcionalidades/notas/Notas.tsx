@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/notas/Notas.tsx
+// NOTAS E FALTAS (endereço /notas) — RF20. O aluno registra M1, ND, NI, MS, exame e faltas.
+// Cálculos (regra da UMC): calculoNotas.ts. Banco: tabela notas (supabase/12) — só o próprio aluno vê.
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import Ajuda from '../../compartilhado/componentes/Ajuda'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'

@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/administracao/Logs.tsx
+// LOGS DE AUDITORIA (endereço /logs, só admin) — RF09, RF10.
+// Banco: lê logs_auditoria (supabase/02) e chama limpar_logs_antigos (supabase/10).
+// A limpeza automática de 90 dias roda sozinha no banco (pg_cron, supabase/06).
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import type { LogAuditoria } from '../../compartilhado/tipos'

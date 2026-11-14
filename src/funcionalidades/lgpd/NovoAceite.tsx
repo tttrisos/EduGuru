@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/lgpd/NovoAceite.tsx
+// NOVO ACEITE (endereço /aceite) — RF22. Aparece quando o Termo/Política mudam de versão (VERSAO_TERMOS).
+// Banco: registrar_aceite (supabase/08). Quem não aceitar pode excluir a conta (excluir_minha_conta).
+// ============================================================
+
 import { useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'

@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/materiais/gestaoMateriais.ts
+// REGRAS DE "TODOS OS MATERIAIS": filtros, ordem e resumo das ações em massa. Testes: testes/materiais/.
+// ============================================================
+
 // Gestão de todos os materiais pelo admin: filtros da lista "Todos os materiais".
 import type { Material, StatusMaterial } from '../../compartilhado/tipos'
 import { semAcento } from './filtroMateriais'

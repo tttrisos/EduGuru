@@ -1,3 +1,11 @@
+// ============================================================
+// compartilhado/banco/log.ts
+// LOG DE AUDITORIA do lado do site: registra eventos de acesso (login, logout, MFA, senha).
+// Banco: registrar_evento_auth (supabase/10 e 21), registrar_login_falhou (10), registrar_pedido_redefinicao (09).
+// Criar/editar/excluir cadastros é registrado sozinho por gatilhos do banco (supabase/02).
+// ROTULO_ACAO traduz o código da ação para o texto mostrado em Logs e Minha conta.
+// ============================================================
+
 import { supabase } from './supabase'
 
 // Logs de acesso (login, logout, MFA, senha). Criar/editar/excluir registros

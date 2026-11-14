@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/acesso/EsqueciSenha.tsx
+// ESQUECI MINHA SENHA (endereço /esqueci-senha) — RF24.
+// Envia o e-mail de redefinição pelo Supabase Auth (resetPasswordForEmail) e registra o pedido no log.
+// ============================================================
+
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'

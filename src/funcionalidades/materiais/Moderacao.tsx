@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/materiais/Moderacao.tsx
+// MODERAÇÃO (admin, dentro de Materiais) — RF27. Arquivos em análise e materiais denunciados.
+// Banco (supabase/15): materiais_em_moderacao lista; moderar_material aprova ou recusa com motivo.
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { ShieldAlert } from 'lucide-react'

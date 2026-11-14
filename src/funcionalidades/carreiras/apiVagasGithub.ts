@@ -1,3 +1,11 @@
+// ============================================================
+// funcionalidades/carreiras/apiVagasGithub.ts
+// INTEGRAÇÃO COM A API DO GITHUB (vagas do Carreiras) — documentação em docs/INTEGRACAO_GITHUB_VAGAS.md.
+// FONTES = repositórios backend-br/vagas e frontendbr/vagas. Cada vaga é uma "issue" desses repositórios.
+// buscarVagas(): chama a API (limite de 10 s), converte as issues em vagas, guarda cache de 30 min no
+// navegador e, se o GitHub falhar, mostra a última lista salva. Testes: testes/carreiras/.
+// ============================================================
+
 // EduGuru Carreiras: leitura das vagas da API do GitHub, filtro por área e cache.
 // As vagas são issues públicas dos repositórios abaixo (comunidades brasileiras de tecnologia).
 // Documentação da integração: docs/INTEGRACAO_GITHUB_VAGAS.md.

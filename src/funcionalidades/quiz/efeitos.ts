@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/quiz/efeitos.ts
+// EFEITOS DO QUIZ: sons, sequência de acertos e frases de comemoração. Testes: testes/quiz/.
+// ============================================================
+
 // Efeitos do quiz: sons curtos gerados pelo navegador (sem arquivos de áudio) e comemorações.
 type Som = 'acerto' | 'erro' | 'dica' | 'fim'
 

@@ -1,3 +1,8 @@
+// ============================================================
+// compartilhado/componentes/NumeroDestaque.tsx
+// NÚMERO EM DESTAQUE ("big number") dos painéis: valor grande, legenda e detalhe.
+// ============================================================
+
 import type { ReactNode } from 'react'
 
 // Indicador grande do painel.

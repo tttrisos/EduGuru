@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/ranking/Ranking.tsx
+// RANKING (endereço /ranking) — RF18. Geral ou por disciplina: top 10 + a posição do aluno.
+// Banco: ranking (supabase/11). Nome abreviado ou "Aluno anônimo" (opção em Minha conta).
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Trophy } from 'lucide-react'

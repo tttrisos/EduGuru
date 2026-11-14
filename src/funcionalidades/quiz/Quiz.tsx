@@ -1,3 +1,11 @@
+// ============================================================
+// funcionalidades/quiz/Quiz.tsx
+// QUIZ (endereço /quiz) — RF16, RF17. A prática que alimenta a evolução, o Guru e o Carreiras.
+// Fluxo no banco (supabase/11 e 19): iniciar_quiz sorteia até 10 perguntas e EMBARALHA as alternativas
+// → responder_pergunta corrige uma por vez (o gabarito nunca vem antes) → finalizar_quiz soma os pontos.
+// Dica 50/50: pedir_dica (supabase/15 e 19). A tela só conhece as letras que mostra (A–D da tela).
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Link } from 'react-router-dom'
@@ -132,6 +140,8 @@ export default function Quiz() {
     setMudo(!mudo)
   }
 
+  // PASSO 1 — começar: o banco sorteia até 10 perguntas da disciplina (primeiro as que o aluno ainda
+  // não acertou), embaralha as alternativas e devolve SEM o gabarito. (iniciar_quiz, supabase/19)
   async function comecar(id: number) {
     setErro('')
     setDisciplinaId(id)
@@ -162,6 +172,7 @@ export default function Quiz() {
   }
 
   // Dica 50/50: o banco tira duas alternativas erradas (uma dica por rodada).
+  // Dica 50/50 (uma por rodada): o banco devolve duas letras erradas para riscar. (pedir_dica, supabase/19)
   async function pedirDica() {
     if (dicaUsada || feedback || carregando) return
     const questao = questoes[atual]
@@ -184,6 +195,9 @@ export default function Quiz() {
     tocarSom('dica')
   }
 
+  // PASSO 2 — verificar: manda a letra escolhida; o banco grava (não dá para trocar), corrige,
+  // calcula os pontos (só no 1º acerto da pergunta) e só então devolve o gabarito e a explicação.
+  // (responder_pergunta, supabase/19)
   async function verificar() {
     if (!escolhida || feedback || carregando) return
     const questao = questoes[atual]
@@ -212,6 +226,8 @@ export default function Quiz() {
     setFeedback({ ...resultado, mensagem: sortear(resultado.acertou ? ELOGIOS : INCENTIVOS) })
   }
 
+  // PASSO 3 — continuar: vai para a próxima pergunta; na última, fecha a rodada no banco, que soma
+  // acertos e pontos e registra no log. (finalizar_quiz, supabase/19)
   async function continuar() {
     if (carregando) return
     if (atual < questoes.length - 1) {

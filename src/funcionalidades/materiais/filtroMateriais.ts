@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/materiais/filtroMateriais.ts
+// FILTRO DE MATERIAIS: sites permitidos, termos impróprios e dados pessoais (LGPD).
+// A mesma regra existe no banco (motivo_bloqueio_material, supabase/15). Testes: testes/materiais/.
+// ============================================================
+
 // Filtro dos materiais (mesma regra da função motivo_bloqueio_material, script 15).
 // Devolve o motivo do bloqueio, ou null se o material pode ser enviado.
 

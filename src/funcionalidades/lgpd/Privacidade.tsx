@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/lgpd/Privacidade.tsx
+// POLÍTICA DE PRIVACIDADE (endereço /privacidade) — RF12. Texto da versão atual (VERSAO_TERMOS).
+// ============================================================
+
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 

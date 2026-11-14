@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/conta/TrocarSenha.tsx
+// TROCAR SENHA JÁ LOGADO (cartão em Minha conta). Passo a passo nos comentários abaixo.
+// ============================================================
+
 import { useState } from 'react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { registrarLogEvento } from '../../compartilhado/banco/log'

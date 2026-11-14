@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/painel/evolucao.ts
+// REGRAS DE "MINHA EVOLUÇÃO" (detalhes no comentário abaixo). Testes: testes/painel/.
+// ============================================================
+
 // Regras da tela "Minha evolução" (painel do aluno). Ficam aqui, separadas da tela,
 // para poderem ser testadas (testes/evolucao.test.ts).
 //

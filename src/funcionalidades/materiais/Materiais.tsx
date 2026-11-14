@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/materiais/Materiais.tsx
+// MATERIAIS (endereço /materiais) — RF08. O aluno envia links ou PDF/DOCX ligados a uma disciplina.
+// Filtro antes de enviar: filtroMateriais.ts (o banco repete a mesma regra). Arquivos vão para o Storage.
+// Banco: tabela materiais (supabase/01, 03, 15). Para o admin, mostra também Moderacao e TodosMateriais.
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Link } from 'react-router-dom'

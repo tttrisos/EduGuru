@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/acesso/regrasSenha.ts
+// REGRAS DE SENHA: 8+ caracteres, maiúscula, minúscula, número e especial.
+// Usadas no cadastro, na redefinição e na troca de senha. Testes: testes/acesso/regrasSenha.test.ts.
+// ============================================================
+
 // Regras de senha, usadas na lista da tela e na validação do formulário.
 export type RegraSenha = {
   chave: string

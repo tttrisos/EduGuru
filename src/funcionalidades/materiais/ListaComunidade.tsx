@@ -1,3 +1,9 @@
+// ============================================================
+// funcionalidades/materiais/ListaComunidade.tsx
+// MATERIAIS DOS COLEGAS (fim do quiz e perfil do autor) — RF28, RF29.
+// Lista os aprovados (comunidade.ts) e permite denunciar (denunciar_material, supabase/15).
+// ============================================================
+
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ExternalLink, Flag, Paperclip } from 'lucide-react'

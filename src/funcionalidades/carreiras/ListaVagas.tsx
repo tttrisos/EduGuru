@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/carreiras/ListaVagas.tsx
+// LISTA DE VAGAS do Carreiras: chips de área, filtros de nível, busca e localidade, e o botão "Candidatar-se".
+// Vagas: buscarVagas() de apiVagasGithub.ts (API do GitHub). Localidade: localidade.ts.
+// Banco: registrar_clique_vaga (supabase/17) conta um clique por aluno e vaga para o painel do admin.
+// ============================================================
+
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, MapPin, RefreshCw, Sparkles } from 'lucide-react'
 import { supabase } from '../../compartilhado/banco/supabase'

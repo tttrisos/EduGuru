@@ -1,3 +1,8 @@
+// ============================================================
+// compartilhado/componentes/Ajuda.tsx
+// CAIXA DE AJUDA: ícone + regras em tópicos curtos, usada nos formulários e telas.
+// ============================================================
+
 import type { ReactNode } from 'react'
 import { Info } from 'lucide-react'
 

@@ -1,3 +1,8 @@
+// ============================================================
+// funcionalidades/notas/calculoNotas.ts
+// CÁLCULO DAS NOTAS (regra do boletim da UMC). Fórmulas no comentário abaixo. Testes: testes/notas/.
+// ============================================================
+
 // Regras de notas e faltas (RF20), iguais às do boletim da UMC:
 //   M1 = resultado das avaliações do 1º bimestre
 //   ND = resultado das avaliações do 2º bimestre

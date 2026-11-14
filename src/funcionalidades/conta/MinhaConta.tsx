@@ -1,3 +1,11 @@
+// ============================================================
+// funcionalidades/conta/MinhaConta.tsx
+// MINHA CONTA (endereço /minha-conta) — direitos do titular pela LGPD (RF15, RF21).
+// Ver os dados, corrigir, trocar a senha (TrocarSenha.tsx), sair do ranking, revogar a localização,
+// baixar tudo em JSON e excluir a conta (excluir_minha_conta, supabase/07).
+// Banco: lê perfis, materiais, notas, tentativas_quiz, cliques_vagas, bussola_resultados e logs_auditoria.
+// ============================================================
+
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../compartilhado/banco/supabase'

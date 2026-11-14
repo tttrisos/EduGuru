@@ -1,3 +1,10 @@
+// ============================================================
+// funcionalidades/acesso/RedefinirSenha.tsx
+// NOVA SENHA PELO LINK DO E-MAIL (endereço /redefinir-senha) — RF24.
+// Se a conta tem duas etapas, pede o código antes. Grava a senha (updateUser) e desconecta todos os aparelhos.
+// Para trocar a senha JÁ LOGADO, veja conta/TrocarSenha.tsx.
+// ============================================================
+
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
