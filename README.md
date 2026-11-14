@@ -36,6 +36,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 
 - **Front-end:** React, TypeScript e Vite, com CSS próprio (tema escuro e claro), publicado no GitHub Pages pelo GitHub Actions.
 - **Back-end:** Supabase (Auth, banco PostgreSQL com Row Level Security, Storage e pg_cron).
+- **Captcha:** Cloudflare Turnstile (grátis) no login, no cadastro e no "esqueci a senha". A chave pública fica em `compartilhado/componentes/Captcha.tsx`; a secreta, só no Supabase (Authentication → Attack Protection).
 - **E-mails (confirmação de cadastro e redefinição de senha):** Brevo, ligado ao Supabase Auth por SMTP (o envio padrão do Supabase tem limite muito baixo). Configuração: Supabase → Authentication → Emails → SMTP Settings; não há chave no código.
 - **APIs externas:** API do GitHub (vagas do EduGuru Carreiras) e ViaCEP (cidade e estado no cadastro, opcional).
 - **Testes:** Vitest (`npm test`).
@@ -74,7 +75,7 @@ eduguru/
 │       ├── carreiras/            EduGuru Carreiras: API do GitHub, localidade, vagas
 │       └── administracao/        Usuários e logs (admin)
 ├── testes/                       Testes (Vitest), nas mesmas pastas das funcionalidades
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 23)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 24)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -103,7 +104,9 @@ eduguru/
 | Ranking (RF18) | `ranking/Ranking.tsx` | `11` (`ranking`) |
 | Notas e faltas (RF20) | `notas/` | `12` |
 | Usuários, MFA e exclusão de contas (RF26) | `administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
-| Logs de auditoria e limpeza (RF09, RF10) | `administracao/Logs.tsx` | `02`, `06`, `10` |
+| Logs de auditoria, com filtros, e limpeza (RF09, RF10) | `administracao/Logs.tsx`, regras em `compartilhado/utilitarios/filtroLogs.ts` | `02`, `06`, `10`, `24` |
+| Últimos acessos, sair dos outros aparelhos e registros com filtros (RF21) | `conta/AcessosEAparelhos.tsx`, `conta/RegistrosAtividade.tsx` | `24` (`meus_acessos`) |
+| Captcha "não sou um robô" no login, cadastro e esqueci a senha | `compartilhado/componentes/Captcha.tsx` (Cloudflare Turnstile) | — (conferido pelo Supabase Auth) |
 | Carreiras (RF30 a RF32) | `carreiras/` (`apiVagasGithub.ts` = API do GitHub) | `17` |
 | Bússola EduGuru (RF33) | `bussola/` | `18` |
 | Regras de acesso, RLS (RF14) | — | `02`, `04`, `05`, `23` (MFA exigido de quem ativou e do admin) |
@@ -137,6 +140,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `21_trocar_senha.sql` | Conferência da senha atual para trocar a senha estando logado |
 | `22_filtro_gerenciavel.sql` | Filtro de materiais em tabelas editáveis pelo admin; site novo vai para a análise |
 | `23_mfa_opcional.sql` | Verificação em duas etapas opcional para alunos e obrigatória para administradores |
+| `24_acessos_e_filtros_logs.sql` | Últimos acessos em Minha conta, "sair dos outros aparelhos" no log e índices para os filtros dos logs |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

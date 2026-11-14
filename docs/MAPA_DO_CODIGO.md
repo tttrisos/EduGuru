@@ -39,7 +39,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 ## 3. O caminho de cada ação
 
 ### O aluno entra no sistema
-1. `acesso/Login.tsx`: e-mail e senha → `entrar()` em `sessao/ContextoSessao.tsx` → Supabase Auth.
+1. `acesso/Login.tsx`: e-mail, senha e o captcha "não sou um robô" (`componentes/Captcha.tsx`, Cloudflare Turnstile) → `entrar()` em `sessao/ContextoSessao.tsx` → Supabase Auth, que confere o captcha. O log de login guarda o tipo de aparelho (`utilitarios/aparelho.ts`).
 2. A regra das duas etapas está em `sessao/nivelSessao.ts` (com testes) e no banco (`sessao_mfa_ok` e `eh_admin`, script 23):
    - aluno **sem** MFA: entra só com a senha (aal1);
    - quem **ativou** o MFA: vai para `acesso/Mfa.tsx`, digita o código e a sessão vira **aal2**; sem o código, o banco não devolve nada;
@@ -102,6 +102,11 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 1. `conta/TrocarSenha.tsx` → `validarTrocaDeSenha()` em `acesso/regrasSenha.ts` (regras, confirmação, nova ≠ atual).
 2. **`conferir_senha_atual`** (script 21): compara a senha atual com o hash guardado; 5 erros em 15 min bloqueiam.
 3. `supabase.auth.updateUser()` grava a nova; log `senha_alterada`; os outros aparelhos são desconectados.
+
+### O usuário confere os acessos e os registros (Minha conta)
+1. `conta/AcessosEAparelhos.tsx` → **`meus_acessos`** (24): últimos logins com o aparelho e senhas erradas nos últimos 30 dias. "Sair dos outros aparelhos" → `signOut({ scope: 'others' })` e log `sessoes_encerradas`.
+2. `conta/RegistrosAtividade.tsx`: filtros por tipo, período e busca (`utilitarios/filtroLogs.ts`), no navegador.
+3. Admin: `administracao/Logs.tsx` usa os mesmos filtros, mais e-mail e tabela, direto na consulta ao banco.
 
 ### Exclusão de conta
 - Pelo próprio aluno: `conta/MinhaConta.tsx` → apaga os arquivos (`conta/arquivosDoUsuario.ts`) → **`excluir_minha_conta`** (07).

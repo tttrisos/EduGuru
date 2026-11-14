@@ -123,3 +123,8 @@
   flex-shrink: 0;
   margin-top: 2px;
 }
+
+/* Acessos e aparelhos: aviso de senha errada */
+.aviso.alerta-conta {
+  color: var(--amarelo-texto);
+}

@@ -2,7 +2,8 @@
 // funcionalidades/conta/MinhaConta.tsx
 // MINHA CONTA (endereço /minha-conta) — direitos do titular pela LGPD (RF15, RF21).
 // Ver os dados, corrigir, trocar a senha (TrocarSenha.tsx), ativar ou desativar a verificação em duas
-// etapas (VerificacaoDuasEtapas.tsx), sair do ranking, revogar a localização,
+// etapas (VerificacaoDuasEtapas.tsx), ver os últimos acessos e sair dos outros aparelhos
+// (AcessosEAparelhos.tsx), filtrar os registros de atividade (RegistrosAtividade.tsx), sair do ranking, revogar a localização,
 // baixar tudo em JSON e excluir a conta (excluir_minha_conta, supabase/07).
 // Banco: lê perfis, materiais, notas, tentativas_quiz, cliques_vagas, bussola_resultados e logs_auditoria.
 // ============================================================
@@ -15,7 +16,8 @@ import { CURSOS, type LogAuditoria, type Material, type Nota, type TentativaQuiz
 import { removerArquivosDoUsuario } from './arquivosDoUsuario'
 import TrocarSenha from './TrocarSenha'
 import VerificacaoDuasEtapas from './VerificacaoDuasEtapas'
-import { ROTULO_ACAO } from '../../compartilhado/banco/log'
+import AcessosEAparelhos from './AcessosEAparelhos'
+import RegistrosAtividade from './RegistrosAtividade'
 import './conta.css'
 
 // Direitos do titular (LGPD, art. 18): acesso, correção, revogação e exclusão.
@@ -39,7 +41,7 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
       .select('*')
       .eq('usuario_id', usuarioId)
       .order('criado_em', { ascending: false })
-      .limit(100),
+      .limit(1000), // 90 dias de registros: na prática, todos (também vão no arquivo baixado)
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId),
     supabase.from('notas').select('*'),
     supabase.from('tentativas_quiz').select('*').order('iniciada_em', { ascending: false }),
@@ -309,6 +311,8 @@ export default function MinhaConta() {
 
       <VerificacaoDuasEtapas />
 
+      <AcessosEAparelhos />
+
       {perfil.papel === 'aluno' ? (
         <div className="cartao conta-secao">
           <h3>Ranking</h3>
@@ -343,30 +347,7 @@ export default function MinhaConta() {
         </button>
       </div>
 
-      <div className="cartao conta-secao">
-        <h3>Meus registros de atividade</h3>
-        <p className="item-meta">
-          Logins, alterações e demais eventos ligados à sua conta (últimos 100). São guardados
-          por 90 dias e apagados automaticamente.
-        </p>
-        {!extras ? <p className="status">Carregando...</p> : null}
-        {extras && extras.logs.length === 0 ? <p className="vazio">Nenhum registro.</p> : null}
-        {extras && extras.logs.length > 0 ? (
-          <ul className="lista">
-            {extras.logs.map((log) => (
-              <li key={log.id} className="item-lista">
-                <div>
-                  <strong>
-                    {ROTULO_ACAO[log.acao] ?? log.acao}
-                    {log.tabela ? ` · ${log.tabela}` : ''}
-                  </strong>
-                  <span className="item-meta">{formatarData(log.criado_em)}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </div>
+      <RegistrosAtividade logs={extras ? extras.logs : null} />
 
       <div className="cartao conta-secao conta-perigo">
         <h3>Excluir minha conta</h3>

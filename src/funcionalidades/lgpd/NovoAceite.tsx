@@ -114,8 +114,9 @@ export default function NovoAceite() {
           </ul>
           <p className="item-meta">
             Principais mudanças: a verificação em duas etapas passou a ser opcional para alunos
-            (ative ou desative em Minha conta) e os e-mails de cadastro e de nova senha agora
-            são entregues pelo serviço Brevo.
+            (ative ou desative em Minha conta), os e-mails de cadastro e de nova senha agora
+            são entregues pelo serviço Brevo, o login tem a verificação "não sou um robô" (Cloudflare) e
+            Minha conta mostra os seus últimos acessos, com o tipo de aparelho.
           </p>
         </div>
 

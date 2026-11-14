@@ -6,7 +6,7 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.6 (1.6: envio de e-mails pelo Brevo e verificação em duas etapas opcional).
+// Política de Privacidade, versão 1.6 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -18,7 +18,7 @@ export default function Privacidade() {
         <p className="aviso">
           Versão 1.6 — 14/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo e verificação em duas etapas opcional). Finalidade
+          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô" e últimos acessos em Minha conta). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -98,7 +98,9 @@ export default function Privacidade() {
             acompanhar sua situação.
           </li>
           <li>
-            <strong>Registros de auditoria:</strong> login concluído, tentativas de login
+            <strong>Registros de auditoria:</strong> login concluído (com o tipo de navegador e
+            de sistema, por exemplo &quot;Chrome no Windows&quot;, sem endereço IP nem versão, para
+            você conferir os seus acessos em Minha conta), saída dos outros aparelhos, tentativas de login
             malsucedidas, códigos de verificação em duas etapas inválidos, ativação e
             desativação da verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
             redefinição da verificação em duas etapas por um administrador, quizzes
@@ -227,6 +229,15 @@ export default function Privacidade() {
             conforme a sua própria política de privacidade.
           </li>
           <li>
+            <strong>Cloudflare Turnstile</strong> (verificação &quot;não sou um robô&quot;) — nas
+            telas de login, cadastro e &quot;esqueci minha senha&quot;, confirma que quem está
+            usando é uma pessoa, para impedir que programas testem senhas ou criem contas falsas
+            em massa. Para isso, a Cloudflare recebe o endereço IP e informações técnicas do
+            navegador, no momento da verificação; não recebe nome, e-mail, senha nem dados do
+            EduGuru, e não é usada para publicidade. Base legal: legítimo interesse na segurança
+            da plataforma (art. 7º, IX, e art. 46).
+          </li>
+          <li>
             <strong>ViaCEP</strong> — serviço público e gratuito de consulta de endereços
             a partir do CEP. Quando o usuário digita um CEP (opcional) no cadastro,
             apenas o CEP é enviado ao ViaCEP; a resposta (cidade/UF) é usada para
@@ -251,7 +262,8 @@ export default function Privacidade() {
           A infraestrutura do Supabase pode processar/armazenar dados em servidores
           fora do Brasil, conforme a região configurada no projeto. O Brevo, que entrega
           os e-mails, também processa o endereço de e-mail em servidores fora do Brasil
-          (na União Europeia), apenas para a entrega da mensagem. Não usamos cookies
+          (na União Europeia), apenas para a entrega da mensagem. A verificação &quot;não sou um
+          robô&quot; é processada pela Cloudflare em servidores fora do Brasil. Não usamos cookies
           de rastreamento nem de publicidade. A sessão de login é mantida pelo Supabase
           Auth usando armazenamento local do navegador, estritamente necessário para
           você continuar logado — não é usado para te rastrear em outros sites. O

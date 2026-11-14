@@ -1201,3 +1201,8 @@ a.btn {
 .link-perigo {
   color: var(--perigo);
 }
+
+/* Filtros dos registros de atividade (Minha conta e Logs do admin) */
+.filtros-logs {
+  margin: 12px 0;
+}
