@@ -9,7 +9,8 @@
 // Administrador: obrigatório, não aparece o botão de desativar.
 // ============================================================
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import '../acesso/acesso.css'
 import { ShieldCheck, ShieldOff } from 'lucide-react'
 import { supabase } from '../../compartilhado/banco/supabase'
@@ -28,6 +29,15 @@ export default function VerificacaoDuasEtapas() {
   const { perfil, temMfa, atualizarMfa } = useAuth()
   const { confirmar } = useDialogo()
   const ehAdmin = perfil?.papel === 'admin'
+  const location = useLocation()
+  const cartao = useRef<HTMLDivElement>(null)
+
+  // Veio do aviso 'Ativar agora' (Minha evolução): rola até este cartão.
+  useEffect(() => {
+    if ((location.state as { focar?: string } | null)?.focar === 'duas-etapas') {
+      cartao.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [location.state])
 
   const [cadastro, setCadastro] = useState<CadastroTotp | null>(null)
   const [codigo, setCodigo] = useState('')
@@ -126,7 +136,7 @@ export default function VerificacaoDuasEtapas() {
   }
 
   return (
-    <div className="cartao conta-secao">
+    <div className="cartao conta-secao" id="duas-etapas" ref={cartao}>
       <h3>
         {temMfa ? <ShieldCheck size={20} color="var(--certo)" aria-hidden="true" /> : <ShieldOff size={20} aria-hidden="true" />}{' '}
         Verificação em duas etapas

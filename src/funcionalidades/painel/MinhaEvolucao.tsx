@@ -8,6 +8,7 @@ import { gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import { calcularSituacao } from '../notas/calculoNotas'
 import { combinarSugestoes, destaques, type AfinidadeBussola } from '../bussola/afinidadeBussola'
 import { fraseAprender, resumirEvolucao } from './evolucao'
+import AvisoAtivarMfa from '../conta/AvisoAtivarMfa'
 import type {
   AreaSugerida,
   DesempenhoDisciplina,
@@ -105,6 +106,9 @@ export default function MinhaEvolucao() {
 
   return (
     <>
+      {/* 0) Segurança: convite para ativar a verificação em duas etapas (só para quem não tem) */}
+      <AvisoAtivarMfa />
+
       {/* 1) A jornada: as 4 etapas da aprendizagem */}
       <ol className="jornada">
         <li className="jornada-etapa">

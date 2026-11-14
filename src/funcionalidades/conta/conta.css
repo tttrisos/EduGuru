@@ -105,3 +105,21 @@
   margin: 0;
   padding-left: 20px;
 }
+
+/* Aviso "Proteja a sua conta" no topo de Minha evolução */
+.aviso-mfa {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--amarelo-texto);
+}
+
+.aviso-mfa p {
+  margin: 4px 0 12px;
+}
+
+.aviso-mfa svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
