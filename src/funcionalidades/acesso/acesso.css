@@ -151,3 +151,12 @@
 .login-esqueci:hover {
   color: var(--text);
 }
+
+/* Captcha "não sou um robô" (Turnstile): centralizado e sem estourar a largura no celular */
+.captcha {
+  display: flex;
+  justify-content: center;
+  min-height: 65px;
+  max-width: 100%;
+  overflow: hidden;
+}

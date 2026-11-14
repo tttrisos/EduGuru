@@ -14,6 +14,7 @@ import { supabase } from '../banco/supabase'
 import { VERSAO_TERMOS, type Perfil } from '../tipos'
 import { registrarLogEvento, registrarLoginFalhou } from '../banco/log'
 import { situacaoDaSessao } from './nivelSessao'
+import { descreverAparelho } from '../utilitarios/aparelho'
 
 type AuthContextValor = {
   usuario: User | null
@@ -27,7 +28,7 @@ type AuthContextValor = {
   temMfa: boolean
   atualizarMfa: () => Promise<void>
   recarregarPerfil: () => Promise<void>
-  entrar: (email: string, senha: string) => Promise<{ erro: string | null }>
+  entrar: (email: string, senha: string, captcha?: string | null) => Promise<{ erro: string | null }>
   cadastrar: (
     nome: string,
     email: string,
@@ -35,6 +36,7 @@ type AuthContextValor = {
     curso: string,
     cidade: string | null,
     estado: string | null,
+    captcha?: string | null,
   ) => Promise<{ erro: string | null }>
   sair: () => Promise<void>
 }
@@ -103,8 +105,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Confere a senha. Quem não tem MFA já entra aqui; quem tem (e o admin) termina na tela /mfa.
-  async function entrar(email: string, senha: string) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha })
+  // captcha = token do "não sou um robô" (Captcha.tsx); o Supabase confere quando a proteção está ligada.
+  async function entrar(email: string, senha: string, captcha?: string | null) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password: senha,
+      options: captcha ? { captchaToken: captcha } : undefined,
+    })
+    if (error?.code === 'captcha_failed') {
+      return { erro: 'Confirme a verificação "não sou um robô" e tente de novo.' }
+    }
     if (error || !data.user) {
       await registrarLoginFalhou(email)
       return { erro: 'E-mail ou senha inválidos.' }
@@ -112,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Lê a situação ANTES de voltar, para a próxima tela já saber se precisa do código.
     setUsuario(data.user)
     const dados = await carregarDadosSessao(data.session)
-    if (dados.verificacaoOk) await registrarLogEvento('login', { mfa: 'nao' })
+    if (dados.verificacaoOk) await registrarLogEvento('login', { mfa: 'nao', aparelho: descreverAparelho(navigator.userAgent) })
     return { erro: null }
   }
 
@@ -123,12 +133,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     curso: string,
     cidade: string | null,
     estado: string | null,
+    captcha?: string | null,
   ) {
     // O banco grava o perfil e o aceite dos termos a partir destes dados.
     const { error } = await supabase.auth.signUp({
       email,
       password: senha,
       options: {
+        captchaToken: captcha ?? undefined,
         data: {
           nome,
           curso,
@@ -139,6 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       },
     })
+    if (error?.code === 'captcha_failed') return { erro: 'Confirme a verificação "não sou um robô" e tente de novo.' }
     if (error) return { erro: error.message }
     return { erro: null }
   }

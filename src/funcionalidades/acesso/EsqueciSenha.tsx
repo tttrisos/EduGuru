@@ -10,6 +10,7 @@ import { GraduationCap } from 'lucide-react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { registrarPedidoRedefinicao } from '../../compartilhado/banco/log'
 import Rodape from '../../compartilhado/layout/Rodape'
+import Captcha, { captchaLigado } from '../../compartilhado/componentes/Captcha'
 
 // Esqueci minha senha: o Supabase envia o e-mail com o link de redefinição.
 export default function EsqueciSenha() {
@@ -17,6 +18,8 @@ export default function EsqueciSenha() {
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
   const [erro, setErro] = useState('')
+  const [captcha, setCaptcha] = useState<string | null>(null)
+  const [reiniciarCaptcha, setReiniciarCaptcha] = useState(0)
 
   async function aoEnviar(e: React.FormEvent) {
     e.preventDefault()
@@ -30,7 +33,14 @@ export default function EsqueciSenha() {
     setEnviando(true)
     const { error } = await supabase.auth.resetPasswordForEmail(emailLimpo, {
       redirectTo: `${window.location.origin}${window.location.pathname}?recuperar-senha=1`,
+      captchaToken: captcha ?? undefined,
     })
+    setReiniciarCaptcha((n) => n + 1)
+    if (error?.code === 'captcha_failed') {
+      setEnviando(false)
+      setErro('Confirme a verificação "não sou um robô" e tente de novo.')
+      return
+    }
     await registrarPedidoRedefinicao(emailLimpo)
     setEnviando(false)
 
@@ -81,8 +91,13 @@ export default function EsqueciSenha() {
               autoComplete="email"
               autoFocus
             />
+            <Captcha aoMudar={setCaptcha} reiniciar={reiniciarCaptcha} />
             {erro ? <p className="aviso erro">{erro}</p> : null}
-            <button type="submit" className="btn btn-primario login-botao" disabled={enviando}>
+            <button
+              type="submit"
+              className="btn btn-primario login-botao"
+              disabled={enviando || (captchaLigado && !captcha)}
+            >
               {enviando ? 'Enviando...' : 'Enviar link'}
             </button>
           </form>

@@ -14,6 +14,7 @@ import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { CURSOS } from '../../compartilhado/tipos'
 import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
 import Rodape from '../../compartilhado/layout/Rodape'
+import Captcha, { captchaLigado } from '../../compartilhado/componentes/Captcha'
 import './acesso.css'
 
 export default function Login() {
@@ -37,6 +38,9 @@ export default function Login() {
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [avisoCadastro, setAvisoCadastro] = useState(estadoRota?.aviso ?? '')
+  // Captcha 'não sou um robô' (Captcha.tsx): cada token vale uma tentativa; depois pede outro.
+  const [captcha, setCaptcha] = useState<string | null>(null)
+  const [reiniciarCaptcha, setReiniciarCaptcha] = useState(0)
 
   const destino = estadoRota?.rotaOrigem ?? '/painel'
 
@@ -101,8 +105,9 @@ export default function Login() {
 
     if (modo === 'entrar') {
       setEnviando(true)
-      const { erro } = await entrar(email.trim(), senha)
+      const { erro } = await entrar(email.trim(), senha, captcha)
       setEnviando(false)
+      setReiniciarCaptcha((n) => n + 1)
       if (erro) setErro(erro)
       else navigate(destino, { replace: true })
       return
@@ -138,8 +143,10 @@ export default function Login() {
       curso,
       cidade || null,
       estado || null,
+      captcha,
     )
     setEnviando(false)
+    setReiniciarCaptcha((n) => n + 1)
     if (erro) {
       setErro(erro)
     } else {
@@ -298,10 +305,16 @@ export default function Login() {
             </>
           ) : null}
 
+          <Captcha aoMudar={setCaptcha} reiniciar={reiniciarCaptcha} />
+
           {erro ? <p className="aviso erro">{erro}</p> : null}
           {avisoCadastro ? <p className="aviso sucesso">{avisoCadastro}</p> : null}
 
-          <button type="submit" className="btn btn-primario login-botao" disabled={enviando}>
+          <button
+            type="submit"
+            className="btn btn-primario login-botao"
+            disabled={enviando || (captchaLigado && !captcha)}
+          >
             {enviando ? 'Aguarde...' : modo === 'entrar' ? 'Entrar' : 'Criar conta'}
           </button>
         </form>

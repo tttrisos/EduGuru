@@ -15,6 +15,7 @@ import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
 import Rodape from '../../compartilhado/layout/Rodape'
 import { confirmarCodigo, fatorVerificado, iniciarCadastroTotp } from './fatoresMfa'
+import { descreverAparelho } from '../../compartilhado/utilitarios/aparelho'
 import './acesso.css'
 
 const MAXIMO_TENTATIVAS = 5
@@ -111,7 +112,7 @@ export default function Mfa() {
     }
 
     if (preparo.modo === 'cadastrar') await registrarLogEvento('mfa_ativado')
-    await registrarLogEvento('login', { mfa: 'totp' })
+    await registrarLogEvento('login', { mfa: 'totp', aparelho: descreverAparelho(navigator.userAgent) })
     await atualizarMfa()
     setEnviando(false)
     navigate(destino, { replace: true })
