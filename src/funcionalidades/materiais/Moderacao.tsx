@@ -1,7 +1,9 @@
 // ============================================================
 // funcionalidades/materiais/Moderacao.tsx
-// MODERAÇÃO (admin, dentro de Materiais) — RF27. Arquivos em análise e materiais denunciados.
-// Banco (supabase/15): materiais_em_moderacao lista; moderar_material aprova ou recusa com motivo.
+// MODERAÇÃO (admin, dentro de Materiais) — RF27. Arquivos e links de sites novos em análise,
+// e materiais denunciados.
+// Banco: materiais_em_moderacao lista e moderar_material aprova ou recusa com motivo (supabase/15);
+// aprovar_e_liberar_site aprova e coloca o site na lista de permitidos (supabase/22).
 // ============================================================
 
 import { useEffect, useState } from 'react'
@@ -10,7 +12,7 @@ import { ShieldAlert } from 'lucide-react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import type { Disciplina, MaterialModeracao } from '../../compartilhado/tipos'
-import { linkCurto } from './filtroMateriais'
+import { dominioDoLink, ehSiteNovo, linkCurto } from './filtroMateriais'
 
 async function consultarModeracao() {
   const { data, error } = await supabase.rpc('materiais_em_moderacao')
@@ -29,10 +31,11 @@ export default function Moderacao({
   versao: number
   aoMudar: () => void
 }) {
-  const { pedirTexto } = useDialogo()
+  const { confirmar, pedirTexto } = useDialogo()
   const [lista, setLista] = useState<MaterialModeracao[]>([])
   const [urls, setUrls] = useState<Record<string, string>>({})
   const [erro, setErro] = useState('')
+  const [aviso, setAviso] = useState('')
 
   function carregar() {
     consultarModeracao().then((resultado) => {
@@ -68,16 +71,41 @@ export default function Moderacao({
     else aoMudar()
   }
 
+  // Aprova e libera o site: os próximos links dele passam direto pelo filtro.
+  async function aprovarELiberar(item: MaterialModeracao) {
+    const dominio = dominioDoLink(item.link ?? '')
+    const ok = await confirmar({
+      titulo: `Aprovar e liberar o site ${dominio}?`,
+      mensagem:
+        'O material é publicado e o site entra na lista de sites permitidos: os próximos links dele serão publicados sem passar pela moderação. Outros links desse site que estão esperando também são publicados. Você pode tirar o site da lista depois, em "Listas do filtro".',
+      textoConfirmar: 'Aprovar e liberar',
+    })
+    if (!ok) return
+    const { data, error } = await supabase.rpc('aprovar_e_liberar_site', { p_material_id: item.id })
+    if (error) {
+      setErro(error.message)
+      return
+    }
+    setErro('')
+    setAviso(
+      Number(data) > 0
+        ? `Site ${dominio} liberado. Mais ${data} material(is) desse site foram publicados junto.`
+        : `Site ${dominio} liberado.`,
+    )
+    aoMudar()
+  }
+
   return (
     <div className="cartao">
       <h3>
         <ShieldAlert size={20} color="#8257e5" /> Moderação ({lista.length})
       </h3>
       <p className="item-meta">
-        Links passam pelo filtro automático e já são publicados. Arquivos e materiais denunciados
-        esperam sua análise antes de aparecer para os alunos.
+        Links de sites da lista passam pelo filtro automático e já são publicados. Arquivos, links de
+        sites novos e materiais denunciados esperam sua análise antes de aparecer para os alunos.
       </p>
       {erro ? <p className="aviso erro">{erro}</p> : null}
+      {aviso ? <p className="aviso sucesso">{aviso}</p> : null}
 
       {lista.length === 0 ? (
         <p className="vazio">Nada para analisar agora.</p>
@@ -90,6 +118,9 @@ export default function Moderacao({
                   {item.titulo}
                   <span className="selo">{disciplinas.find((d) => d.id === item.disciplina_id)?.nome ?? 'Sem disciplina'}</span>
                   {item.denuncias > 0 ? <span className="selo selo-alerta">{item.denuncias} denúncia(s)</span> : null}
+                  {ehSiteNovo(item.motivo_moderacao) ? (
+                    <span className="selo selo-alerta">Site novo: {dominioDoLink(item.link ?? '')}</span>
+                  ) : null}
                 </strong>
                 <span className="item-meta">Enviado por {item.autor_nome}</span>
                 {item.descricao ? <span className="item-meta">{item.descricao}</span> : null}
@@ -113,6 +144,11 @@ export default function Moderacao({
                 <button type="button" className="btn btn-primario" onClick={() => decidir(item, true)}>
                   Aprovar
                 </button>
+                {ehSiteNovo(item.motivo_moderacao) ? (
+                  <button type="button" className="btn btn-secundario" onClick={() => aprovarELiberar(item)}>
+                    Aprovar e liberar o site
+                  </button>
+                ) : null}
                 <button type="button" className="btn btn-perigo" onClick={() => decidir(item, false)}>
                   Recusar
                 </button>

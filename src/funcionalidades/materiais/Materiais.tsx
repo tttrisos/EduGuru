@@ -1,8 +1,10 @@
 // ============================================================
 // funcionalidades/materiais/Materiais.tsx
 // MATERIAIS (endereço /materiais) — RF08. O aluno envia links ou PDF/DOCX ligados a uma disciplina.
-// Filtro antes de enviar: filtroMateriais.ts (o banco repete a mesma regra). Arquivos vão para o Storage.
-// Banco: tabela materiais (supabase/01, 03, 15). Para o admin, mostra também Moderacao e TodosMateriais.
+// Antes de enviar, pergunta ao banco se o material passa no filtro (verificar_material, supabase/22).
+// Site fora da lista não é recusado: vai para a análise da equipe. Arquivos vão para o Storage.
+// Banco: tabela materiais (supabase/01, 03, 15, 22). Para o admin, mostra também Moderacao,
+// TodosMateriais e ListasDoFiltro.
 // ============================================================
 
 import { useEffect, useState } from 'react'
@@ -12,9 +14,10 @@ import { supabase } from '../../compartilhado/banco/supabase'
 import { cursosDa, type Disciplina, type Material, type StatusMaterial } from '../../compartilhado/tipos'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
-import { DOMINIOS_PERMITIDOS, linkCurto, motivoBloqueio } from './filtroMateriais'
+import { linkCurto, type ResultadoFiltro } from './filtroMateriais'
 import Moderacao from './Moderacao'
 import TodosMateriais from './TodosMateriais'
+import ListasDoFiltro from './ListasDoFiltro'
 import './materiais.css'
 
 // Materiais: cada um cadastra os seus; os aprovados aparecem para os colegas
@@ -35,20 +38,23 @@ const SITUACAO: Record<StatusMaterial, string> = {
 }
 
 async function consultarMateriais(usuarioId: string) {
-  const [materiais, disciplinas] = await Promise.all([
+  const [materiais, disciplinas, sites] = await Promise.all([
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId).order('id', { ascending: false }),
     supabase.from('disciplinas').select('*').order('nome'),
+    // Lista de sites permitidos (tabela filtro_sites, editada pelo admin)
+    supabase.from('filtro_sites').select('dominio').order('dominio'),
   ])
   const listaDisciplinas = (disciplinas.data as Disciplina[]) ?? []
+  const listaSites = ((sites.data as { dominio: string }[]) ?? []).map((s) => s.dominio)
   if (materiais.error) {
-    return { lista: [] as Material[], disciplinas: listaDisciplinas, urls: {}, erro: materiais.error.message }
+    return { lista: [] as Material[], disciplinas: listaDisciplinas, sites: listaSites, urls: {}, erro: materiais.error.message }
   }
 
   // Arquivos privados: abrem por links temporários (1 hora).
   const lista = (materiais.data as Material[]) ?? []
   const caminhos = lista.map((m) => m.arquivo_path).filter((p): p is string => !!p)
   const urls = await gerarLinksArquivos(caminhos)
-  return { lista, disciplinas: listaDisciplinas, urls, erro: null }
+  return { lista, disciplinas: listaDisciplinas, sites: listaSites, urls, erro: null }
 }
 
 export default function Materiais() {
@@ -57,6 +63,7 @@ export default function Materiais() {
   const usuarioId = usuario?.id ?? ''
   const [lista, setLista] = useState<Material[]>([])
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([])
+  const [sitesPermitidos, setSitesPermitidos] = useState<string[]>([])
   const [urlsArquivos, setUrlsArquivos] = useState<Record<string, string>>({})
   const [titulo, setTitulo] = useState('')
   const [descricao, setDescricao] = useState('')
@@ -76,6 +83,7 @@ export default function Materiais() {
     try {
       const resultado = await consultarMateriais(usuarioId)
       setDisciplinas(resultado.disciplinas)
+      setSitesPermitidos(resultado.sites)
       if (resultado.erro) setErro(resultado.erro)
       else {
         setLista(resultado.lista)
@@ -93,6 +101,7 @@ export default function Materiais() {
     consultarMateriais(usuarioId)
       .then((resultado) => {
         setDisciplinas(resultado.disciplinas)
+        setSitesPermitidos(resultado.sites)
         if (resultado.erro) setErro(resultado.erro)
         else {
           setLista(resultado.lista)
@@ -143,15 +152,42 @@ export default function Materiais() {
       setErro('Informe um link OU anexe um arquivo (PDF/DOCX).')
       return
     }
-    // Mesmo filtro que o banco aplica (termos impróprios, dados pessoais e sites permitidos).
-    const arquivoNome = editando ? (editando.arquivo_nome ?? undefined) : arquivo?.name
-    const motivo = motivoBloqueio({ titulo, descricao, link, arquivoNome })
-    if (motivo) {
-      setErro(motivo)
+    // Pergunta ao banco ANTES de enviar o arquivo: a regra fica só lá (supabase/22).
+    const arquivoNome = editando ? editando.arquivo_nome : (arquivo?.name ?? null)
+    setEnviando(true)
+    const { data: filtro, error: erroFiltro } = await supabase.rpc('verificar_material', {
+      p_titulo: titulo,
+      p_descricao: descricao || null,
+      p_link: link.trim() || null,
+      p_arquivo_nome: arquivoNome,
+    })
+    const resultado = filtro as ResultadoFiltro | null
+    if (erroFiltro || !resultado) {
+      setEnviando(false)
+      setErro(erroFiltro?.message ?? 'Não foi possível conferir o material. Tente de novo.')
       return
     }
-
-    setEnviando(true)
+    if (resultado.motivo) {
+      setEnviando(false)
+      setErro(resultado.motivo)
+      return
+    }
+    // Site fora da lista: não é recusado, mas o aluno precisa saber que vai esperar a análise.
+    // Na edição, só conta se o link mudou (o banco faz a mesma conta).
+    const linkMudou = !editando || link.trim() !== (editando.link ?? '')
+    const siteNovo = resultado.site_novo && !ehAdmin && linkMudou
+    if (siteNovo) {
+      const ok = await confirmar({
+        titulo: 'Este site ainda não está na lista de sites permitidos',
+        mensagem:
+          'Tudo bem: o material vai para a análise da equipe e fica público depois de aprovado. Se o site for liberado, os próximos links dele já passam direto.',
+        textoConfirmar: 'Enviar para análise',
+      })
+      if (!ok) {
+        setEnviando(false)
+        return
+      }
+    }
 
     if (editando) {
       const { error } = await supabase
@@ -169,7 +205,7 @@ export default function Materiais() {
         return
       }
       setSucesso(
-        editando.status === 'recusado' && !ehAdmin
+        (editando.status === 'recusado' || siteNovo) && !ehAdmin
           ? 'Material alterado! Ele volta para a análise da equipe.'
           : 'Material alterado!',
       )
@@ -217,7 +253,9 @@ export default function Materiais() {
     setSucesso(
       arquivo && !ehAdmin
         ? 'Material enviado! Arquivos passam pela análise da equipe antes de ficarem públicos.'
-        : 'Material publicado! Ele já aparece para os colegas no fim do quiz.',
+        : siteNovo
+          ? 'Material enviado! Como o site é novo, ele passa pela análise da equipe antes de ficar público.'
+          : 'Material publicado! Ele já aparece para os colegas no fim do quiz.',
     )
     limparFormulario()
     buscar()
@@ -343,7 +381,10 @@ export default function Materiais() {
           <details className="regras-material form-material-inteiro">
             <summary>Regras de publicação</summary>
             <ul>
-              <li>Links só de sites permitidos: {DOMINIOS_PERMITIDOS.join(', ')}.</li>
+              <li>
+                Links destes sites são publicados na hora: {sitesPermitidos.join(', ')}. Links de outros sites vão
+                para a análise da equipe.
+              </li>
               <li>Nada de conteúdo impróprio, ofensivo, pirataria, apostas ou qualquer coisa ilegal.</li>
               <li>Não coloque dados pessoais (CPF, e-mail, telefone) no título, na descrição ou no arquivo.</li>
               <li>Arquivos ficam em análise até a equipe aprovar. Links aprovados pelo filtro já ficam públicos.</li>
@@ -422,6 +463,7 @@ export default function Materiais() {
         <>
           <Moderacao disciplinas={disciplinas} versao={versaoAdmin} aoMudar={aoMudarAdmin} />
           <TodosMateriais disciplinas={disciplinas} versao={versaoAdmin} aoMudar={aoMudarAdmin} />
+          <ListasDoFiltro versao={versaoAdmin} aoMudar={aoMudarAdmin} />
         </>
       ) : null}
     </section>

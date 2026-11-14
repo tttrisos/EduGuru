@@ -25,7 +25,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 - **Prática com quiz:** até 10 perguntas de uma disciplina, uma por vez, com correção na hora (feita no banco). Perguntas e **alternativas embaralhadas para cada aluno a cada rodada**, com prioridade para as que ele ainda não acertou, o que impede decorar a posição da resposta. Dica 50/50, ilustrações e sons.
 - **Pontuação e ranking:** Fácil 10, Médio 20, Difícil 30, só no 1º acerto de cada pergunta; ranking geral e por disciplina, com opção de aparecer como "Aluno anônimo".
 - **Guru:** indica materiais da disciplina quando o aproveitamento fica abaixo de 60%.
-- **Materiais da comunidade:** links e arquivos dos alunos, com filtro automático, moderação, denúncias e perfil público; o admin gerencia todos, inclusive em massa.
+- **Materiais da comunidade:** links e arquivos dos alunos, com filtro automático, moderação, denúncias e perfil público; o admin gerencia todos, inclusive em massa. As **listas do filtro** (sites permitidos e termos bloqueados) ficam no banco e o admin as edita pela tela, sem mexer no código; link de site novo vai para a análise e pode ser liberado com um clique.
 - **Bússola EduGuru:** autoavaliação de interesses opcional (16 afirmações de 1 a 5). Não é teste vocacional: é uma orientação simples.
 - **EduGuru Carreiras:** vagas das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho e aos interesses, com filtros de área, nível e localidade.
 - **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e limite de 40 faltas.
@@ -73,7 +73,7 @@ eduguru/
 │       ├── carreiras/            EduGuru Carreiras: API do GitHub, localidade, vagas
 │       └── administracao/        Usuários e logs (admin)
 ├── testes/                       Testes (Vitest), nas mesmas pastas das funcionalidades
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 21)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 22)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -95,7 +95,8 @@ eduguru/
 | Disciplinas (RF06) | `disciplinas/` | `01`, `13` |
 | Banco de perguntas (RF07) | `perguntas/` | `11` (`criar_pergunta`), `14`, `16` (`editar_pergunta`) |
 | Materiais, filtro, comunidade, denúncia e perfil (RF08, RF28, RF29) | `materiais/` | `03`, `04`, `15` |
-| Moderação e gestão de todos os materiais (RF27) | `materiais/Moderacao.tsx`, `materiais/TodosMateriais.tsx` | `15` (`moderar_material`) |
+| Moderação e gestão de todos os materiais (RF27) | `materiais/Moderacao.tsx`, `materiais/TodosMateriais.tsx` | `15` (`moderar_material`), `22` (`aprovar_e_liberar_site`) |
+| Listas do filtro de materiais (RF08, RF27) | `materiais/ListasDoFiltro.tsx` | `22` (`filtro_sites`, `filtro_termos`, `verificar_material`) |
 | Quiz embaralhado e pontuação (RF16, RF17) | `quiz/Quiz.tsx` | `11`, `19` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `pedir_dica`) |
 | Guru (RF19) | `painel/MinhaEvolucao.tsx` | `11` (`recomendacoes_guru`) |
 | Ranking (RF18) | `ranking/Ranking.tsx` | `11` (`ranking`) |
@@ -133,6 +134,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `19_quiz_embaralhado.sql` | Quiz embaralhado para cada aluno (ordem das alternativas por rodada, prioridade para o que ainda não acertou) |
 | `20_proteger_admin.sql` | Administrador não pode excluir a conta de outro administrador |
 | `21_trocar_senha.sql` | Conferência da senha atual para trocar a senha estando logado |
+| `22_filtro_gerenciavel.sql` | Filtro de materiais em tabelas editáveis pelo admin; site novo vai para a análise |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

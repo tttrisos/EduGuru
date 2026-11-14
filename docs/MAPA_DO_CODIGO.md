@@ -75,10 +75,16 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 3. `afinidadeBussola.ts` → `destaques()`: até 3 áreas com 60%+ formam o pódio e entram nas sugestões do Carreiras.
 
 ### O aluno envia um material
-1. `materiais/Materiais.tsx` → `motivoBloqueio()` em `materiais/filtroMateriais.ts` (sites permitidos, termos impróprios, dados pessoais).
+1. `materiais/Materiais.tsx` → **`verificar_material`** (script 22): o banco diz se o material seria recusado (termos, dados pessoais, link sem https) e se o site é novo. **A regra existe só no banco.**
 2. Grava na tabela `materiais`; o arquivo vai para o Storage (bucket privado `materiais`).
-3. No banco, o gatilho `moderar_material` (15) repete o filtro: link aprovado vai ao ar; arquivo fica "Em análise".
-4. Admin: `materiais/Moderacao.tsx` e `materiais/TodosMateriais.tsx` → **`moderar_material`** (15).
+3. No banco, o gatilho `moderar_material` (22) aplica o filtro de novo: link de site da lista vai ao ar; arquivo de aluno e link de site novo ficam "Em análise".
+4. Admin: `materiais/Moderacao.tsx` → **`moderar_material`** (15) ou **`aprovar_e_liberar_site`** (22), que publica e põe o site na lista; `materiais/TodosMateriais.tsx` gerencia todos.
+
+### O admin muda as listas do filtro
+1. `materiais/ListasDoFiltro.tsx` inclui e remove linhas das tabelas `filtro_sites` e `filtro_termos` (22). Só o admin altera (RLS); os alunos leem só os sites.
+2. O banco padroniza o que foi digitado (`https://www.Site.com/x` → `site.com`; acentos e disfarces como `p0rn` → `porn`) e grava no log.
+3. Termo novo → **`reanalisar_materiais_publicados`** (22): o que já estava publicado e tem o termo volta para a análise.
+4. "Testar o filtro" chama `verificar_material` com um exemplo.
 
 ### O aluno registra notas
 1. `notas/Notas.tsx` grava na tabela `notas` (12). O RLS deixa só o próprio aluno ler e gravar.
@@ -102,4 +108,5 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 | O aluno não vê o gabarito | Tabela `gabaritos` só para admin (11); correção só nas funções do quiz (19) |
 | Regras que não podem ser burladas | Funções `security definer` que conferem quem chama (é admin? tem MFA?) |
 | Telas de admin | `RotaProtegida` com `somenteAdmin` (tela) + `eh_admin()` no banco (o que vale) |
+| Filtro de materiais | Gatilho `moderar_material` e tabelas `filtro_sites`/`filtro_termos` (22); a tela só pergunta (`verificar_material`) |
 | Rastreabilidade | Gatilhos de log (02) e `registrar_evento_auth` (10 e 21); limpeza em 90 dias (06) |
