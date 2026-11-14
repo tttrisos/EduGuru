@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useDialogo } from '../../compartilhado/Dialogo'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Link } from 'react-router-dom'
 import { Check, Flame, Lightbulb, Search, Users, Volume2, VolumeX, X, ZoomIn } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import { useAuth } from '../../compartilhado/AuthContext'
-import BigNumber from '../../compartilhado/BigNumber'
-import TextoRico from '../../compartilhado/TextoRico'
-import { gerarLinksImagensPerguntas } from '../../compartilhado/arquivos'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
+import NumeroDestaque from '../../compartilhado/componentes/NumeroDestaque'
+import TextoRico from '../../compartilhado/componentes/TextoRico'
+import { gerarLinksImagensPerguntas } from '../../compartilhado/banco/arquivos'
 import {
   CURSOS,
   cursosDa,
@@ -549,10 +549,10 @@ export default function Quiz() {
       </header>
 
       <div className="grade-big-numbers">
-        <BigNumber valor={`${aproveitamento}%`} legenda="Acertos" />
-        <BigNumber valor={`${acertos}/${correcao.length}`} legenda="Perguntas certas" />
-        <BigNumber valor={`+${pontos}`} legenda="Pontos ganhos" />
-        <BigNumber valor={melhorSequencia} legenda="Melhor sequência" />
+        <NumeroDestaque valor={`${aproveitamento}%`} legenda="Acertos" />
+        <NumeroDestaque valor={`${acertos}/${correcao.length}`} legenda="Perguntas certas" />
+        <NumeroDestaque valor={`+${pontos}`} legenda="Pontos ganhos" />
+        <NumeroDestaque valor={melhorSequencia} legenda="Melhor sequência" />
       </div>
       {pontos === 0 && acertos > 0 ? (
         <p className="quiz-obs">Essas perguntas já tinham sido acertadas antes, por isso não somaram pontos.</p>

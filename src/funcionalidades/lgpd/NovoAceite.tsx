@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { useDialogo } from '../../compartilhado/Dialogo'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import { useAuth } from '../../compartilhado/AuthContext'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { VERSAO_TERMOS } from '../../compartilhado/tipos'
-import Rodape from '../../compartilhado/Rodape'
-import { removerArquivosDoUsuario } from './conta'
+import Rodape from '../../compartilhado/layout/Rodape'
+import { removerArquivosDoUsuario } from '../conta/arquivosDoUsuario'
 import './lgpd.css'
 
 // Pede novo aceite quando o Termo/Política mudam de versão.
@@ -136,7 +136,7 @@ export default function NovoAceite() {
 
         <p className="login-rodape">
           Não concorda? Você pode excluir sua conta agora, sem precisar aceitar:{' '}
-          <button type="button" className="link-botao" onClick={excluirConta} disabled={enviando}>
+          <button type="button" className="link-botao link-perigo" onClick={excluirConta} disabled={enviando}>
             excluir minha conta
           </button>
           .

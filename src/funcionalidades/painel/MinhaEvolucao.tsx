@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BookOpenCheck, Briefcase, Compass, Lightbulb, RotateCcw } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import BigNumber from '../../compartilhado/BigNumber'
-import GraficoBarras from '../../compartilhado/GraficoBarras'
-import { gerarLinksArquivos } from '../../compartilhado/arquivos'
+import { supabase } from '../../compartilhado/banco/supabase'
+import NumeroDestaque from '../../compartilhado/componentes/NumeroDestaque'
+import GraficoBarras from '../../compartilhado/componentes/GraficoBarras'
+import { gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import { calcularSituacao } from '../notas/calculoNotas'
-import { combinarSugestoes, destaques, type AfinidadeBussola } from '../carreiras/afinidadeBussola'
+import { combinarSugestoes, destaques, type AfinidadeBussola } from '../bussola/afinidadeBussola'
 import { fraseAprender, resumirEvolucao } from './evolucao'
 import type {
   AreaSugerida,
@@ -167,19 +167,19 @@ export default function MinhaEvolucao() {
 
       {/* 2) Números da aprendizagem e da faculdade */}
       <div className="grade-big-numbers">
-        <BigNumber
+        <NumeroDestaque
           valor={resumo.aproveitamentoGeral !== null ? `${resumo.aproveitamentoGeral}%` : '—'}
           legenda="Aproveitamento geral"
           detalhe="acertos ÷ respostas"
         />
-        <BigNumber valor={resumo.dominadas} legenda="Disciplinas dominadas" detalhe="60% ou mais" />
-        <BigNumber valor={resumo.paraRevisar} legenda="Disciplinas para revisar" detalhe="abaixo de 60%" />
-        <BigNumber
+        <NumeroDestaque valor={resumo.dominadas} legenda="Disciplinas dominadas" detalhe="60% ou mais" />
+        <NumeroDestaque valor={resumo.paraRevisar} legenda="Disciplinas para revisar" detalhe="abaixo de 60%" />
+        <NumeroDestaque
           valor={mediaGeral !== null ? mediaGeral.toFixed(1).replace('.', ',') : '—'}
           legenda="Média geral (MD)"
           detalhe="notas da faculdade"
         />
-        <BigNumber valor={emAlerta} legenda="Disciplinas em alerta" detalhe="exame, reprovação ou faltas" />
+        <NumeroDestaque valor={emAlerta} legenda="Disciplinas em alerta" detalhe="exame, reprovação ou faltas" />
       </div>
 
       {/* 3) Gráficos de evolução */}

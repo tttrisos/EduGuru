@@ -3,7 +3,7 @@
 // vagas remotas ou no estado de São Paulo, e destaca as do Alto Tietê, perto da UMC.
 // O local vem do começo do título ("[Remoto]", "[Híbrido em SP]", "[Joinville/SC]") e das
 // etiquetas (o frontendbr usa etiquetas com o nome do estado, ex.: "São Paulo").
-import { contemTermo, normalizar } from './vagas'
+import { contemTermo, normalizar } from './apiVagasGithub'
 
 export type Localidade = {
   remoto: boolean

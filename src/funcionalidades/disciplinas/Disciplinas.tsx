@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useDialogo } from '../../compartilhado/Dialogo'
-import { supabase } from '../../compartilhado/supabase'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
+import { supabase } from '../../compartilhado/banco/supabase'
 import { CURSOS, cursosDa, type Disciplina } from '../../compartilhado/tipos'
-import { useAuth } from '../../compartilhado/AuthContext'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 
 async function consultarDisciplinas() {
   return await supabase.from('disciplinas').select('*').order('nome')

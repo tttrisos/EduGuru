@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, Library } from 'lucide-react'
-import { useDialogo } from '../../compartilhado/Dialogo'
-import { supabase } from '../../compartilhado/supabase'
-import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/arquivos'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import type { Disciplina, Material, UsuarioAdmin } from '../../compartilhado/tipos'
 import {
   ACOES_POR_STATUS,

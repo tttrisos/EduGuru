@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useDialogo } from '../../compartilhado/Dialogo'
-import { supabase } from '../../compartilhado/supabase'
-import TextoRico from '../../compartilhado/TextoRico'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
+import { supabase } from '../../compartilhado/banco/supabase'
+import TextoRico from '../../compartilhado/componentes/TextoRico'
 import { LETRAS, NIVEIS, cursosDa, type Disciplina, type Letra, type Nivel, type Pergunta } from '../../compartilhado/tipos'
 import './perguntas.css'
 

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase } from 'lucide-react'
-import Ajuda from '../../compartilhado/Ajuda'
-import { useAuth } from '../../compartilhado/AuthContext'
-import { supabase } from '../../compartilhado/supabase'
+import Ajuda from '../../compartilhado/componentes/Ajuda'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
+import { supabase } from '../../compartilhado/banco/supabase'
 import type { AreaCarreira, AreaSugerida, DisciplinaArea, MaterialComunidade } from '../../compartilhado/tipos'
 import { buscarMateriaisComunidade } from '../materiais/comunidade'
 import ListaVagas from './ListaVagas'
-import { combinarSugestoes, type AfinidadeBussola, type SugestaoArea } from './afinidadeBussola'
+import { combinarSugestoes, type AfinidadeBussola, type SugestaoArea } from '../bussola/afinidadeBussola'
 import './carreiras.css'
 
 type Dados = {
@@ -78,7 +78,7 @@ export default function Carreiras() {
   return (
     <section className="pagina pagina-larga">
       <header className="pagina-topo">
-        <h2 className="carreiras-titulo">
+        <h2 className="titulo-com-assinatura">
           <span className="assinatura">EduGuru</span>
           Carreiras
         </h2>

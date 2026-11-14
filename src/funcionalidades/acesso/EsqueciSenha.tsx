@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import { registrarPedidoRedefinicao } from '../../compartilhado/log'
-import Rodape from '../../compartilhado/Rodape'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { registrarPedidoRedefinicao } from '../../compartilhado/banco/log'
+import Rodape from '../../compartilhado/layout/Rodape'
 
 // Esqueci minha senha: o Supabase envia o e-mail com o link de redefinição.
 export default function EsqueciSenha() {

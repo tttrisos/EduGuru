@@ -1,8 +1,3 @@
-.ranking tr.voce td {
-  background: color-mix(in srgb, var(--roxo) 14%, transparent);
-  font-weight: 600;
-}
-
 /* ---------- Quiz ---------- */
 .quiz-disciplinas {
   display: grid;

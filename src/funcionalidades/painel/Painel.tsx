@@ -1,4 +1,4 @@
-import { useAuth } from '../../compartilhado/AuthContext'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import MinhaEvolucao from './MinhaEvolucao'
 import PainelAdmin from './PainelAdmin'
 import './painel.css'

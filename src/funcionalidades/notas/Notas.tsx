@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import Ajuda from '../../compartilhado/Ajuda'
-import { useDialogo } from '../../compartilhado/Dialogo'
-import { supabase } from '../../compartilhado/supabase'
-import { useAuth } from '../../compartilhado/AuthContext'
+import Ajuda from '../../compartilhado/componentes/Ajuda'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { cursosDa, type Disciplina, type Nota } from '../../compartilhado/tipos'
 import {
   calcularFrequencia,

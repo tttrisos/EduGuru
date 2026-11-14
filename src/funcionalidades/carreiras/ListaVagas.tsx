@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, MapPin, RefreshCw, Sparkles } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
+import { supabase } from '../../compartilhado/banco/supabase'
 import type { AreaCarreira } from '../../compartilhado/tipos'
-import { motivoSugestao, type SugestaoArea } from './afinidadeBussola'
+import { motivoSugestao, type SugestaoArea } from '../bussola/afinidadeBussola'
 import {
   ErroVagas,
   MSG_SEM_CONEXAO,
@@ -12,7 +12,7 @@ import {
   type FiltroVagas,
   type ResultadoVagas,
   type Vaga,
-} from './vagas'
+} from './apiVagasGithub'
 import { OPCOES_LOCAL, localDaVaga, vagaNoLocal, type FiltroLocal } from './localidade'
 
 const POR_PAGINA = 15

@@ -1,5 +1,5 @@
-import { supabase } from '../../compartilhado/supabase'
-import { gerarLinksArquivos } from '../../compartilhado/arquivos'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import type { MaterialComunidade } from '../../compartilhado/tipos'
 
 // Materiais aprovados de uma disciplina ou de um autor, com os links dos arquivos.

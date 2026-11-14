@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import { useAuth } from '../../compartilhado/AuthContext'
-import { registrarLogEvento } from '../../compartilhado/log'
-import { REGRAS_SENHA, senhaAtendeTodasRegras } from './senha'
-import Rodape from '../../compartilhado/Rodape'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
+import { registrarLogEvento } from '../../compartilhado/banco/log'
+import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
+import Rodape from '../../compartilhado/layout/Rodape'
 import './acesso.css'
 
 // Aberta pelo link do e-mail. Se a conta tem MFA, pede o código antes da nova senha.

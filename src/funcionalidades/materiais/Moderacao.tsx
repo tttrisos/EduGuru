@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useDialogo } from '../../compartilhado/Dialogo'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { ShieldAlert } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/arquivos'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { formatarTamanho, gerarLinksArquivos } from '../../compartilhado/banco/arquivos'
 import type { Disciplina, MaterialModeracao } from '../../compartilhado/tipos'
 import { linkCurto } from './filtroMateriais'
 

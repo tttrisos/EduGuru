@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import BigNumber from '../../compartilhado/BigNumber'
-import GraficoBarras from '../../compartilhado/GraficoBarras'
+import { supabase } from '../../compartilhado/banco/supabase'
+import NumeroDestaque from '../../compartilhado/componentes/NumeroDestaque'
+import GraficoBarras from '../../compartilhado/componentes/GraficoBarras'
 import type { EstatisticasAdmin, EstatisticasBussola, EstatisticasCarreiras } from '../../compartilhado/tipos'
 
 // ============================================================
@@ -31,12 +31,12 @@ export default function PainelAdmin() {
   return (
     <>
       <div className="grade-big-numbers">
-        <BigNumber valor={dados.alunos} legenda="Alunos cadastrados" />
-        <BigNumber valor={dados.disciplinas} legenda="Disciplinas" />
-        <BigNumber valor={dados.perguntas_prontas} legenda="Perguntas no quiz" />
-        <BigNumber valor={dados.materiais} legenda="Materiais" />
-        <BigNumber valor={dados.quizzes} legenda="Quizzes realizados" />
-        <BigNumber valor={`${dados.aproveitamento_geral}%`} legenda="Acertos (média geral)" />
+        <NumeroDestaque valor={dados.alunos} legenda="Alunos cadastrados" />
+        <NumeroDestaque valor={dados.disciplinas} legenda="Disciplinas" />
+        <NumeroDestaque valor={dados.perguntas_prontas} legenda="Perguntas no quiz" />
+        <NumeroDestaque valor={dados.materiais} legenda="Materiais" />
+        <NumeroDestaque valor={dados.quizzes} legenda="Quizzes realizados" />
+        <NumeroDestaque valor={`${dados.aproveitamento_geral}%`} legenda="Acertos (média geral)" />
       </div>
 
       <div className="grade-graficos">
@@ -103,10 +103,10 @@ function PainelCarreiras() {
         <Briefcase size={20} color="#8257e5" aria-hidden="true" /> Carreiras
       </h3>
       <div className="grade-big-numbers">
-        <BigNumber valor={dados.cliques} legenda='Cliques em "Candidatar-se"' detalhe="um por aluno e vaga" />
-        <BigNumber valor={dados.cliques_30_dias} legenda="Cliques nos últimos 30 dias" />
-        <BigNumber valor={dados.alunos_que_clicaram} legenda="Alunos que abriram vagas" />
-        {bussola ? <BigNumber valor={bussola.respondidas} legenda="Bússolas respondidas" detalhe="autoavaliação de interesses" /> : null}
+        <NumeroDestaque valor={dados.cliques} legenda='Cliques em "Candidatar-se"' detalhe="um por aluno e vaga" />
+        <NumeroDestaque valor={dados.cliques_30_dias} legenda="Cliques nos últimos 30 dias" />
+        <NumeroDestaque valor={dados.alunos_que_clicaram} legenda="Alunos que abriram vagas" />
+        {bussola ? <NumeroDestaque valor={bussola.respondidas} legenda="Bússolas respondidas" detalhe="autoavaliação de interesses" /> : null}
       </div>
       <div className="grade-graficos">
         <GraficoBarras

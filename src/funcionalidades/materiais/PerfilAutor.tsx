@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { supabase } from '../../compartilhado/supabase'
+import { supabase } from '../../compartilhado/banco/supabase'
 import { CURSOS, type MaterialComunidade, type PerfilPublico } from '../../compartilhado/tipos'
 import { buscarMateriaisComunidade } from './comunidade'
 import ListaComunidade from './ListaComunidade'

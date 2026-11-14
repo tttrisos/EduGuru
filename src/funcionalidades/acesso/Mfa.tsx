@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { useDialogo } from '../../compartilhado/Dialogo'
+import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
-import { supabase } from '../../compartilhado/supabase'
-import { useAuth } from '../../compartilhado/AuthContext'
-import { registrarLogEvento } from '../../compartilhado/log'
-import Rodape from '../../compartilhado/Rodape'
+import { supabase } from '../../compartilhado/banco/supabase'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
+import { registrarLogEvento } from '../../compartilhado/banco/log'
+import Rodape from '../../compartilhado/layout/Rodape'
 import './acesso.css'
 
 // Verificação em duas etapas (TOTP). No 1º acesso mostra o QR Code; depois

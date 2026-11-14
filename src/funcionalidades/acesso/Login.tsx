@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
-import { useAuth } from '../../compartilhado/AuthContext'
+import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { CURSOS } from '../../compartilhado/tipos'
-import { REGRAS_SENHA, senhaAtendeTodasRegras } from './senha'
-import Rodape from '../../compartilhado/Rodape'
+import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
+import Rodape from '../../compartilhado/layout/Rodape'
 import './acesso.css'
 
 export default function Login() {
