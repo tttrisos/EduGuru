@@ -7,11 +7,15 @@ import {
   CircleUserRound,
   ClipboardList,
   GraduationCap,
+  HelpCircle,
+  LayoutDashboard,
+  Library,
   LogOut,
   Menu,
   Moon,
   ShieldCheck,
   Sun,
+  TrendingUp,
   Trophy,
   X,
   Zap,
@@ -20,20 +24,38 @@ import { useAuth } from './AuthContext'
 import Rodape from './Rodape'
 import { aplicarTema, temaSalvo, type Tema } from './tema'
 
-// Menu de cada papel. O Painel abre pelo botão "Minha conta";
-// Notas e Materiais ficam no menu que abre sobre ele.
-// "marca": item com a assinatura "EduGuru" em cima (produto próprio, como o EduGuru Carreiras).
-// "filhos": submenu que abre ao passar o mouse (ou com Tab), como o do Quiz (Quiz e Ranking).
+// ============================================================
+// Barra superior da área logada (aparece em todas as telas depois do login).
+// Quem usa: App.tsx, que coloca todas as telas logadas "dentro" deste layout;
+// a tela da vez aparece no <Outlet /> lá embaixo.
+//
+// O menu do ALUNO segue a jornada de aprendizagem, não o quiz:
+//   Minha evolução (painel e notas) → Estudar (quiz, ranking, materiais)
+//   → Disciplinas → Bússola (interesses) → Carreiras (vagas).
+// O menu do ADMIN segue o trabalho de gestão.
+// ============================================================
+
+// "marca": item com a assinatura "EduGuru" em cima (produtos próprios: Bússola e Carreiras).
+// "filhos": submenu que abre ao passar o mouse (ou com Tab); no celular fica sempre aberto.
 type ItemMenu = { path: string; label: string; marca?: boolean; filhos?: SubItem[] }
 type SubItem = { path: string; label: string; icone: typeof Zap }
 
 const itensAluno: ItemMenu[] = [
   {
+    path: '/painel',
+    label: 'Minha evolução',
+    filhos: [
+      { path: '/painel', label: 'Minha evolução', icone: TrendingUp },
+      { path: '/notas', label: 'Notas e faltas', icone: ClipboardList },
+    ],
+  },
+  {
     path: '/quiz',
-    label: 'Quiz',
+    label: 'Estudar',
     filhos: [
       { path: '/quiz', label: 'Quiz', icone: Zap },
       { path: '/ranking', label: 'Ranking', icone: Trophy },
+      { path: '/materiais', label: 'Materiais', icone: BookOpen },
     ],
   },
   { path: '/disciplinas', label: 'Disciplinas' },
@@ -42,15 +64,22 @@ const itensAluno: ItemMenu[] = [
 ]
 
 const itensAdmin: ItemMenu[] = [
-  { path: '/disciplinas', label: 'Disciplinas' },
-  { path: '/perguntas', label: 'Perguntas' },
+  { path: '/painel', label: 'Painel' },
+  {
+    path: '/disciplinas',
+    label: 'Conteúdo',
+    filhos: [
+      { path: '/disciplinas', label: 'Disciplinas', icone: Library },
+      { path: '/perguntas', label: 'Perguntas', icone: HelpCircle },
+      { path: '/materiais', label: 'Materiais', icone: BookOpen },
+    ],
+  },
   { path: '/ranking', label: 'Ranking' },
   { path: '/carreiras', label: 'Carreiras', marca: true },
   { path: '/usuarios', label: 'Usuários' },
   { path: '/logs', label: 'Logs' },
 ]
 
-// Área logada: barra no topo e conteúdo abaixo.
 export default function LayoutLogado() {
   const { confirmar } = useDialogo()
   const location = useLocation()
@@ -61,17 +90,20 @@ export default function LayoutLogado() {
 
   const itens = ehAdmin ? itensAdmin : itensAluno
 
+  // Sair pede confirmação (janela do EduGuru, em compartilhado/Dialogo.tsx).
   async function aoSair() {
     if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.', textoConfirmar: 'Sair' }))) return
     await sair()
     navigate('/login', { replace: true })
   }
 
+  // Tema escuro/claro: salvo no navegador (compartilhado/tema.ts).
   function trocarTema(novo: Tema) {
     aplicarTema(novo)
     setTema(novo)
   }
 
+  // O item fica sublinhado quando a tela aberta começa com o endereço dele.
   function rotaAtiva(path: string) {
     return location.pathname.startsWith(path)
   }
@@ -85,6 +117,7 @@ export default function LayoutLogado() {
             <span>EduGuru</span>
           </Link>
 
+          {/* Botão "hambúrguer": só aparece no celular */}
           <button
             type="button"
             className="topo-menu-btn"
@@ -97,6 +130,7 @@ export default function LayoutLogado() {
           <nav className={`topo-nav${menuAberto ? ' aberto' : ''}`}>
             {itens.map((item) =>
               item.filhos ? (
+                // Item com submenu (ex.: Estudar → Quiz, Ranking, Materiais)
                 <div key={item.path} className="topo-grupo">
                   <Link
                     to={item.path}
@@ -120,29 +154,30 @@ export default function LayoutLogado() {
                   </div>
                 </div>
               ) : (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`topo-link${item.marca ? ' topo-link-marca' : ''}${rotaAtiva(item.path) ? ' ativo' : ''}`}
-                onClick={() => setMenuAberto(false)}
-                aria-label={item.marca ? `EduGuru ${item.label}` : undefined}
-              >
-                {item.marca ? (
-                  <span className="assinatura" aria-hidden="true">
-                    EduGuru
-                  </span>
-                ) : null}
-                {item.label}
-              </Link>
+                // Item simples (ex.: Disciplinas) ou com a assinatura EduGuru (Bússola, Carreiras)
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`topo-link${item.marca ? ' topo-link-marca' : ''}${rotaAtiva(item.path) ? ' ativo' : ''}`}
+                  onClick={() => setMenuAberto(false)}
+                  aria-label={item.marca ? `EduGuru ${item.label}` : undefined}
+                >
+                  {item.marca ? (
+                    <span className="assinatura" aria-hidden="true">
+                      EduGuru
+                    </span>
+                  ) : null}
+                  {item.label}
+                </Link>
               ),
             )}
 
             <div className="topo-usuario">
-              {/* "Minha conta" leva ao Painel; o menu abre ao passar o mouse (ou com Tab) */}
+              {/* "Minha conta": dados pessoais, privacidade, senha e tema */}
               <div className="topo-conta">
                 <Link
-                  to="/painel"
-                  className={`topo-link${rotaAtiva('/painel') ? ' ativo' : ''}`}
+                  to="/minha-conta"
+                  className={`topo-link${rotaAtiva('/minha-conta') ? ' ativo' : ''}`}
                   onClick={() => setMenuAberto(false)}
                   title={perfil?.nome ?? 'Minha conta'}
                 >
@@ -154,28 +189,21 @@ export default function LayoutLogado() {
                   <ChevronDown size={14} aria-hidden="true" />
                 </Link>
                 <div className="topo-conta-menu">
-                  {!ehAdmin ? (
+                  {ehAdmin ? (
                     <Link
-                      to="/notas"
-                      className={`topo-link${rotaAtiva('/notas') ? ' ativo' : ''}`}
+                      to="/painel"
+                      className={`topo-link${rotaAtiva('/painel') ? ' ativo' : ''}`}
                       onClick={() => setMenuAberto(false)}
                     >
-                      <ClipboardList size={16} /> Notas
+                      <LayoutDashboard size={16} /> Painel
                     </Link>
                   ) : null}
-                  <Link
-                    to="/materiais"
-                    className={`topo-link${rotaAtiva('/materiais') ? ' ativo' : ''}`}
-                    onClick={() => setMenuAberto(false)}
-                  >
-                    <BookOpen size={16} /> Materiais
-                  </Link>
                   <Link
                     to="/minha-conta"
                     className={`topo-link${rotaAtiva('/minha-conta') ? ' ativo' : ''}`}
                     onClick={() => setMenuAberto(false)}
                   >
-                    <ShieldCheck size={16} /> Meus dados e privacidade
+                    <ShieldCheck size={16} /> Meus dados, senha e privacidade
                   </Link>
                   <div className="topo-tema" role="group" aria-label="Aparência do site">
                     <button
@@ -206,6 +234,7 @@ export default function LayoutLogado() {
         </div>
       </header>
 
+      {/* Aqui entra a tela aberta (Painel, Quiz, Carreiras...) */}
       <main className="content">
         <Outlet />
         <Rodape />

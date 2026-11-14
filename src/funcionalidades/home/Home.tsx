@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import {
-  BarChart3,
   BookOpen,
   Briefcase,
+  ClipboardList,
+  Compass,
   GraduationCap,
   Lightbulb,
   ShieldCheck,
-  Trophy,
+  TrendingUp,
   Zap,
 } from 'lucide-react'
 import { useAuth } from '../../compartilhado/AuthContext'
@@ -14,42 +15,53 @@ import { CURSOS } from '../../compartilhado/tipos'
 import Rodape from '../../compartilhado/Rodape'
 import './home.css'
 
-// Página pública de apresentação. "disponivel: false" mostra o selo "Em breve".
+// ============================================================
+// Página inicial pública (endereço "/", RF23): apresenta o EduGuru para quem não entrou.
+// A ordem dos recursos segue a jornada do aluno (evolução → revisar → descobrir →
+// direcionar); o quiz aparece como a ferramenta de prática, não como o centro.
+// "disponivel: false" mostraria o selo "Em breve".
+// ============================================================
 const RECURSOS = [
   {
-    icone: BookOpen,
-    titulo: 'Disciplinas e materiais',
-    texto: 'Disciplinas do seu curso e uma biblioteca de apostilas e links enviados pelos colegas.',
-    disponivel: true,
-  },
-  {
-    icone: Zap,
-    titulo: 'Quiz rápido',
-    texto: 'Até 10 perguntas de múltipla escolha por rodada, com correção na hora.',
-    disponivel: true,
-  },
-  {
-    icone: Trophy,
-    titulo: 'Ranking',
-    texto: 'Cada acerto vale pontos conforme o nível. Veja sua posição geral e em cada disciplina.',
+    icone: TrendingUp,
+    titulo: 'Minha evolução',
+    texto: 'Veja o que você já domina, o que precisa revisar e para onde ir, disciplina por disciplina.',
     disponivel: true,
   },
   {
     icone: Lightbulb,
     titulo: 'Guru',
-    texto: 'Foi mal no quiz? O Guru indica materiais da mesma disciplina para revisar.',
+    texto: 'Abaixo de 60% numa disciplina? O Guru indica materiais para você revisar.',
+    disponivel: true,
+  },
+  {
+    icone: Compass,
+    titulo: 'Bússola EduGuru',
+    texto: 'Autoavaliação de interesses: descubra quais áreas da tecnologia combinam com você.',
     disponivel: true,
   },
   {
     icone: Briefcase,
-    titulo: 'Carreiras',
-    texto: 'Vagas de tecnologia ligadas às disciplinas em que você vai bem no quiz.',
+    titulo: 'EduGuru Carreiras',
+    texto: 'Vagas reais de tecnologia, remotas ou em SP, ligadas ao seu desempenho e aos seus interesses.',
     disponivel: true,
   },
   {
-    icone: BarChart3,
-    titulo: 'Dashboard acadêmico',
-    texto: 'Notas, faltas e desempenho nos quizzes em um só lugar.',
+    icone: ClipboardList,
+    titulo: 'Notas e faltas',
+    texto: 'Sua situação em cada disciplina com a regra de médias e faltas da UMC.',
+    disponivel: true,
+  },
+  {
+    icone: BookOpen,
+    titulo: 'Materiais da comunidade',
+    texto: 'Apostilas e links enviados pelos colegas, com moderação.',
+    disponivel: true,
+  },
+  {
+    icone: Zap,
+    titulo: 'Prática com quiz e ranking',
+    texto: 'Rodadas curtas com correção na hora para medir o que você aprendeu.',
     disponivel: true,
   },
   {
@@ -62,9 +74,9 @@ const RECURSOS = [
 
 const PASSOS = [
   { titulo: 'Crie sua conta', texto: 'Cadastro rápido com nome, curso e e-mail.' },
-  { titulo: 'Estude', texto: 'Acesse as disciplinas e os materiais de apoio.' },
-  { titulo: 'Responda quizzes', texto: 'Teste o que aprendeu em rodadas curtas.' },
-  { titulo: 'Evolua', texto: 'Suba no ranking e revise com as dicas do Guru.' },
+  { titulo: 'Pratique e acompanhe', texto: 'Pratique as disciplinas e veja sua evolução em cada uma.' },
+  { titulo: 'Revise e descubra', texto: 'Revise com o Guru e descubra suas áreas com a Bússola.' },
+  { titulo: 'Direcione sua carreira', texto: 'Veja vagas ligadas ao que você domina e ao que gosta.' },
 ]
 
 function rolarPara(id: string) {
@@ -96,7 +108,7 @@ export default function Home() {
           <div className="home-acoes">
             {logado ? (
               <Link to="/painel" className="btn btn-primario">
-                Ir para o painel
+                Ver minha evolução
               </Link>
             ) : (
               <>
@@ -114,16 +126,17 @@ export default function Home() {
 
       <section className="home-hero">
         <h1>
-          Estude, responda e <span className="destaque">acompanhe sua evolução.</span>
+          Aprenda, evolua e <span className="destaque">descubra seu caminho na tecnologia.</span>
         </h1>
         <p>
-          O EduGuru reúne disciplinas, materiais de estudo e quizzes rápidos para alunos de
-          Sistemas de Informação, ADS e Engenharia de Software da UMC.
+          O EduGuru acompanha a sua evolução nas disciplinas, indica o que revisar e liga o que
+          você aprende às áreas e vagas da tecnologia. Para alunos de Sistemas de Informação, ADS e
+          Engenharia de Software da UMC.
         </p>
         <div className="home-hero-acoes">
           {logado ? (
             <Link to="/painel" className="btn btn-primario btn-grande">
-              Ir para o painel
+              Ver minha evolução
             </Link>
           ) : (
             <>

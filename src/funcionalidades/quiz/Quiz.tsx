@@ -280,13 +280,16 @@ export default function Quiz() {
       <section className="pagina pagina-larga">
         <header className="pagina-topo">
           <h2>Quiz</h2>
-          <p>Escolha uma disciplina e responda até 10 perguntas, vendo na hora se acertou.</p>
+          <p>
+            Pratique uma disciplina com até 10 perguntas e veja na hora o que já domina. Cada prática atualiza a sua
+            evolução, o Guru e as áreas sugeridas no Carreiras.
+          </p>
           <p className="pagina-fatos">
+            <span>Perguntas e alternativas embaralhadas a cada prática</span>
             <span>
               Fácil {PONTOS_POR_NIVEL['Fácil']}, Médio {PONTOS_POR_NIVEL['Médio']} e Difícil{' '}
-              {PONTOS_POR_NIVEL['Difícil']} pontos
+              {PONTOS_POR_NIVEL['Difícil']} pontos, só no primeiro acerto
             </span>
-            <span>Pontua só no primeiro acerto</span>
             <span>1 dica 50/50 por rodada</span>
           </p>
         </header>

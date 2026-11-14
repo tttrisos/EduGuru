@@ -73,3 +73,103 @@
   color: var(--roxo-texto);
   text-decoration: none;
 }
+
+/* Minha evolução: jornada em 4 etapas */
+.jornada {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.jornada-etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-card);
+}
+
+.jornada-etapa:first-child {
+  border-color: color-mix(in srgb, var(--roxo) 55%, transparent);
+  background: color-mix(in srgb, var(--roxo) 8%, var(--bg-card));
+}
+
+.jornada-icone {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--roxo) 20%, transparent);
+  color: var(--roxo-texto);
+}
+
+.jornada-numero {
+  margin-top: 6px;
+  color: var(--roxo-texto);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.jornada-etapa strong {
+  font-size: 17px;
+  color: var(--text-forte);
+}
+
+.jornada-etapa p {
+  flex: 1;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.jornada-link {
+  color: var(--roxo-texto);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.jornada-link:hover {
+  text-decoration: underline;
+}
+
+.evolucao-gamificacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.evolucao-gamificacao p {
+  margin: 0;
+  color: var(--text-suave);
+}
+
+.evolucao-gamificacao a {
+  color: var(--roxo-texto);
+  text-decoration: none;
+}
+
+@media (max-width: 980px) {
+  .jornada {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .jornada {
+    grid-template-columns: 1fr;
+  }
+}
