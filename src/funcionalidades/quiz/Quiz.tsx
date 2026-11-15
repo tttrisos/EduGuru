@@ -55,6 +55,11 @@ function textoAlternativa(questao: QuestaoQuiz, letra: Letra) {
   return mapa[letra]
 }
 
+// A tela numera as alternativas de 1 a 4 (A = 1ª mostrada); a correção usa o mesmo número.
+function numeroDaLetra(letra: Letra) {
+  return LETRAS.indexOf(letra) + 1
+}
+
 function sortear(frases: string[]) {
   return frases[Math.floor(Math.random() * frases.length)]
 }
@@ -501,7 +506,7 @@ export default function Quiz() {
                     </span>
                   ) : (
                     <span>
-                      Resposta certa: <strong>{feedback.gabarito})</strong>{' '}
+                      Resposta certa: <strong>{numeroDaLetra(feedback.gabarito)})</strong>{' '}
                       <TextoRico texto={textoAlternativa(questao, feedback.gabarito)} />
                     </span>
                   )}
@@ -615,10 +620,10 @@ export default function Quiz() {
                   </p>
                   <p className="quiz-revisao-sua">
                     Sua resposta:{' '}
-                    {c.resposta ? <TextoRico texto={`${c.resposta}) ${textoAlternativa(questao, c.resposta)}`} /> : '—'}
+                    {c.resposta ? <TextoRico texto={`${numeroDaLetra(c.resposta)}) ${textoAlternativa(questao, c.resposta)}`} /> : '—'}
                   </p>
                   <p className="quiz-revisao-certa">
-                    Certa: <TextoRico texto={`${c.gabarito}) ${textoAlternativa(questao, c.gabarito)}`} />
+                    Certa: <TextoRico texto={`${numeroDaLetra(c.gabarito)}) ${textoAlternativa(questao, c.gabarito)}`} />
                   </p>
                   {explicacoes[c.pergunta_id] ? (
                     <p className="quiz-revisao-explicacao">
