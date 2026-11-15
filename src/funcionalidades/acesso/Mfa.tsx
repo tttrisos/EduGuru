@@ -3,7 +3,8 @@
 // VERIFICAÇÃO EM DUAS ETAPAS NO LOGIN (endereço /mfa) — RF03, RF04.
 // Só chega aqui quem precisa do código (ver compartilhado/sessao/nivelSessao.ts):
 // - quem ATIVOU o MFA em Minha conta: digita o código de 6 dígitos do aplicativo;
-// - administrador sem MFA: é obrigado a cadastrar o aplicativo (QR Code) antes de entrar.
+// - administrador sem MFA: é obrigado a cadastrar o aplicativo (QR Code) antes de entrar;
+// - quem NÃO usa o aplicativo, entrando num aparelho novo: código por e-mail (CodigoEmail.tsx, supabase/25).
 // Código certo → sessão vira aal2. 5 códigos errados → sai da conta. Banco: supabase/05 e 23.
 // ============================================================
 
@@ -16,6 +17,7 @@ import { registrarLogEvento } from '../../compartilhado/banco/log'
 import Rodape from '../../compartilhado/layout/Rodape'
 import { confirmarCodigo, fatorVerificado, iniciarCadastroTotp } from './fatoresMfa'
 import { descreverAparelho } from '../../compartilhado/utilitarios/aparelho'
+import CodigoEmail from './CodigoEmail'
 import './acesso.css'
 
 const MAXIMO_TENTATIVAS = 5
@@ -34,7 +36,7 @@ async function prepararMfa(ehAdmin: boolean): Promise<Preparo | null> {
 
 export default function Mfa() {
   const { confirmar } = useDialogo()
-  const { usuario, perfil, carregando, verificacaoOk, atualizarMfa, sair } = useAuth()
+  const { usuario, perfil, carregando, verificacaoOk, precisaCodigoEmail, atualizarMfa, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/painel'
@@ -49,7 +51,7 @@ export default function Mfa() {
   const jaPreparou = useRef(false)
 
   useEffect(() => {
-    if (carregando || !usuario || verificacaoOk || jaPreparou.current) return
+    if (carregando || !usuario || verificacaoOk || precisaCodigoEmail || jaPreparou.current) return
     jaPreparou.current = true
     prepararMfa(perfil?.papel === 'admin')
       .then((resultado) => {
@@ -67,11 +69,12 @@ export default function Mfa() {
         ),
       )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [carregando, usuario, verificacaoOk, perfil])
+  }, [carregando, usuario, verificacaoOk, precisaCodigoEmail, perfil])
 
   if (carregando) return <p className="status">Carregando...</p>
   if (!usuario) return <Navigate to="/login" replace />
   if (verificacaoOk) return <Navigate to={destino} replace />
+  if (precisaCodigoEmail) return <CodigoEmail destino={destino} />
 
   async function aoEnviar(e: React.FormEvent) {
     e.preventDefault()

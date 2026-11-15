@@ -38,6 +38,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 - **Back-end:** Supabase (Auth, banco PostgreSQL com Row Level Security, Storage e pg_cron).
 - **Captcha:** Cloudflare Turnstile (grátis) no login, no cadastro e no "esqueci a senha". A chave pública fica em `compartilhado/componentes/Captcha.tsx`; a secreta, só no Supabase (Authentication → Attack Protection).
 - **E-mails (confirmação de cadastro e redefinição de senha):** Brevo, ligado ao Supabase Auth por SMTP (o envio padrão do Supabase tem limite muito baixo). Configuração: Supabase → Authentication → Emails → SMTP Settings; não há chave no código.
+- **Código por e-mail em aparelho novo:** o próprio banco envia pela API do Brevo (extensão `pg_net`); a chave fica no Vault do Supabase e a proteção é ligada em `config_seguranca` (passo a passo no topo do script `25`).
 - **APIs externas:** API do GitHub (vagas do EduGuru Carreiras) e ViaCEP (cidade e estado no cadastro, opcional).
 - **Testes:** Vitest (`npm test`).
 
@@ -106,6 +107,7 @@ eduguru/
 | Usuários, MFA e exclusão de contas (RF26) | `administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
 | Logs de auditoria, com filtros, e limpeza (RF09, RF10) | `administracao/Logs.tsx`, regras em `compartilhado/utilitarios/filtroLogs.ts` | `02`, `06`, `10`, `24` |
 | Últimos acessos, sair dos outros aparelhos e registros com filtros (RF21) | `conta/AcessosEAparelhos.tsx`, `conta/RegistrosAtividade.tsx` | `24` (`meus_acessos`) |
+| Código por e-mail ao entrar em aparelho novo e aparelhos lembrados (RF03, RF21) | `acesso/CodigoEmail.tsx`, regras em `acesso/regrasCodigoEmail.ts` | `25` (`situacao_codigo_email`, `enviar_codigo_email`, `confirmar_codigo_email`) |
 | Captcha "não sou um robô" no login, cadastro e esqueci a senha | `compartilhado/componentes/Captcha.tsx` (Cloudflare Turnstile) | — (conferido pelo Supabase Auth) |
 | Carreiras (RF30 a RF32) | `carreiras/` (`apiVagasGithub.ts` = API do GitHub) | `17` |
 | Bússola EduGuru (RF33) | `bussola/` | `18` |
@@ -141,6 +143,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `22_filtro_gerenciavel.sql` | Filtro de materiais em tabelas editáveis pelo admin; site novo vai para a análise |
 | `23_mfa_opcional.sql` | Verificação em duas etapas opcional para alunos e obrigatória para administradores |
 | `24_acessos_e_filtros_logs.sql` | Últimos acessos em Minha conta, "sair dos outros aparelhos" no log e índices para os filtros dos logs |
+| `25_codigo_email_aparelho_novo.sql` | Código por e-mail ao entrar em aparelho novo (quem não usa o aplicativo), aparelhos lembrados por 30 dias; começa desligado (ver o passo a passo no topo) |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

@@ -41,7 +41,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 ### O aluno entra no sistema
 1. `acesso/Login.tsx`: e-mail, senha e o captcha "não sou um robô" (`componentes/Captcha.tsx`, Cloudflare Turnstile) → `entrar()` em `sessao/ContextoSessao.tsx` → Supabase Auth, que confere o captcha. O log de login guarda o tipo de aparelho (`utilitarios/aparelho.ts`).
 2. A regra das duas etapas está em `sessao/nivelSessao.ts` (com testes) e no banco (`sessao_mfa_ok` e `eh_admin`, script 23):
-   - aluno **sem** MFA: entra só com a senha (aal1);
+   - aluno **sem** MFA: entra só com a senha (aal1), mas, num **aparelho novo**, `Mfa.tsx` mostra `acesso/CodigoEmail.tsx`: o banco manda um código para o e-mail (`enviar_codigo_email`, script 25) e só libera a sessão depois de `confirmar_codigo_email`. "Lembrar este aparelho" guarda um token no navegador (`regrasCodigoEmail.ts`); nos próximos 30 dias, `situacao_codigo_email` libera só com a senha;
    - quem **ativou** o MFA: vai para `acesso/Mfa.tsx`, digita o código e a sessão vira **aal2**; sem o código, o banco não devolve nada;
    - **administrador**: código obrigatório; sem MFA cadastrado, `Mfa.tsx` obriga a cadastrar.
 3. `sessao/RotaProtegida.tsx`: confere o aceite da versão atual dos termos (`VERSAO_TERMOS` em `tipos.ts`); se mudou, manda para `lgpd/NovoAceite.tsx`.
@@ -104,7 +104,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 3. `supabase.auth.updateUser()` grava a nova; log `senha_alterada`; os outros aparelhos são desconectados.
 
 ### O usuário confere os acessos e os registros (Minha conta)
-1. `conta/AcessosEAparelhos.tsx` → **`meus_acessos`** (24): últimos logins com o aparelho e senhas erradas nos últimos 30 dias. "Sair dos outros aparelhos" → `signOut({ scope: 'others' })` e log `sessoes_encerradas`.
+1. `conta/AcessosEAparelhos.tsx` → **`meus_acessos`** (24): últimos logins com o aparelho e senhas erradas nos últimos 30 dias. "Sair dos outros aparelhos" → `signOut({ scope: 'others' })`, log `sessoes_encerradas` e `esquecer_outros_aparelhos` (25). Também lista os aparelhos lembrados.
 2. `conta/RegistrosAtividade.tsx`: filtros por tipo, período e busca (`utilitarios/filtroLogs.ts`), no navegador.
 3. Admin: `administracao/Logs.tsx` usa os mesmos filtros, mais e-mail e tabela, direto na consulta ao banco.
 

@@ -4,6 +4,8 @@
 // Supabase Auth: login (signInWithPassword), cadastro (signUp), sair (signOut) e nível da sessão
 // (aal1 = só senha; aal2 = senha + código de duas etapas). A regra de quando o código é exigido
 // (MFA opcional para aluno, obrigatório para admin) está em nivelSessao.ts.
+// Código por e-mail em aparelho novo (quem não usa o aplicativo): o banco responde se esta sessão
+// precisa dele (situacao_codigo_email, supabase/25); a tela é acesso/CodigoEmail.tsx.
 // Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
 // Usado por: quase todas as telas (ex.: ehAdmin decide o que mostrar).
 // ============================================================
@@ -15,6 +17,7 @@ import { VERSAO_TERMOS, type Perfil } from '../tipos'
 import { registrarLogEvento, registrarLoginFalhou } from '../banco/log'
 import { situacaoDaSessao } from './nivelSessao'
 import { descreverAparelho } from '../utilitarios/aparelho'
+import { esquecerTokenAparelho, lerTokenAparelho } from '../../funcionalidades/acesso/regrasCodigoEmail'
 
 type AuthContextValor = {
   usuario: User | null
@@ -26,6 +29,9 @@ type AuthContextValor = {
   verificacaoOk: boolean
   // a conta tem o MFA (aplicativo autenticador) ativo?
   temMfa: boolean
+  // aparelho novo sem o aplicativo: falta o código enviado por e-mail (tela /mfa mostra CodigoEmail)
+  precisaCodigoEmail: boolean
+  emailMascarado: string | null
   atualizarMfa: () => Promise<void>
   recarregarPerfil: () => Promise<void>
   entrar: (email: string, senha: string, captcha?: string | null) => Promise<{ erro: string | null }>
@@ -43,21 +49,61 @@ type AuthContextValor = {
 
 const AuthContext = createContext<AuthContextValor | null>(null)
 
-type DadosSessao = { verificacaoOk: boolean; temMfa: boolean; perfil: Perfil | null }
+type DadosSessao = {
+  verificacaoOk: boolean
+  temMfa: boolean
+  perfil: Perfil | null
+  precisaCodigoEmail: boolean
+  emailMascarado: string | null
+  aparelhoLembrado: boolean
+}
+
+const SEM_SESSAO: DadosSessao = {
+  verificacaoOk: false,
+  temMfa: false,
+  perfil: null,
+  precisaCodigoEmail: false,
+  emailMascarado: null,
+  aparelhoLembrado: false,
+}
+
+type SituacaoCodigoEmail = {
+  precisa_codigo: boolean
+  email?: string
+  aparelho_lembrado?: boolean
+  token_invalido?: boolean
+}
 
 // Quem ativou o MFA e ainda não digitou o código: o banco não devolve nada, então nem lê o perfil.
 async function lerDadosSessao(session: Session | null): Promise<DadosSessao> {
-  if (!session?.user) return { verificacaoOk: false, temMfa: false, perfil: null }
+  if (!session?.user) return SEM_SESSAO
 
   const { data: nivel } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
   const antes = situacaoDaSessao(nivel?.currentLevel, nivel?.nextLevel, null)
-  if (!antes.liberada) return { verificacaoOk: false, temMfa: antes.temMfa, perfil: null }
+  if (!antes.liberada) return { ...SEM_SESSAO, temMfa: antes.temMfa }
+
+  // Sem o aplicativo: pergunta ao banco se este aparelho precisa do código do e-mail.
+  // Se o script 25 ainda não foi rodado (erro), segue como antes.
+  let aparelhoLembrado = false
+  if (!antes.temMfa) {
+    const { data: sit, error } = await supabase.rpc('situacao_codigo_email', {
+      p_token: lerTokenAparelho(session.user.id),
+    })
+    const situacao = sit as SituacaoCodigoEmail | null
+    if (!error && situacao) {
+      if (situacao.token_invalido) esquecerTokenAparelho(session.user.id)
+      if (situacao.precisa_codigo) {
+        return { ...SEM_SESSAO, precisaCodigoEmail: true, emailMascarado: situacao.email ?? null }
+      }
+      aparelhoLembrado = !!situacao.aparelho_lembrado
+    }
+  }
 
   const { data } = await supabase.from('perfis').select('*').eq('id', session.user.id).single()
   const perfil = (data as Perfil) ?? null
   // Com o papel em mãos: administrador sem o código não é liberado (precisa cadastrar o MFA).
   const depois = situacaoDaSessao(nivel?.currentLevel, nivel?.nextLevel, perfil?.papel ?? null)
-  return { verificacaoOk: depois.liberada, temMfa: depois.temMfa, perfil }
+  return { ...SEM_SESSAO, verificacaoOk: depois.liberada, temMfa: depois.temMfa, perfil, aparelhoLembrado }
 }
 
 // Guarda quem está logado e o papel (aluno/admin). As páginas usam useAuth().
@@ -67,10 +113,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [carregando, setCarregando] = useState(true)
   const [verificacaoOk, setVerificacaoOk] = useState(false)
   const [temMfa, setTemMfa] = useState(false)
+  const [precisaCodigoEmail, setPrecisaCodigoEmail] = useState(false)
+  const [emailMascarado, setEmailMascarado] = useState<string | null>(null)
 
   function aplicar(dados: DadosSessao) {
     setVerificacaoOk(dados.verificacaoOk)
     setTemMfa(dados.temMfa)
+    setPrecisaCodigoEmail(dados.precisaCodigoEmail)
+    setEmailMascarado(dados.emailMascarado)
     setPerfil(dados.perfil)
   }
 
@@ -104,7 +154,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => assinatura.subscription.unsubscribe()
   }, [])
 
-  // Confere a senha. Quem não tem MFA já entra aqui; quem tem (e o admin) termina na tela /mfa.
+  // Confere a senha. Quem não tem MFA já entra aqui (ou, em aparelho novo, vai para o código do e-mail);
+  // quem tem o aplicativo (e o admin) termina na tela /mfa.
   // captcha = token do "não sou um robô" (Captcha.tsx); o Supabase confere quando a proteção está ligada.
   async function entrar(email: string, senha: string, captcha?: string | null) {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -122,7 +173,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Lê a situação ANTES de voltar, para a próxima tela já saber se precisa do código.
     setUsuario(data.user)
     const dados = await carregarDadosSessao(data.session)
-    if (dados.verificacaoOk) await registrarLogEvento('login', { mfa: 'nao', aparelho: descreverAparelho(navigator.userAgent) })
+    if (dados.verificacaoOk) {
+      await registrarLogEvento('login', {
+        mfa: dados.aparelhoLembrado ? 'aparelho' : 'nao',
+        aparelho: descreverAparelho(navigator.userAgent),
+      })
+    }
     return { erro: null }
   }
 
@@ -168,6 +224,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ehAdmin: perfil?.papel === 'admin',
     verificacaoOk,
     temMfa,
+    precisaCodigoEmail,
+    emailMascarado,
     atualizarMfa,
     recarregarPerfil: atualizarMfa,
     entrar,

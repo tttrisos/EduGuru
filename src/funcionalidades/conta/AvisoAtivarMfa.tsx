@@ -42,8 +42,9 @@ export default function AvisoAtivarMfa() {
       <div>
         <strong>Proteja a sua conta</strong>
         <p>
-          Hoje a sua conta é protegida só pela senha. Ative a verificação em duas etapas: além da senha, o
-          login passa a pedir um código do seu celular, e ninguém entra só com a senha.
+          Hoje a sua conta depende da senha e do seu e-mail. Ative a verificação em duas etapas: além da
+          senha, todo login passa a pedir um código do aplicativo no seu celular, e ninguém entra só com a
+          senha, nem se descobrir a senha do seu e-mail.
         </p>
         <div className="acoes-item">
           <Link to="/minha-conta" state={{ focar: 'duas-etapas' }} className="btn btn-primario">

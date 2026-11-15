@@ -113,10 +113,11 @@ export default function NovoAceite() {
             </li>
           </ul>
           <p className="item-meta">
-            Principais mudanças: a verificação em duas etapas passou a ser opcional para alunos
-            (ative ou desative em Minha conta), os e-mails de cadastro e de nova senha agora
-            são entregues pelo serviço Brevo, o login tem a verificação "não sou um robô" (Cloudflare) e
-            Minha conta mostra os seus últimos acessos, com o tipo de aparelho.
+            Principais mudanças: ao entrar num aparelho novo, quem não usa o aplicativo autenticador
+            recebe um código por e-mail (o aparelho pode ser lembrado por 30 dias); a verificação em
+            duas etapas é opcional para alunos (ative ou desative em Minha conta); os e-mails são
+            entregues pelo serviço Brevo; o login tem a verificação "não sou um robô" (Cloudflare); e
+            Minha conta mostra os seus últimos acessos e aparelhos lembrados.
           </p>
         </div>
 

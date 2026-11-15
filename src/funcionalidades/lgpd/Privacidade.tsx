@@ -6,7 +6,8 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.6 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login).
+// Política de Privacidade, versão 1.7 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
+// 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -16,9 +17,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.6 — 14/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.7 — 14/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô" e últimos acessos em Minha conta). Finalidade
+          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô", últimos acessos em Minha conta e código por e-mail ao entrar em aparelho novo). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -53,6 +54,15 @@ export default function Privacidade() {
             do aplicativo autenticador vinculado à sua conta (a chave secreta é guardada pelo
             Supabase Auth; o EduGuru não vê nem armazena os códigos de 6 dígitos). Para alunos
             é opcional e pode ser desativada em Minha conta; para administradores é obrigatória.
+          </li>
+          <li>
+            <strong>Código por e-mail e aparelhos lembrados (para quem não usa o aplicativo):</strong> ao
+            entrar num aparelho novo, o EduGuru envia um código de 6 números para o seu e-mail. Guardamos
+            apenas um resumo criptográfico (hash) do código, apagado depois do uso ou em 10 minutos. Se
+            você marcar &quot;Lembrar este aparelho&quot;, o navegador guarda uma chave aleatória e o
+            EduGuru guarda só o hash dela, o tipo de aparelho (ex.: &quot;Chrome no Windows&quot;) e as
+            datas de criação e de último uso, por 30 dias. Em Minha conta você vê os aparelhos lembrados e
+            pode esquecê-los com &quot;Sair dos outros aparelhos&quot;.
           </li>
           <li>
             <strong>Registro do aceite:</strong> data, hora e versão do Termo de Aceite e
@@ -101,7 +111,8 @@ export default function Privacidade() {
             <strong>Registros de auditoria:</strong> login concluído (com o tipo de navegador e
             de sistema, por exemplo &quot;Chrome no Windows&quot;, sem endereço IP nem versão, para
             você conferir os seus acessos em Minha conta), saída dos outros aparelhos, tentativas de login
-            malsucedidas, códigos de verificação em duas etapas inválidos, ativação e
+            malsucedidas, códigos de verificação em duas etapas inválidos, envio, confirmação e erros do
+            código enviado por e-mail, aparelhos esquecidos, ativação e
             desativação da verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
             redefinição da verificação em duas etapas por um administrador, quizzes
             finalizados (acertos e pontos), criação/edição/exclusão de disciplinas,
@@ -141,6 +152,12 @@ export default function Privacidade() {
                 <td>Proteger a conta contra acesso com senha vazada ou descoberta (opcional para alunos; obrigatório para administradores)</td>
                 <td>Execução de contrato (art. 7º, V), em atendimento ao dever de segurança (art. 46)</td>
                 <td>Enquanto a conta existir</td>
+              </tr>
+              <tr>
+                <td>Hash do código enviado por e-mail e aparelhos lembrados (hash da chave, tipo de aparelho e datas)</td>
+                <td>Confirmar que é o dono da conta ao entrar num aparelho novo, sem exigir o aplicativo autenticador</td>
+                <td>Legítimo interesse na segurança da conta (art. 7º, IX), em atendimento ao dever de segurança (art. 46)</td>
+                <td>Código: até ser usado ou por 10 minutos. Aparelho lembrado: 30 dias, ou até você esquecê-lo</td>
               </tr>
               <tr>
                 <td>Data e versão do aceite</td>
@@ -221,9 +238,10 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Brevo</strong> (envio de e-mails) — entrega os e-mails de confirmação de
-            cadastro e de redefinição de senha gerados pelo Supabase. Recebe apenas o seu
-            endereço de e-mail e o conteúdo da mensagem (o link de confirmação ou de nova
-            senha), somente para fazer a entrega; não recebe senha, curso, notas nem
+            cadastro e de redefinição de senha gerados pelo Supabase e o código de acesso ao
+            entrar num aparelho novo. Recebe apenas o seu endereço de e-mail e o conteúdo da
+            mensagem (o link de confirmação ou de nova senha, ou o código e o tipo de aparelho),
+            somente para fazer a entrega; não recebe senha, curso, notas nem
             desempenho, e o EduGuru não o usa para enviar propaganda. O Brevo mantém por um
             tempo o registro técnico de cada envio (para quem, quando e se foi entregue),
             conforme a sua própria política de privacidade.
@@ -269,7 +287,9 @@ export default function Privacidade() {
           você continuar logado — não é usado para te rastrear em outros sites. O
           navegador também guarda duas preferências suas, que não identificam ninguém e
           não são enviadas ao EduGuru: o tema escolhido (escuro ou claro) e se os sons do
-          quiz estão desligados. Em Carreiras, o navegador guarda por 30 minutos uma cópia
+          quiz estão desligados. Se você marcar &quot;Lembrar este aparelho&quot; ao digitar o
+          código do e-mail, o navegador guarda também uma chave aleatória por 30 dias, usada
+          apenas para não pedir o código de novo nesse aparelho. Em Carreiras, o navegador guarda por 30 minutos uma cópia
           da lista de vagas (dados públicos, sem nada sobre você), para não consultar o
           GitHub a cada visita e para mostrar a última lista quando ele estiver fora do ar.
         </p>
@@ -385,7 +405,9 @@ export default function Privacidade() {
           Senhas passam por hash (nunca texto puro). A verificação em duas etapas (senha +
           código do aplicativo autenticador) é obrigatória para administradores e opcional,
           mas recomendada, para alunos: quem a ativa precisa do código em todo login, e o
-          próprio banco de dados recusa as sessões dessa conta que não informaram o código. O acesso a cada
+          próprio banco de dados recusa as sessões dessa conta que não informaram o código. Para quem não
+          usa o aplicativo, o login num aparelho novo pede um código enviado ao e-mail da conta, e o banco
+          também recusa a sessão até o código ser confirmado. O acesso a cada
           funcionalidade é controlado por regras de segurança no próprio banco de dados
           (Row Level Security), não apenas pela interface. Arquivos anexados não são
           públicos: só podem ser abertos por usuários logados, por links temporários
@@ -396,7 +418,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.6, 14/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.7, 14/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

@@ -19,7 +19,8 @@ export const CATEGORIAS_LOG: { valor: Categoria; rotulo: string; acoes: string[]
     valor: 'acessos',
     rotulo: 'Acessos',
     acoes: [
-      'login', 'login_falhou', 'logout', 'sessoes_encerradas',
+      'login', 'login_falhou', 'logout', 'sessoes_encerradas', 'aparelhos_esquecidos',
+      'codigo_email_enviado', 'codigo_email_confirmado', 'codigo_email_errado',
       'mfa_ativado', 'mfa_desativado', 'mfa_falhou', 'mfa_bloqueado', 'mfa_redefinido',
     ],
   },

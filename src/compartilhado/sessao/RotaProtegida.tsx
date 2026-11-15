@@ -2,7 +2,7 @@
 // compartilhado/sessao/RotaProtegida.tsx
 // PORTEIRO DAS TELAS LOGADAS: antes de mostrar a tela, confere na ordem:
 // 1) está logado?  2) digitou o código das duas etapas, se a conta exige (quem ativou o MFA e todo
-//    admin; ver nivelSessao.ts)?  3) aceitou a versão atual dos termos?
+//    admin; ver nivelSessao.ts) ou o código do e-mail, se é um aparelho novo (supabase/25)?  3) aceitou a versão atual dos termos?
 // 4) (somenteAdmin) é administrador?  Se faltar algo, manda para a tela certa (login, MFA, novo aceite).
 // A tela só esconde; quem garante de verdade é o RLS do banco.
 // ============================================================

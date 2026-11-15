@@ -6,7 +6,8 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.6 (1.6: verificação em duas etapas opcional para alunos).
+// Termo de Aceite, versão 1.7 (1.6: verificação em duas etapas opcional para alunos;
+// 1.7: código por e-mail ao entrar em aparelho novo).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -16,7 +17,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.6 — 14/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.7 — 14/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -73,8 +74,10 @@ export default function TermoDeAceite() {
           autenticador (ex.: Google Authenticator, Microsoft Authenticator); a partir daí,
           além da senha, todo login pede o código de 6 dígitos do aplicativo. Recomendamos
           ativar. Você pode desativar quando quiser, confirmando com a senha atual; sem
-          ela, a sua conta fica protegida só pela senha. Você é responsável por manter sua
-          senha em sigilo e o aplicativo autenticador sob seu controle. Se perder o acesso
+          ela, ao entrar num aparelho novo, o EduGuru pede um código enviado ao seu e-mail
+          (o aparelho pode ser lembrado por 30 dias). Você é responsável por manter sua
+          senha e o acesso ao seu e-mail em sigilo e o aplicativo autenticador sob seu
+          controle; nunca passe o código para outra pessoa. Se perder o acesso
           ao aplicativo, peça a um administrador para redefinir a verificação. Avise a
           equipe do projeto imediatamente se suspeitar de acesso indevido à sua conta.
         </p>
@@ -133,7 +136,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.6, 14/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.7, 14/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>
