@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react'
 
 // Chave PÚBLICA do site (Cloudflare → Turnstile → o widget do EduGuru → "Site Key").
 // A chave secreta vai só no Supabase: Authentication → Attack Protection → Captcha.
-export const CHAVE_SITE_CAPTCHA = ''
+export const CHAVE_SITE_CAPTCHA: string = '0x4AAAAAAGBYJ0RlVQIDJtdS'
 
 export const captchaLigado = CHAVE_SITE_CAPTCHA !== ''
 
