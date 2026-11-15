@@ -6,6 +6,8 @@
 // (MFA opcional para aluno, obrigatório para admin) está em nivelSessao.ts.
 // Código por e-mail em aparelho novo (quem não usa o aplicativo): o banco responde se esta sessão
 // precisa dele (situacao_codigo_email, supabase/25); a tela é acesso/CodigoEmail.tsx.
+// Sessão encerrada em outro aparelho ("Sair dos outros aparelhos"): a cada minuto e ao voltar para a
+// aba, pergunta ao Supabase Auth se a sessão ainda existe; se não, sai e avisa no login (supabase/26).
 // Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
 // Usado por: quase todas as telas (ex.: ehAdmin decide o que mostrar).
 // ============================================================
@@ -32,6 +34,8 @@ type AuthContextValor = {
   // aparelho novo sem o aplicativo: falta o código enviado por e-mail (tela /mfa mostra CodigoEmail)
   precisaCodigoEmail: boolean
   emailMascarado: string | null
+  // mensagem para a tela de login quando a sessão foi encerrada em outro aparelho
+  avisoSaida: string | null
   atualizarMfa: () => Promise<void>
   recarregarPerfil: () => Promise<void>
   entrar: (email: string, senha: string, captcha?: string | null) => Promise<{ erro: string | null }>
@@ -115,6 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [temMfa, setTemMfa] = useState(false)
   const [precisaCodigoEmail, setPrecisaCodigoEmail] = useState(false)
   const [emailMascarado, setEmailMascarado] = useState<string | null>(null)
+  const [avisoSaida, setAvisoSaida] = useState<string | null>(null)
 
   function aplicar(dados: DadosSessao) {
     setVerificacaoOk(dados.verificacaoOk)
@@ -154,10 +159,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => assinatura.subscription.unsubscribe()
   }, [])
 
+  // Esta sessão foi encerrada em outro aparelho? O banco já recusa os dados (supabase/26);
+  // aqui o site percebe e volta para o login, em até 1 minuto ou ao voltar para a aba.
+  useEffect(() => {
+    if (!usuario) return
+    async function conferirSessao() {
+      const { error } = await supabase.auth.getUser()
+      if (error?.code === 'session_not_found') {
+        setAvisoSaida('Esta sessão foi encerrada em outro aparelho. Entre de novo.')
+        await supabase.auth.signOut({ scope: 'local' })
+      }
+    }
+    function aoVoltarParaAba() {
+      if (document.visibilityState === 'visible') conferirSessao()
+    }
+    const intervalo = setInterval(conferirSessao, 60_000)
+    document.addEventListener('visibilitychange', aoVoltarParaAba)
+    return () => {
+      clearInterval(intervalo)
+      document.removeEventListener('visibilitychange', aoVoltarParaAba)
+    }
+  }, [usuario])
+
   // Confere a senha. Quem não tem MFA já entra aqui (ou, em aparelho novo, vai para o código do e-mail);
   // quem tem o aplicativo (e o admin) termina na tela /mfa.
   // captcha = token do "não sou um robô" (Captcha.tsx); o Supabase confere quando a proteção está ligada.
   async function entrar(email: string, senha: string, captcha?: string | null) {
+    setAvisoSaida(null)
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password: senha,
@@ -226,6 +254,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     temMfa,
     precisaCodigoEmail,
     emailMascarado,
+    avisoSaida,
     atualizarMfa,
     recarregarPerfil: atualizarMfa,
     entrar,

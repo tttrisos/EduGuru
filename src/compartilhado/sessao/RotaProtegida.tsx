@@ -20,7 +20,7 @@ type Props = {
 // Exige login, o código do MFA (quando a conta exige), aceite dos termos e, se somenteAdmin, papel de admin.
 // O banco (RLS) repete essas regras.
 export default function RotaProtegida({ children, somenteAdmin = false }: Props) {
-  const { usuario, perfil, carregando, ehAdmin, verificacaoOk } = useAuth()
+  const { usuario, perfil, carregando, ehAdmin, verificacaoOk, avisoSaida } = useAuth()
   const location = useLocation()
 
   if (carregando) {
@@ -28,7 +28,7 @@ export default function RotaProtegida({ children, somenteAdmin = false }: Props)
   }
 
   if (!usuario) {
-    return <Navigate to="/login" replace state={{ rotaOrigem: location.pathname }} />
+    return <Navigate to="/login" replace state={{ rotaOrigem: location.pathname, aviso: avisoSaida ?? undefined }} />
   }
 
   if (!verificacaoOk) {

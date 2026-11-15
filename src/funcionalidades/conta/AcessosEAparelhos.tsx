@@ -20,7 +20,7 @@ import { lerTokenAparelho, textoVerificacao } from '../acesso/regrasCodigoEmail'
 
 type Acessos = {
   logins: { quando: string; aparelho: string | null; com_codigo: boolean; verificacao?: string }[]
-  aparelhos_lembrados?: { aparelho: string | null; ultimo_uso: string; expira_em: string }[]
+  aparelhos_lembrados?: { aparelho: string | null; ultimo_uso: string; expira_em: string; este?: boolean }[]
   senhas_erradas_30_dias: number
   ultima_senha_errada: string | null
 }
@@ -37,12 +37,15 @@ export default function AcessosEAparelhos() {
   const [sucesso, setSucesso] = useState('')
   const [enviando, setEnviando] = useState(false)
 
+  // O token deste navegador (se lembrado) marca "este aparelho" na lista.
+  const tokenDeste = usuario ? lerTokenAparelho(usuario.id) : null
+
   useEffect(() => {
-    supabase.rpc('meus_acessos').then(({ data, error }) => {
+    supabase.rpc('meus_acessos', { p_token: tokenDeste }).then(({ data, error }) => {
       if (error) setErro('Não foi possível carregar os seus acessos.')
       else setAcessos(data as Acessos)
     })
-  }, [])
+  }, [tokenDeste])
 
   async function sairDosOutros() {
     setErro('')
@@ -59,13 +62,17 @@ export default function AcessosEAparelhos() {
     if (!error) {
       await registrarLogEvento('sessoes_encerradas')
       // Os outros aparelhos lembrados também voltam a pedir o código do e-mail (o deste continua).
-      await supabase.rpc('esquecer_outros_aparelhos', { p_token: usuario ? lerTokenAparelho(usuario.id) : null })
-      const { data } = await supabase.rpc('meus_acessos')
+      await supabase.rpc('esquecer_outros_aparelhos', { p_token: tokenDeste })
+      const { data } = await supabase.rpc('meus_acessos', { p_token: tokenDeste })
       if (data) setAcessos(data as Acessos)
     }
     setEnviando(false)
     if (error) setErro('Não foi possível desconectar os outros aparelhos. Tente de novo.')
-    else setSucesso('Pronto! Os outros aparelhos foram desconectados.')
+    else
+      setSucesso(
+        'Pronto! Os outros aparelhos foram desconectados e voltam para a tela de login em até 1 minuto. ' +
+          'O histórico de logins continua registrado abaixo.',
+      )
   }
 
   const erradas = Number(acessos?.senhas_erradas_30_dias ?? 0)
@@ -88,6 +95,7 @@ export default function AcessosEAparelhos() {
         </p>
       ) : null}
 
+      {acessos ? <h4>Histórico dos últimos logins</h4> : null}
       {acessos ? (
         acessos.logins.length === 0 ? (
           <p className="vazio">Nenhum login registrado nos últimos 90 dias.</p>
@@ -118,7 +126,10 @@ export default function AcessosEAparelhos() {
             {acessos.aparelhos_lembrados.map((a, i) => (
               <li key={`${a.ultimo_uso}-${i}`} className="item-lista">
                 <div>
-                  <strong>{a.aparelho ?? 'Aparelho não informado'}</strong>
+                  <strong>
+                    {a.aparelho ?? 'Aparelho não informado'}
+                    {a.este ? <span className="selo">este aparelho</span> : null}
+                  </strong>
                   <span className="item-meta">
                     último uso em {formatarData(a.ultimo_uso)} · lembrado até{' '}
                     {new Date(a.expira_em).toLocaleDateString('pt-BR')}

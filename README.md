@@ -144,6 +144,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `23_mfa_opcional.sql` | Verificação em duas etapas opcional para alunos e obrigatória para administradores |
 | `24_acessos_e_filtros_logs.sql` | Últimos acessos em Minha conta, "sair dos outros aparelhos" no log e índices para os filtros dos logs |
 | `25_codigo_email_aparelho_novo.sql` | Código por e-mail ao entrar em aparelho novo (quem não usa o aplicativo), aparelhos lembrados por 30 dias; começa desligado (ver o passo a passo no topo) |
+| `26_sessao_encerrada_na_hora.sql` | "Sair dos outros aparelhos" vale na hora: as regras de segurança conferem se a sessão ainda existe; Minha conta marca "este aparelho" |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

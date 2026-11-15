@@ -104,7 +104,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 3. `supabase.auth.updateUser()` grava a nova; log `senha_alterada`; os outros aparelhos são desconectados.
 
 ### O usuário confere os acessos e os registros (Minha conta)
-1. `conta/AcessosEAparelhos.tsx` → **`meus_acessos`** (24): últimos logins com o aparelho e senhas erradas nos últimos 30 dias. "Sair dos outros aparelhos" → `signOut({ scope: 'others' })`, log `sessoes_encerradas` e `esquecer_outros_aparelhos` (25). Também lista os aparelhos lembrados.
+1. `conta/AcessosEAparelhos.tsx` → **`meus_acessos`** (24): últimos logins com o aparelho e senhas erradas nos últimos 30 dias. "Sair dos outros aparelhos" → `signOut({ scope: 'others' })`, log `sessoes_encerradas` e `esquecer_outros_aparelhos` (25). Também lista os aparelhos lembrados ("este aparelho" marcado). O banco recusa na hora as sessões encerradas (`sessao_ativa`, script 26), e `ContextoSessao.tsx` confere a cada minuto e ao voltar para a aba (`getUser` → `session_not_found`), mandando o outro aparelho para o login com aviso.
 2. `conta/RegistrosAtividade.tsx`: filtros por tipo, período e busca (`utilitarios/filtroLogs.ts`), no navegador.
 3. Admin: `administracao/Logs.tsx` usa os mesmos filtros, mais e-mail e tabela, direto na consulta ao banco.
 
