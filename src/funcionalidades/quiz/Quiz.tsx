@@ -30,6 +30,7 @@ import {
 import { buscarMateriaisComunidade } from '../materiais/comunidade'
 import ListaComunidade from '../materiais/ListaComunidade'
 import { guardarSomDesligado, mensagemSequencia, somDesligado, tocarSom } from './efeitos'
+import { textoPerguntasDoCartao } from './regrasQuiz'
 import './quiz.css'
 
 // Quiz (RF16, RF17, RF19): uma pergunta por vez, com a correção logo depois de responder.
@@ -38,7 +39,6 @@ import './quiz.css'
 
 // Abaixo deste aproveitamento o Guru indica materiais.
 const APROVEITAMENTO_MINIMO = 60
-
 const ELOGIOS = ['Mandou bem!', 'Isso aí!', 'Excelente!', 'Na mosca!', 'Muito bom!']
 const INCENTIVOS = ['Quase!', 'Não foi dessa vez.', 'Vale revisar esta.', 'Errar também ensina.']
 
@@ -361,7 +361,9 @@ export default function Quiz() {
                   {cursosDa(d).join(' · ')}
                 </span>
                 <strong>{d.nome}</strong>
-                <small>{qtd === 0 ? 'Ainda sem perguntas' : `${qtd} perguntas`}</small>
+                {/* O cartão mostra quantas perguntas a RODADA terá (no máximo 10), e não o total do banco:
+                    com 15 cadastradas, a rodada sorteia 10. O total do banco aparece entre parênteses. */}
+                <small>{textoPerguntasDoCartao(qtd)}</small>
               </button>
             )
           })}
