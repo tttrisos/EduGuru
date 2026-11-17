@@ -46,7 +46,11 @@ export default function Login() {
   const [aceitouTermos, setAceitouTermos] = useState(false)
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
-  const [avisoCadastro, setAvisoCadastro] = useState(estadoRota?.aviso ?? '')
+  // Veio do link "Confirmar e-mail" (principal.tsx) sem estar logado: avisa que já pode entrar.
+  const veioDaConfirmacao = new URLSearchParams(window.location.search).has('cadastro-confirmado')
+  const [avisoCadastro, setAvisoCadastro] = useState(
+    estadoRota?.aviso ?? (veioDaConfirmacao ? 'E-mail confirmado! Agora entre com seu e-mail e senha.' : ''),
+  )
   // Captcha 'não sou um robô' (Captcha.tsx): cada token vale uma tentativa; depois pede outro.
   const [captcha, setCaptcha] = useState<string | null>(null)
   const [reiniciarCaptcha, setReiniciarCaptcha] = useState(0)

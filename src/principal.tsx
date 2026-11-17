@@ -23,6 +23,13 @@ if (new URLSearchParams(window.location.search).has('recuperar-senha')) {
   window.location.hash = '#/redefinir-senha'
 }
 
+// Link "Confirmar e-mail" do cadastro: o Supabase já confirmou o e-mail antes de voltar para cá.
+// Se o link foi aberto no mesmo navegador do cadastro, a pessoa já entra logada e vai para o painel;
+// em outro navegador, a RotaProtegida manda para o login, que mostra "E-mail confirmado!".
+if (new URLSearchParams(window.location.search).has('cadastro-confirmado') && !window.location.hash) {
+  window.location.hash = '#/painel'
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>

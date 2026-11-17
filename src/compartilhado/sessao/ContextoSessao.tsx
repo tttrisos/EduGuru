@@ -205,6 +205,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error?.code === 'captcha_failed') {
       return { erro: 'Confirme a verificação "não sou um robô" e tente de novo.' }
     }
+    // Conta criada, mas o link de confirmação do e-mail ainda não foi aberto. O Supabase só devolve
+    // este código quando a senha está CERTA, então avisar não ajuda quem está chutando senhas.
+    // Não é uma falha de senha, por isso não vai para o log como "login_falhou".
+    if (error?.code === 'email_not_confirmed') {
+      return {
+        erro:
+          'Seu e-mail ainda não foi confirmado. Abra o link que enviamos quando você criou a conta ' +
+          '(confira também o spam) e depois entre de novo.',
+      }
+    }
     if (error || !data.user) {
       // Grava a falha no log (só se o e-mail existir; o banco não conta para a tela se existe).
       // A mensagem é a mesma para e-mail inexistente e senha errada, para não revelar quem tem conta.
@@ -243,6 +253,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password: senha,
       options: {
         captchaToken: captcha ?? undefined,
+        // Para onde o link "Confirmar e-mail" volta. Sem isto, o Supabase usa a "Site URL" do projeto
+        // (https://tttrisos.github.io, sem /EduGuru/), e o GitHub Pages mostrava erro 404.
+        // O "?cadastro-confirmado=1" avisa o site (principal.tsx) para mostrar a mensagem certa.
+        emailRedirectTo: `${window.location.origin}${window.location.pathname}?cadastro-confirmado=1`,
         data: {
           nome,
           curso,
