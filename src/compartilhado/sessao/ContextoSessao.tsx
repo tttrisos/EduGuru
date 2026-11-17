@@ -5,7 +5,7 @@
 // (aal1 = só senha; aal2 = senha + código de duas etapas). A regra de quando o código é exigido
 // (MFA opcional para aluno, obrigatório para admin) está em nivelSessao.ts.
 // Código por e-mail em aparelho novo (quem não usa o aplicativo): o banco responde se esta sessão
-// precisa dele (situacao_codigo_email, supabase/25); a tela é acesso/CodigoEmail.tsx.
+// precisa dele (situacao_codigo_email, supabase/25); a tela é 2_acesso/CodigoEmail.tsx.
 // Sessão encerrada em outro aparelho ("Sair dos outros aparelhos"): a cada minuto e ao voltar para a
 // aba, pergunta ao Supabase Auth se a sessão ainda existe; se não, sai e avisa no login (supabase/26).
 // Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
@@ -19,7 +19,7 @@ import { VERSAO_TERMOS, type Perfil } from '../tipos'
 import { registrarLogEvento, registrarLoginFalhou } from '../banco/log'
 import { situacaoDaSessao } from './nivelSessao'
 import { descreverAparelho } from '../utilitarios/aparelho'
-import { esquecerTokenAparelho, lerTokenAparelho } from '../../funcionalidades/acesso/regrasCodigoEmail'
+import { esquecerTokenAparelho, lerTokenAparelho } from '../../funcionalidades/2_acesso/regrasCodigoEmail'
 
 type AuthContextValor = {
   usuario: User | null

@@ -44,7 +44,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 
 ## Estrutura do projeto
 
-Tudo em português. Cada pasta de `src/funcionalidades/` reúne **tudo** de uma funcionalidade: as telas (`.tsx`), as regras (`.ts`, testáveis) e o estilo (`.css`). O que é usado por várias telas fica em `src/compartilhado/`. Os testes ficam em `testes/`, nas mesmas pastas. **Todo arquivo começa com um cabeçalho** dizendo o que faz, em qual tela aparece e com quais funções do banco conversa. O mapa completo, com o caminho de cada ação (ex.: "o que acontece quando o aluno responde uma pergunta"), está em [`docs/MAPA_DO_CODIGO.md`](docs/MAPA_DO_CODIGO.md).
+Tudo em português. As pastas de `src/funcionalidades/` são numeradas na **ordem do menu do site** (1 = público, 2 = acesso, 3 = Minha evolução, 4 = Estudar, 5 = Bússola e Carreiras, 6 = Minha conta, 7 = administração). Cada pasta reúne **tudo** da funcionalidade: as telas (`.tsx`), as regras (`.ts`, testáveis) e o estilo (`.css`). O que é usado por várias telas fica em `src/compartilhado/`. Os testes ficam em `testes/`, nas mesmas pastas. **Todo arquivo começa com um cabeçalho** dizendo o que faz, em qual tela aparece e com quais funções do banco conversa. O mapa completo, com o caminho de cada ação (ex.: "o que acontece quando o aluno responde uma pergunta"), está em [`docs/MAPA_DO_CODIGO.md`](docs/MAPA_DO_CODIGO.md).
 
 ```
 eduguru/
@@ -60,23 +60,16 @@ eduguru/
 │   │   ├── utilitarios/          Tema escuro/claro e negrito nos textos
 │   │   ├── estilos/              global.css (cores, botões, campos, tabelas)
 │   │   └── tipos.ts              Formato dos dados que vêm do banco
-│   └── funcionalidades/
-│       ├── inicio/               Página inicial pública
-│       ├── acesso/               Login, cadastro, verificação em duas etapas, esqueci/redefinir senha, regras de senha
-│       ├── conta/                Minha conta: dados, trocar senha, ranking, localização, exclusão
-│       ├── lgpd/                 Termo de Aceite, Política de Privacidade e novo aceite
-│       ├── painel/               Minha evolução (aluno) e painel do admin
-│       ├── quiz/                 Prática com quiz e efeitos (sons, comemorações)
-│       ├── ranking/              Ranking geral e por disciplina
-│       ├── materiais/            Materiais, filtro, comunidade, moderação e gestão pelo admin
-│       ├── notas/                Notas e faltas + cálculo (regra da UMC)
-│       ├── disciplinas/          Disciplinas por curso
-│       ├── perguntas/            Banco de perguntas (admin)
-│       ├── bussola/              Bússola EduGuru (autoavaliação de interesses)
-│       ├── carreiras/            EduGuru Carreiras: API do GitHub, localidade, vagas
-│       └── administracao/        Usuários e logs (admin)
-├── testes/                       Testes (Vitest), nas mesmas pastas das funcionalidades
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 24)
+│   └── funcionalidades/          Uma pasta por item do menu, na ordem do site
+│       ├── 1_publico/            Sem login: página inicial (inicio/) e Termo, Política e novo aceite (lgpd/)
+│       ├── 2_acesso/             Login, cadastro, código do aplicativo, código por e-mail, esqueci/redefinir senha
+│       ├── 3_minha_evolucao/     Menu "Minha evolução": painel do aluno (painel/), notas e faltas (notas/), disciplinas (disciplinas/)
+│       ├── 4_estudar/            Menu "Estudar": quiz/, ranking/ e materiais/ (com a moderação do admin)
+│       ├── 5_carreira/           Bússola EduGuru (bussola/) e EduGuru Carreiras (carreiras/)
+│       ├── 6_conta/              Minha conta: dados, senha, verificação em duas etapas, acessos, exclusão
+│       └── 7_administracao/      Só admin: painel, perguntas, usuários e logs
+├── testes/                       Testes (Vitest), com as mesmas pastas de src/ (ex.: testes/4_estudar/quiz/)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 27)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -86,31 +79,31 @@ eduguru/
 
 | Funcionalidade | Pasta em `src/funcionalidades/` | Banco (`supabase/`) |
 |---|---|---|
-| Página inicial (RF23) | `inicio/Inicio.tsx` | — |
-| Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `acesso/Login.tsx`, `acesso/regrasSenha.ts` | `02`, `04` |
-| Verificação em duas etapas (RF03, RF04): código no login e ativar/desativar em Minha conta | `acesso/Mfa.tsx`, `acesso/fatoresMfa.ts`, `conta/VerificacaoDuasEtapas.tsx`, regra em `compartilhado/sessao/nivelSessao.ts` | `05`, `23` |
-| Esqueci minha senha (RF24) | `acesso/EsqueciSenha.tsx`, `acesso/RedefinirSenha.tsx` | `09` |
-| Trocar a senha estando logado | `conta/TrocarSenha.tsx` | `21` (`conferir_senha_atual`) |
-| Termo, Política e novo aceite (RF11 a RF13, RF22) | `lgpd/` | `08` |
-| Minha conta e exclusão de conta (RF15, RF21) | `conta/MinhaConta.tsx`, `conta/arquivosDoUsuario.ts` | `07` |
-| Minha evolução, painel do aluno (RF25) | `painel/MinhaEvolucao.tsx`, `painel/evolucao.ts` | `11` (`meu_desempenho`), `17`, `18` |
-| Painel do admin (RF25, RF32) | `painel/PainelAdmin.tsx` | `12` (`estatisticas_admin`), `17`, `18` |
-| Disciplinas (RF06) | `disciplinas/` | `01`, `13` |
-| Banco de perguntas (RF07) | `perguntas/` | `11` (`criar_pergunta`), `14`, `16` (`editar_pergunta`) |
-| Materiais, filtro, comunidade, denúncia e perfil (RF08, RF28, RF29) | `materiais/` | `03`, `04`, `15` |
-| Moderação e gestão de todos os materiais (RF27) | `materiais/Moderacao.tsx`, `materiais/TodosMateriais.tsx` | `15` (`moderar_material`), `22` (`aprovar_e_liberar_site`) |
-| Listas do filtro de materiais (RF08, RF27) | `materiais/ListasDoFiltro.tsx` | `22` (`filtro_sites`, `filtro_termos`, `verificar_material`) |
-| Quiz embaralhado e pontuação (RF16, RF17) | `quiz/Quiz.tsx` | `11`, `19` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `pedir_dica`) |
-| Guru (RF19) | `painel/MinhaEvolucao.tsx` | `11` (`recomendacoes_guru`) |
-| Ranking (RF18) | `ranking/Ranking.tsx` | `11` (`ranking`) |
-| Notas e faltas (RF20) | `notas/` | `12` |
-| Usuários, MFA e exclusão de contas (RF26) | `administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
-| Logs de auditoria, com filtros, e limpeza (RF09, RF10) | `administracao/Logs.tsx`, regras em `compartilhado/utilitarios/filtroLogs.ts` | `02`, `06`, `10`, `24` |
-| Últimos acessos, sair dos outros aparelhos e registros com filtros (RF21) | `conta/AcessosEAparelhos.tsx`, `conta/RegistrosAtividade.tsx` | `24` (`meus_acessos`) |
-| Código por e-mail ao entrar em aparelho novo e aparelhos lembrados (RF03, RF21) | `acesso/CodigoEmail.tsx`, regras em `acesso/regrasCodigoEmail.ts` | `25` (`situacao_codigo_email`, `enviar_codigo_email`, `confirmar_codigo_email`) |
+| Página inicial (RF23) | `1_publico/inicio/Inicio.tsx` | — |
+| Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `2_acesso/Login.tsx`, `2_acesso/regrasSenha.ts` | `02`, `04` |
+| Verificação em duas etapas (RF03, RF04): código no login e ativar/desativar em Minha conta | `2_acesso/Mfa.tsx`, `2_acesso/fatoresMfa.ts`, `6_conta/VerificacaoDuasEtapas.tsx`, regra em `compartilhado/sessao/nivelSessao.ts` | `05`, `23` |
+| Esqueci minha senha (RF24) | `2_acesso/EsqueciSenha.tsx`, `2_acesso/RedefinirSenha.tsx` | `09` |
+| Trocar a senha estando logado | `6_conta/TrocarSenha.tsx` | `21` (`conferir_senha_atual`) |
+| Termo, Política e novo aceite (RF11 a RF13, RF22) | `1_publico/lgpd/` | `08` |
+| Minha conta e exclusão de conta (RF15, RF21) | `6_conta/MinhaConta.tsx`, `6_conta/arquivosDoUsuario.ts` | `07` |
+| Minha evolução, painel do aluno (RF25) | `3_minha_evolucao/painel/MinhaEvolucao.tsx`, `3_minha_evolucao/painel/evolucao.ts` | `11` (`meu_desempenho`), `17`, `18` |
+| Painel do admin (RF25, RF32) | `7_administracao/PainelAdmin.tsx` | `12` (`estatisticas_admin`), `17`, `18` |
+| Disciplinas (RF06) | `3_minha_evolucao/disciplinas/` | `01`, `13` |
+| Banco de perguntas (RF07) | `7_administracao/Perguntas.tsx` | `11` (`criar_pergunta`), `14`, `16` (`editar_pergunta`) |
+| Materiais, filtro, comunidade, denúncia e perfil (RF08, RF28, RF29) | `4_estudar/materiais/` | `03`, `04`, `15` |
+| Moderação e gestão de todos os materiais (RF27) | `4_estudar/materiais/Moderacao.tsx`, `4_estudar/materiais/TodosMateriais.tsx` | `15` (`moderar_material`), `22` (`aprovar_e_liberar_site`) |
+| Listas do filtro de materiais (RF08, RF27) | `4_estudar/materiais/ListasDoFiltro.tsx` | `22` (`filtro_sites`, `filtro_termos`, `verificar_material`) |
+| Quiz embaralhado e pontuação (RF16, RF17) | `4_estudar/quiz/Quiz.tsx` | `11`, `19` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `pedir_dica`) |
+| Guru (RF19) | `3_minha_evolucao/painel/MinhaEvolucao.tsx` | `11` (`recomendacoes_guru`) |
+| Ranking (RF18) | `4_estudar/ranking/Ranking.tsx` | `11` e `27` (`ranking`) |
+| Notas e faltas (RF20) | `3_minha_evolucao/notas/` | `12` |
+| Usuários, MFA e exclusão de contas (RF26) | `7_administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
+| Logs de auditoria, com filtros, e limpeza (RF09, RF10) | `7_administracao/Logs.tsx`, regras em `compartilhado/utilitarios/filtroLogs.ts` | `02`, `06`, `10`, `24` |
+| Últimos acessos, sair dos outros aparelhos e registros com filtros (RF21) | `6_conta/AcessosEAparelhos.tsx`, `6_conta/RegistrosAtividade.tsx` | `24` (`meus_acessos`) |
+| Código por e-mail ao entrar em aparelho novo e aparelhos lembrados (RF03, RF21) | `2_acesso/CodigoEmail.tsx`, regras em `2_acesso/regrasCodigoEmail.ts` | `25` (`situacao_codigo_email`, `enviar_codigo_email`, `confirmar_codigo_email`) |
 | Captcha "não sou um robô" no login, cadastro e esqueci a senha | `compartilhado/componentes/Captcha.tsx` (Cloudflare Turnstile) | — (conferido pelo Supabase Auth) |
-| Carreiras (RF30 a RF32) | `carreiras/` (`apiVagasGithub.ts` = API do GitHub) | `17` |
-| Bússola EduGuru (RF33) | `bussola/` | `18` |
+| Carreiras (RF30 a RF32) | `5_carreira/carreiras/` (`apiVagasGithub.ts` = API do GitHub) | `17` |
+| Bússola EduGuru (RF33) | `5_carreira/bussola/` | `18` |
 | Regras de acesso, RLS (RF14) | — | `02`, `04`, `05`, `23` (MFA exigido de quem ativou e do admin) |
 
 ## Banco de dados

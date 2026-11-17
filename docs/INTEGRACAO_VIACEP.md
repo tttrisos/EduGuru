@@ -8,7 +8,7 @@ cadastro de conta.
 
 ## Onde acontece no código
 
-- Arquivo: `src/funcionalidades/acesso/Login.tsx`
+- Arquivo: `src/funcionalidades/2_acesso/Login.tsx`
 - Função: `aoSairDoCep()`
 - Disparo: evento `onBlur` do campo "CEP (opcional)" no formulário de cadastro
 

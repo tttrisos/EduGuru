@@ -6,7 +6,7 @@
 // Testes: testes/compartilhado/.
 // ============================================================
 
-import { semAcento } from '../../funcionalidades/materiais/filtroMateriais'
+import { semAcento } from '../../funcionalidades/4_estudar/materiais/filtroMateriais'
 import { ROTULO_ACAO } from '../banco/log'
 import type { LogAuditoria } from '../tipos'
 

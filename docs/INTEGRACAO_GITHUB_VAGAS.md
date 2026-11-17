@@ -17,10 +17,10 @@ quem vai bem em Banco de Dados recebe vagas de Dados e Back-end, por exemplo.
 
 | O quê | Onde |
 |---|---|
-| Chamada à API, conversão, filtro por área, cache e mensagens de erro | `src/funcionalidades/carreiras/vagas.ts` (`buscarVagas`) |
-| Tela do aluno (áreas sugeridas, filtros, botão "Candidatar-se") | `src/funcionalidades/carreiras/Carreiras.tsx`, `ListaVagas.tsx` |
+| Chamada à API, conversão, filtro por área, cache e mensagens de erro | `src/funcionalidades/5_carreira/carreiras/vagas.ts` (`buscarVagas`) |
+| Tela do aluno (áreas sugeridas, filtros, botão "Candidatar-se") | `src/funcionalidades/5_carreira/carreiras/Carreiras.tsx`, `ListaVagas.tsx` |
 | Tabelas, áreas sugeridas, registro de cliques e totais | `supabase/17_carreiras.sql` |
-| Métricas no painel do admin | `src/funcionalidades/painel/Painel.tsx` (`PainelCarreiras`) |
+| Métricas no painel do admin | `src/funcionalidades/3_minha_evolucao/painel/Painel.tsx` (`PainelCarreiras`) |
 | Testes (33 casos, com a API simulada, e 9 de localidade) | `testes/vagas.test.ts`, `testes/localidade.test.ts` |
 
 ## Endpoint consumido
@@ -69,7 +69,7 @@ uso bem abaixo do limite.
 ## Localidade (foco nos alunos da UMC)
 
 O público é de alunos da UMC, em Mogi das Cruzes (SP). Por isso, o filtro padrão mostra
-só **vagas remotas e vagas no estado de SP** (`src/funcionalidades/carreiras/localidade.ts`):
+só **vagas remotas e vagas no estado de SP** (`src/funcionalidades/5_carreira/carreiras/localidade.ts`):
 
 - O local vem do texto entre colchetes no começo do título (`[Remoto]`, `[Híbrido em SP]`,
   `[Joinville/SC]`) e das etiquetas com nome de estado (o frontendbr usa "São Paulo").
