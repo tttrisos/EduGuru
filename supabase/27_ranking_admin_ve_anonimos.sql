@@ -1,19 +1,13 @@
 -- ============================================================
--- EduGuru — 27: "Aluno anônimo" vale para TODOS, inclusive o administrador
---   Problema: no banco publicado, o administrador via o nome verdadeiro ao
---   lado de "Aluno anônimo", entre parênteses. A versão do script 11 não faz
---   isso, então a função do banco estava diferente da do repositório (alterada
---   à mão ou com uma segunda versão da função "ranking" com outros parâmetros).
---   Agora: apaga TODAS as versões de public.ranking e cria de novo a única
---   versão oficial. A oposição do aluno (RF18-RN05, LGPD art. 18) vale para
---   qualquer pessoa que consulte o ranking; só o próprio aluno vê o seu nome
---   abreviado na linha dele.
+-- EduGuru — 27: no ranking, SÓ O ADMINISTRADOR vê quem é o "Aluno anônimo"
+--   Para os colegas, quem desmarcou "Mostrar meu nome no ranking" continua
+--   aparecendo só como "Aluno anônimo" (RF18-RN05). Para o administrador, a
+--   linha mostra "Aluno anônimo (Nome Completo)", para ele saber quem é o aluno
+--   (o administrador já vê os perfis de todos na tela Usuários).
+--   O próprio aluno vê o seu nome abreviado na linha dele.
+--   Também apaga qualquer outra versão da função "ranking" que exista no banco
+--   (com outros parâmetros), para ficar só esta.
 -- Rodar depois do 26. Pode ser rodado de novo.
---
--- Para conferir ANTES de rodar o que está no banco hoje (opcional):
---   select pg_get_functiondef(p.oid)
---   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
---   where n.nspname = 'public' and p.proname = 'ranking';
 -- ============================================================
 
 
@@ -34,8 +28,7 @@ end;
 $$;
 
 
--- 2) A versão oficial (mesma regra do script 11, com o anonimato explicado linha a linha).
---    Top 10 + a linha do aluno que consulta. Sem disciplina = ranking geral.
+-- 2) Top 10 + a linha do aluno que consulta. Sem disciplina = ranking geral.
 create function public.ranking(p_disciplina_id bigint default null)
 returns table (
   posicao bigint,
@@ -49,6 +42,9 @@ set search_path = public
 stable
 as $$
 #variable_conflict use_column
+declare
+  -- eh_admin() (script 26) só é verdadeiro para administrador com sessão aal2 ainda ativa.
+  v_admin boolean := public.eh_admin();
 begin
   if auth.uid() is null or not public.sessao_mfa_ok() then
     raise exception 'Entre com a verificação em duas etapas para ver o ranking.';
@@ -71,12 +67,14 @@ begin
       from soma s
     )
     select c.pos,
-           -- O nome só aparece se o aluno deixou "Mostrar meu nome no ranking" marcado, ou se a
-           -- linha é do próprio aluno que está consultando. Para TODOS os outros (colegas e
-           -- administrador) aparece só "Aluno anônimo", sem nada junto.
-           case when p.aparecer_no_ranking or c.aluno_id = auth.uid()
-                then public.nome_publico(p.nome)
-                else 'Aluno anônimo' end,
+           case
+             -- Nome visível (opção marcada) ou a linha do próprio aluno: nome abreviado ("Maria S.").
+             when p.aparecer_no_ranking or c.aluno_id = auth.uid() then public.nome_publico(p.nome)
+             -- Escolheu ficar anônimo: o ADMINISTRADOR vê quem é, entre parênteses.
+             when v_admin then 'Aluno anônimo (' || p.nome || ')'
+             -- Para os colegas, só "Aluno anônimo".
+             else 'Aluno anônimo'
+           end,
            c.total,
            c.aluno_id = auth.uid()
     from classificacao c

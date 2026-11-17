@@ -138,7 +138,7 @@ export default function MinhaConta() {
   }
 
   // DIREITO DE OPOSIÇÃO (art. 18, § 2º): o ranking usa o legítimo interesse educacional, e o aluno
-  // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para todos (inclusive o admin,
+  // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para os colegas (só o admin vê o nome,
   // supabase/27), mas continua pontuando.
   async function mudarRanking(aparecer: boolean) {
     setErro('')

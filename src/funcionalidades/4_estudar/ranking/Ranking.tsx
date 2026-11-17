@@ -2,7 +2,7 @@
 // funcionalidades/4_estudar/ranking/Ranking.tsx
 // RANKING (endereço /ranking) — RF18. Geral ou por disciplina: top 10 + a posição do aluno.
 // Banco: ranking (supabase/11, recriada no 27). Nome abreviado ou "Aluno anônimo" (opção em Minha
-// conta), e o anônimo vale para todos que consultam, inclusive o administrador.
+// conta). Só o administrador vê quem é o anônimo: "Aluno anônimo (Nome Completo)".
 // ============================================================
 
 import { useEffect, useState } from 'react'
