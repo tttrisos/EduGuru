@@ -10,15 +10,13 @@ export const PERGUNTAS_POR_RODADA = 10
 
 // Texto do cartão de cada disciplina na tela do quiz.
 // O cartão mostra quantas perguntas a RODADA vai ter, e não o total cadastrado: uma disciplina com
-// 15 perguntas no banco gera rodadas de 10. Quando o banco tem mais que isso, o total vai entre
-// parênteses, para o aluno saber que as rodadas seguintes podem trazer perguntas diferentes.
+// 15 perguntas no banco gera rodadas de 10, e o aluno vê só "10 perguntas" (o total do banco não
+// interessa a ele; as rodadas seguintes trazem primeiro as que ele ainda não acertou).
 //   0  → "Ainda sem perguntas"
-//   7  → "Rodada de 7 perguntas"
-//   15 → "Rodada de 10 perguntas (de 15 no banco)"
+//   7  → "7 perguntas"
+//   15 → "10 perguntas"
 export function textoPerguntasDoCartao(totalNoBanco: number): string {
   if (totalNoBanco <= 0) return 'Ainda sem perguntas'
   const naRodada = Math.min(totalNoBanco, PERGUNTAS_POR_RODADA)
-  const plural = naRodada === 1 ? 'pergunta' : 'perguntas'
-  if (totalNoBanco <= PERGUNTAS_POR_RODADA) return `Rodada de ${naRodada} ${plural}`
-  return `Rodada de ${naRodada} ${plural} (de ${totalNoBanco} no banco)`
+  return naRodada === 1 ? '1 pergunta' : `${naRodada} perguntas`
 }

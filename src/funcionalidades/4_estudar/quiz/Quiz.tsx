@@ -108,7 +108,7 @@ export default function Quiz() {
   const [carregando, setCarregando] = useState(false)
 
   // Ao abrir: busca as disciplinas e conta quantas perguntas completas cada uma tem no banco
-  // (para o cartão mostrar "Rodada de 10 perguntas" ou desabilitar quem ainda não tem pergunta).
+  // (para o cartão mostrar "10 perguntas" ou desabilitar quem ainda não tem pergunta).
   useEffect(() => {
     Promise.all([
       supabase.from('disciplinas').select('*').order('nome'),
@@ -372,7 +372,7 @@ export default function Quiz() {
                 </span>
                 <strong>{d.nome}</strong>
                 {/* O cartão mostra quantas perguntas a RODADA terá (no máximo 10), e não o total do banco:
-                    com 15 cadastradas, a rodada sorteia 10. O total do banco aparece entre parênteses. */}
+                    com 15 cadastradas, a rodada sorteia 10, e o cartão mostra "10 perguntas". */}
                 <small>{textoPerguntasDoCartao(qtd)}</small>
               </button>
             )

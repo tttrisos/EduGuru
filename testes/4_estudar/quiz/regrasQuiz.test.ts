@@ -11,12 +11,12 @@ describe('textoPerguntasDoCartao', () => {
   })
 
   it('com até 10 perguntas, a rodada usa todas', () => {
-    expect(textoPerguntasDoCartao(1)).toBe('Rodada de 1 pergunta')
-    expect(textoPerguntasDoCartao(7)).toBe('Rodada de 7 perguntas')
-    expect(textoPerguntasDoCartao(10)).toBe('Rodada de 10 perguntas')
+    expect(textoPerguntasDoCartao(1)).toBe('1 pergunta')
+    expect(textoPerguntasDoCartao(7)).toBe('7 perguntas')
+    expect(textoPerguntasDoCartao(10)).toBe('10 perguntas')
   })
 
-  it('com mais de 10 perguntas, mostra 10 na rodada e o total do banco à parte', () => {
-    expect(textoPerguntasDoCartao(15)).toBe('Rodada de 10 perguntas (de 15 no banco)')
+  it('com mais de 10 perguntas no banco, o cartão mostra só as 10 da rodada', () => {
+    expect(textoPerguntasDoCartao(15)).toBe('10 perguntas')
   })
 })
