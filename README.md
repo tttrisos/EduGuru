@@ -69,7 +69,7 @@ eduguru/
 │       ├── 6_conta/              Minha conta: dados, senha, verificação em duas etapas, acessos, exclusão
 │       └── 7_administracao/      Só admin: painel, perguntas, usuários e logs
 ├── testes/                       Testes (Vitest), com as mesmas pastas de src/ (ex.: testes/4_estudar/quiz/)
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 27)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 28)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -125,7 +125,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `11_quiz_ranking_guru.sql` | Quiz, gabaritos, pontuação, ranking e Guru |
 | `12_notas_e_painel.sql` | Notas e faltas e indicadores do painel do admin |
 | `13_disciplinas_cursos.sql` | Disciplinas da grade de SI, ADS e ES |
-| `14_perguntas_iniciais.sql` | Banco inicial de 120 perguntas, com negrito e explicações |
+| `14_perguntas_iniciais.sql` | Banco inicial de 120 perguntas (8 disciplinas), com negrito e explicações; revisado em 16/11 para a certa não ser sempre a alternativa mais longa (rodar de novo atualiza as alternativas) |
 | `15_materiais_comunidade_quiz.sql` | Materiais da comunidade (filtro, moderação, denúncias, perfil público), dica 50/50 e ilustrações |
 | `16_editar_perguntas.sql` | Edição de perguntas (pergunta, gabarito e explicação juntos) |
 | `17_carreiras.sql` | EduGuru Carreiras: áreas, ligação disciplina → área, áreas sugeridas, cliques e totais do painel |
@@ -139,6 +139,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `25_codigo_email_aparelho_novo.sql` | Código por e-mail ao entrar em aparelho novo (quem não usa o aplicativo), aparelhos lembrados por 30 dias; começa desligado (ver o passo a passo no topo) |
 | `26_sessao_encerrada_na_hora.sql` | "Sair dos outros aparelhos" vale na hora: as regras de segurança conferem se a sessão ainda existe; Minha conta marca "este aparelho" |
 | `27_ranking_anonimo_para_todos.sql` | "Aluno anônimo" vale para todos, inclusive o administrador: apaga qualquer versão antiga da função `ranking` e recria a oficial |
+| `28_perguntas_mais_disciplinas.sql` | Mais 75 perguntas em 5 disciplinas (Software Básico, Paradigmas de Orientação a Objetos, Gestão de Projetos, Inteligência de Negócios e Governança de TI): 13 disciplinas e 195 perguntas no total |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 
