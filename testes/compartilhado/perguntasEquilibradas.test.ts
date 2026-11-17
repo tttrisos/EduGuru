@@ -1,4 +1,4 @@
-// Confere o banco de perguntas dos scripts 14 e 28 SEM precisar do banco de dados: lê os arquivos .sql.
+// Confere o banco de perguntas dos scripts 14, 28 e 29 SEM precisar do banco de dados: lê os arquivos .sql.
 // Motivo: antes de 16/11, a alternativa certa era a mais longa em 59 de 120 perguntas, e o aluno
 // acertava "chutando a maior". Estes testes impedem que o padrão volte (nem ao contrário: a certa
 // nunca ser a maior também seria um padrão).
@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest'
 // "?raw" (recurso do Vite) traz o conteúdo do arquivo como texto.
 import sql14 from '../../supabase/14_perguntas_iniciais.sql?raw'
 import sql28 from '../../supabase/28_perguntas_mais_disciplinas.sql?raw'
+import sql29 from '../../supabase/29_perguntas_mais_5_disciplinas.sql?raw'
 
 type Pergunta = { disciplina: string; nivel: string; enunciado: string; alternativas: string[]; explicacao: string }
 
@@ -45,7 +46,7 @@ function lerScript(conteudo: string, temCurso: boolean): Pergunta[] {
 }
 
 const iniciais = lerScript(sql14, true)
-const novas = lerScript(sql28, false)
+const novas = [...lerScript(sql28, false), ...lerScript(sql29, false)]
 const todas = [...iniciais, ...novas]
 
 // Posição da correta (a 1ª alternativa) no ranking de tamanho: 1 = a mais longa, 4 = a mais curta.
@@ -56,14 +57,14 @@ function posicaoDaCorreta(p: Pergunta) {
 }
 
 describe('banco de perguntas', () => {
-  it('tem 120 perguntas iniciais e 75 novas', () => {
+  it('tem 120 perguntas iniciais e 150 novas (scripts 28 e 29)', () => {
     expect(iniciais).toHaveLength(120)
-    expect(novas).toHaveLength(75)
+    expect(novas).toHaveLength(150)
   })
 
   it('cada disciplina tem 15 perguntas: 6 Fácil, 5 Médio e 4 Difícil', () => {
     const disciplinas = [...new Set(todas.map((p) => p.disciplina))]
-    expect(disciplinas).toHaveLength(13)
+    expect(disciplinas).toHaveLength(18)
     for (const d of disciplinas) {
       const da = todas.filter((p) => p.disciplina === d)
       expect(da, d).toHaveLength(15)
