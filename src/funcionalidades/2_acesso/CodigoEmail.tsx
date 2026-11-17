@@ -39,6 +39,11 @@ export default function CodigoEmail({ destino }: { destino: string }) {
   // Envia só uma vez ao abrir (o efeito roda duas vezes em desenvolvimento).
   const jaEnviou = useRef(false)
 
+  // Pede ao BANCO para gerar e enviar o código (enviar_codigo_email, supabase/25).
+  // Quem gera o código é o banco, e não a tela: assim o código nunca passa pelo navegador. O banco
+  // guarda só o hash do código e chama a API do Brevo para mandar o e-mail.
+  // Limites conferidos no banco: reenvio só depois de 60 s, 8 códigos por conta por dia e 150 no
+  // total por dia (cota gratuita do Brevo).
   async function enviar() {
     setErro('')
     setInfo('')
@@ -77,6 +82,11 @@ export default function CodigoEmail({ destino }: { destino: string }) {
     return () => clearTimeout(id)
   }, [espera])
 
+  // Botão "Confirmar": o BANCO compara o hash do que foi digitado com o hash guardado
+  // (confirmar_codigo_email). Certo → marca a sessão como verificada (o RLS passa a liberar os dados).
+  // Se "Lembrar este aparelho" estiver marcado, o banco devolve uma chave aleatória (token), que fica
+  // guardada no navegador; o banco guarda só o hash dela, por 30 dias.
+  // Errado → mostra quantas tentativas restam; na 5ª, o código é apagado e é preciso pedir outro.
   async function aoConfirmar(e: React.FormEvent) {
     e.preventDefault()
     setErro('')

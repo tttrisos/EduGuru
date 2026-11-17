@@ -17,11 +17,20 @@ import Rodape from '../../compartilhado/layout/Rodape'
 import Captcha, { captchaLigado } from '../../compartilhado/componentes/Captcha'
 import './acesso.css'
 
+// A MESMA tela serve para entrar e para criar conta: o estado "modo" troca o formulário.
+// Esta tela só faz validações de conforto (campo vazio, senhas diferentes). Quem decide de verdade é o
+// Supabase Auth: confere a senha (hash bcrypt), o captcha e se o e-mail já existe.
 export default function Login() {
+  // entrar() e cadastrar() vêm do contexto de sessão (ContextoSessao.tsx), que conversa com o Supabase.
   const { entrar, cadastrar } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Quem chega aqui pode trazer um "recado" da tela anterior (location.state):
+  //  - rotaOrigem: a tela protegida que o usuário tentou abrir (RotaProtegida manda para cá e,
+  //    depois do login, ele volta para ela);
+  //  - modo: 'cadastrar' quando o botão "Criar conta" da página inicial foi clicado;
+  //  - aviso: mensagem para mostrar (ex.: "sessão encerrada em outro aparelho").
   const estadoRota = location.state as { rotaOrigem?: string; modo?: 'cadastrar'; aviso?: string } | null
   const [modo, setModo] = useState<'entrar' | 'cadastrar'>(estadoRota?.modo ?? 'entrar')
   const [nome, setNome] = useState('')
@@ -61,7 +70,11 @@ export default function Login() {
     limparCamposCadastro()
   }
 
-  // CEP opcional: busca cidade/estado no ViaCEP.
+  // INTEGRAÇÃO COM API EXTERNA (ViaCEP, RF05). Roda quando o campo CEP perde o foco.
+  // 1) Tira tudo que não é número; 2) confere se tem 8 dígitos; 3) chama a API pública do ViaCEP
+  //    direto do navegador; 4) preenche cidade e estado.
+  // LGPD (minimização): o CEP NÃO é enviado ao nosso banco — só cidade e estado vão para o cadastro.
+  // Se o CEP não existir ou o ViaCEP estiver fora do ar, o cadastro continua (o CEP é opcional).
   async function aoSairDoCep() {
     const cepLimpo = cep.replace(/\D/g, '')
     setErroCep('')
@@ -93,8 +106,9 @@ export default function Login() {
     }
   }
 
+  // Botão "Entrar" ou "Criar conta".
   async function aoEnviar(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault() // impede o navegador de recarregar a página ao enviar o formulário
     setErro('')
     setAvisoCadastro('')
 
@@ -103,17 +117,24 @@ export default function Login() {
       return
     }
 
+    // ENTRAR (RF01): manda e-mail, senha e o token do captcha para o Supabase Auth.
+    // Se der certo, vai para a tela de origem (ou /painel). Quem precisa de mais uma etapa
+    // (código do aplicativo ou código por e-mail) é desviado pela RotaProtegida para /mfa.
+    // A mensagem de erro é sempre genérica, para não revelar se o e-mail existe (RF01-CA02).
     if (modo === 'entrar') {
       setEnviando(true)
       const { erro } = await entrar(email.trim(), senha, captcha)
       setEnviando(false)
+      // Cada token do captcha vale para UMA tentativa: depois de usar, pede um novo.
       setReiniciarCaptcha((n) => n + 1)
       if (erro) setErro(erro)
       else navigate(destino, { replace: true })
       return
     }
 
-    // Validações do cadastro
+    // CADASTRAR (RF02): as validações abaixo são só de conforto, para avisar antes de enviar.
+    // A senha também é conferida pelo Supabase Auth, e o perfil é criado por um gatilho no banco
+    // (supabase/04) com papel "aluno" — o usuário nunca escolhe ser administrador.
     if (!nome.trim()) {
       setErro('Digite seu nome.')
       return
@@ -135,6 +156,8 @@ export default function Login() {
       return
     }
 
+    // cidade/estado vão como null quando o CEP não foi informado (campo opcional, LGPD).
+    // O aceite dos termos é gravado com data e versão (RF13) dentro de cadastrar().
     setEnviando(true)
     const { erro } = await cadastrar(
       nome.trim(),
@@ -150,6 +173,7 @@ export default function Login() {
     if (erro) {
       setErro(erro)
     } else {
+      // A conta só passa a valer depois que o usuário clica no link enviado ao e-mail (Brevo).
       setAvisoCadastro('Conta criada! Verifique seu e-mail para confirmar o cadastro e depois faça login.')
       setSenha('')
       limparCamposCadastro()

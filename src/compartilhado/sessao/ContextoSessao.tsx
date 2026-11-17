@@ -78,7 +78,15 @@ type SituacaoCodigoEmail = {
   token_invalido?: boolean
 }
 
-// Quem ativou o MFA e ainda não digitou o código: o banco não devolve nada, então nem lê o perfil.
+// O CORAÇÃO DO LOGIN: descobre em que ponto está a sessão e o que ainda falta. Passo a passo:
+//  1) Sem sessão → ninguém logado.
+//  2) Pergunta ao Supabase Auth o nível da sessão: aal1 (só senha) ou aal2 (senha + código do
+//     aplicativo). Se a conta tem o aplicativo e a sessão ainda é aal1, PARA aqui: o banco não
+//     devolveria nada mesmo (RLS), então nem tenta ler o perfil. A RotaProtegida manda para /mfa.
+//  3) Conta SEM o aplicativo: pergunta ao banco (situacao_codigo_email) se este aparelho é novo.
+//     Aparelho novo → falta o código enviado por e-mail (tela CodigoEmail.tsx).
+//  4) Tudo certo → lê o perfil (nome, papel, curso, aceite) e confere de novo com o papel em mãos,
+//     porque administrador SEMPRE precisa do aplicativo, mesmo que ainda não tenha cadastrado.
 async function lerDadosSessao(session: Session | null): Promise<DadosSessao> {
   if (!session?.user) return SEM_SESSAO
 
@@ -140,6 +148,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await carregarDadosSessao(data.session)
   }
 
+  // Ao abrir o site: lê a sessão guardada no navegador (o usuário pode já estar logado de antes).
+  // Depois, fica "ouvindo" o Supabase Auth: qualquer login, logout ou renovação do token dispara
+  // onAuthStateChange, e a situação da sessão é lida de novo.
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
       const dados = await lerDadosSessao(session)
@@ -195,12 +206,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { erro: 'Confirme a verificação "não sou um robô" e tente de novo.' }
     }
     if (error || !data.user) {
+      // Grava a falha no log (só se o e-mail existir; o banco não conta para a tela se existe).
+      // A mensagem é a mesma para e-mail inexistente e senha errada, para não revelar quem tem conta.
       await registrarLoginFalhou(email)
       return { erro: 'E-mail ou senha inválidos.' }
     }
     // Lê a situação ANTES de voltar, para a próxima tela já saber se precisa do código.
     setUsuario(data.user)
     const dados = await carregarDadosSessao(data.session)
+    // O login só vai para o log quando a sessão já está liberada. Quem ainda precisa do código
+    // (aplicativo ou e-mail) tem o login registrado depois, na tela que confere o código.
     if (dados.verificacaoOk) {
       await registrarLogEvento('login', {
         mfa: dados.aparelhoLembrado ? 'aparelho' : 'nao',
@@ -219,7 +234,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     estado: string | null,
     captcha?: string | null,
   ) {
-    // O banco grava o perfil e o aceite dos termos a partir destes dados.
+    // CADASTRO (RF02): o Supabase Auth cria a conta e guarda a senha só como hash (bcrypt).
+    // Os dados extras vão em "options.data"; um gatilho do banco (supabase/04) lê esses dados e cria
+    // a linha em perfis com papel "aluno", registrando o aceite com a versão dos termos (RF13).
+    // O CEP não está aqui de propósito: só cidade e estado (LGPD, minimização).
     const { error } = await supabase.auth.signUp({
       email,
       password: senha,

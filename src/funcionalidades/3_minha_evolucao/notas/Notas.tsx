@@ -25,6 +25,9 @@ import './notas.css'
 // Notas e faltas (RF20), com os campos do boletim da UMC. São dois cadastros e dois
 // cálculos separados: notas (M2, MD, MF) e frequência (limite de faltas). Regras em calculoNotas.ts.
 
+// Busca as disciplinas e as notas. Repare que a consulta de notas NÃO filtra pelo aluno
+// ("select * from notas"): quem filtra é o banco. A regra de RLS da tabela notas (supabase/12) só
+// devolve as linhas do próprio aluno logado; nem o administrador consegue ler as notas de alguém.
 async function consultarDados() {
   const [disciplinas, notas] = await Promise.all([
     supabase.from('disciplinas').select('*').order('nome'),
@@ -133,12 +136,18 @@ export default function Notas() {
   }
 
   // Grava só os campos enviados; o que já estava salvo no outro cadastro continua igual.
+  // "upsert" = insere se ainda não existe, atualiza se já existe. A chave é (aluno, disciplina):
+  // cada aluno tem UMA linha por disciplina, com as notas e as faltas juntas (RF20-RN08).
+  // O gatilho de auditoria registra no log que houve alteração, mas sem os valores das notas.
   async function gravar(disciplinaId: number, campos: Partial<Nota>) {
     return supabase
       .from('notas')
       .upsert({ aluno_id: usuario!.id, disciplina_id: disciplinaId, ...campos }, { onConflict: 'aluno_id,disciplina_id' })
   }
 
+  // Salvar notas: lerNota() (calculoNotas.ts) aceita vírgula ou ponto, deixa em branco como null e
+  // recusa valores fora de 0 a 10. Só depois de tudo válido grava no banco.
+  // As médias (M2, MD, MF) NÃO são gravadas: são calculadas na hora, na tela, por calcularNotas().
   async function salvarNotas(e: React.FormEvent) {
     e.preventDefault()
     setErro('')
@@ -188,6 +197,8 @@ export default function Notas() {
     buscar()
   }
 
+  // Salvar faltas: validarFaltas() exige número inteiro, de 2 em 2 (cada módulo de aula = 2 faltas).
+  // O limite de 40 faltas não impede salvar: ele só muda a situação para "Reprovado por falta".
   async function salvarFaltas(e: React.FormEvent) {
     e.preventDefault()
     setErro('')

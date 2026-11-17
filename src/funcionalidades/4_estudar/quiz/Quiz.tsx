@@ -71,6 +71,14 @@ function tituloResultado(aproveitamento: number) {
   return 'Continue praticando!'
 }
 
+// POR QUE O ALUNO NÃO CONSEGUE TRAPACEAR (pergunta comum na banca):
+//  - a tela nunca recebe o gabarito antes de o aluno responder: iniciar_quiz devolve as perguntas
+//    sem a alternativa correta, e o gabarito fica numa tabela que o aluno não pode ler (RLS);
+//  - a resposta é gravada pelo banco antes de ele devolver se acertou, e não pode ser trocada;
+//  - os pontos são calculados pelo banco; o aluno não tem permissão de gravar nas tabelas do quiz;
+//  - as alternativas são embaralhadas a cada rodada, então decorar a letra não funciona.
+// A tela só mostra o que o banco devolve. O estado abaixo controla as 3 etapas:
+// 'escolher' (lista de disciplinas) → 'jogar' (uma pergunta por vez) → 'resultado'.
 export default function Quiz() {
   const { confirmar } = useDialogo()
   const { perfil } = useAuth()
@@ -99,6 +107,8 @@ export default function Quiz() {
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
+  // Ao abrir: busca as disciplinas e conta quantas perguntas completas cada uma tem no banco
+  // (para o cartão mostrar "Rodada de 10 perguntas" ou desabilitar quem ainda não tem pergunta).
   useEffect(() => {
     Promise.all([
       supabase.from('disciplinas').select('*').order('nome'),
@@ -176,8 +186,8 @@ export default function Quiz() {
     setEtapa('jogar')
   }
 
-  // Dica 50/50: o banco tira duas alternativas erradas (uma dica por rodada).
   // Dica 50/50 (uma por rodada): o banco devolve duas letras erradas para riscar. (pedir_dica, supabase/19)
+  // Quem sorteia as erradas é o banco, porque só ele conhece o gabarito; pedir de novo é recusado.
   async function pedirDica() {
     if (dicaUsada || feedback || carregando) return
     const questao = questoes[atual]

@@ -37,6 +37,9 @@ const SITUACAO: Record<StatusMaterial, string> = {
   recusado: 'Recusado',
 }
 
+// Busca, em paralelo, os materiais que ESTE usuário enviou, as disciplinas e a lista de sites
+// permitidos (mostrada no formulário). Os materiais dos colegas aparecem em outras telas
+// (fim do quiz e perfil do autor), por buscarMateriaisComunidade em comunidade.ts.
 async function consultarMateriais(usuarioId: string) {
   const [materiais, disciplinas, sites] = await Promise.all([
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId).order('id', { ascending: false }),
@@ -135,6 +138,14 @@ export default function Materiais() {
     setArquivo(selecionado)
   }
 
+  // COMPARTILHAR OU EDITAR UM MATERIAL (RF08). A ordem importa:
+  //  1) validações de conforto na tela (título, disciplina, link OU arquivo);
+  //  2) pergunta ao BANCO se o material passa no filtro (verificar_material), ANTES de subir o
+  //     arquivo — assim um material recusado nem chega a ocupar espaço no armazenamento;
+  //  3) site fora da lista de permitidos: avisa que vai para a análise (não é recusado);
+  //  4) sobe o arquivo (se houver) para o Storage privado, com nome sanitizado e prefixo aleatório;
+  //  5) grava a linha em "materiais". O gatilho do banco aplica o filtro DE NOVO e decide a situação
+  //     (publicado, em análise ou recusado) — mesmo quem chamar a API direto passa pelo filtro.
   async function salvar(e: React.FormEvent) {
     e.preventDefault()
     setErro('')
@@ -214,6 +225,8 @@ export default function Materiais() {
       return
     }
 
+    // Nome do arquivo no armazenamento: tira acentos e símbolos (nome "sanitizado") e coloca um
+    // identificador aleatório na frente, para dois alunos nunca sobrescreverem o arquivo um do outro.
     let arquivoPath: string | null = null
     if (arquivo) {
       const nomeSeguro = arquivo.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')
@@ -245,6 +258,7 @@ export default function Materiais() {
     setEnviando(false)
 
     if (error) {
+      // O banco recusou a linha: apaga o arquivo que já tinha subido, para não sobrar arquivo órfão.
       if (arquivoPath) await supabase.storage.from('materiais').remove([arquivoPath])
       setErro(error.message)
       return

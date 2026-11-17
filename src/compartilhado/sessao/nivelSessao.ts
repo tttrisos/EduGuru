@@ -19,6 +19,11 @@ export type SituacaoSessao = {
 
 // atual = nível desta sessão; proximo = nível que a conta exige (aal2 se tem MFA ativo).
 // papel = null enquanto o perfil ainda não foi lido.
+// Exemplos (são os casos testados em testes/compartilhado/nivelSessao.test.ts):
+//   aluno sem MFA, só senha        → atual aal1, proximo aal1 → liberada
+//   aluno com MFA, só senha        → atual aal1, proximo aal2 → falta 'codigo'
+//   aluno com MFA, digitou código  → atual aal2, proximo aal2 → liberada
+//   admin ainda sem aplicativo     → atual aal1, proximo aal1, papel admin → falta 'cadastrar'
 export function situacaoDaSessao(atual: NivelSessao, proximo: NivelSessao, papel: string | null): SituacaoSessao {
   const temMfa = proximo === 'aal2'
   const codigoInformado = atual === 'aal2'

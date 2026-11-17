@@ -98,6 +98,10 @@ export default function Bussola() {
     return () => window.removeEventListener('keydown', tecla)
   }, [etapa, responder])
 
+  // "Ver meu resultado": a tela confere se respondeu tudo (conforto), mas QUEM CALCULA é o banco:
+  // salvar_bussola (supabase/18) valida de novo (todas as afirmações ativas, inteiros de 1 a 5), calcula a
+  // afinidade de cada área = (média das 2 respostas da área − 1) ÷ 4 × 100 e grava só o resultado
+  // mais recente (refazer substitui). Assim ninguém grava uma afinidade inventada pela API.
   async function verResultado() {
     if (!completas(afirmacoes, respostas)) {
       setAtual(proximaSemResposta(afirmacoes, respostas))

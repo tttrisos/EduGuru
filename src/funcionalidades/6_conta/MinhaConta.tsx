@@ -34,6 +34,9 @@ type DadosExtras = {
   mfaAtivoDesde: string | null
 }
 
+// DIREITO DE ACESSO (LGPD, art. 18, II): junta TUDO o que o EduGuru guarda sobre o usuário, para
+// mostrar na tela e para o arquivo "Baixar meus dados". Cada consulta só devolve as linhas do
+// próprio usuário, porque o RLS do banco filtra (mesmo onde não há ".eq(usuarioId)").
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
   const [logs, materiais, notas, tentativas, fatores, cliques, bussola] = await Promise.all([
     supabase
@@ -98,6 +101,10 @@ export default function MinhaConta() {
 
   if (!usuario || !perfil) return <p className="status">Carregando...</p>
 
+  // DIREITO DE CORREÇÃO (art. 18, III): nome, curso, cidade e estado.
+  // O banco só permite ao usuário alterar estas colunas do próprio perfil; "papel" (aluno/admin)
+  // e o aceite dos termos ficam de fora (falha corrigida na 2ª etapa, ver monografia 2.1).
+  // O gatilho de auditoria registra QUAIS campos mudaram, sem os valores.
   async function salvarCorrecao(e: React.FormEvent) {
     e.preventDefault()
     setErro('')
@@ -130,7 +137,9 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
-  // Desmarcado, o aluno aparece como "Aluno anônimo" no ranking.
+  // DIREITO DE OPOSIÇÃO (art. 18, § 2º): o ranking usa o legítimo interesse educacional, e o aluno
+  // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para todos (inclusive o admin,
+  // supabase/27), mas continua pontuando.
   async function mudarRanking(aparecer: boolean) {
     setErro('')
     setMensagem('')
@@ -146,6 +155,8 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
+  // REVOGAÇÃO DO CONSENTIMENTO (art. 18, IX): cidade e estado são opcionais (base: consentimento),
+  // então o aluno pode apagá-los a qualquer momento com um clique.
   async function revogarLocalizacao() {
     setErro('')
     setMensagem('')
@@ -163,7 +174,9 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
-  // Baixa todos os dados da pessoa em um arquivo JSON.
+  // PORTABILIDADE / ACESSO (art. 18, II e V): baixa todos os dados da pessoa em um arquivo JSON.
+  // O arquivo é montado no próprio navegador (Blob), com o que consultarDadosExtras já buscou;
+  // nada é enviado para fora.
   function baixarMeusDados() {
     const conteudo = {
       gerado_em: new Date().toISOString(),
@@ -186,6 +199,13 @@ export default function MinhaConta() {
     URL.revokeObjectURL(url)
   }
 
+  // DIREITO DE ELIMINAÇÃO (art. 18, VI), RF15. Na ordem:
+  //  1) exige digitar EXCLUIR (evita exclusão por engano);
+  //  2) apaga os arquivos dos materiais no Storage (o banco não apaga arquivos sozinho);
+  //  3) excluir_minha_conta (supabase/07): função do banco que registra a exclusão no log e apaga a
+  //     conta; perfil, materiais, notas, rodadas, Bússola e cliques saem junto (on delete cascade).
+  //     A chave administrativa do Supabase nunca fica no navegador: quem apaga é a função do banco.
+  //  4) os logs já existentes ficam até completar 90 dias (segurança) e depois somem sozinhos.
   async function excluirConta() {
     setErroExclusao('')
     if (confirmacao !== TEXTO_CONFIRMACAO) {
