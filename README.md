@@ -15,20 +15,19 @@ O EduGuru coloca o **aluno e a evolução da aprendizagem** no centro. Na tela *
 3. **Descobrir:** a **Bússola EduGuru** (autoavaliação de interesses) mostra as áreas da tecnologia que combinam com ele.
 4. **Direcionar:** o **EduGuru Carreiras** mostra vagas reais dessas áreas, remotas ou em SP.
 
-A plataforma também centraliza notas e faltas no formato do boletim da UMC. Pontos e ranking motivam, mas não são o centro.
+Pontos e ranking motivam, mas não são o centro.
 
 Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvimento de Sistemas e Engenharia de Software.
 
 ## Funcionalidades
 
-- **Minha evolução (painel do aluno):** jornada Aprender → Revisar → Descobrir → Direcionar, aproveitamento geral, disciplinas dominadas e para revisar, média da faculdade, gráficos e o Guru.
+- **Minha evolução (painel do aluno):** jornada Aprender → Revisar → Descobrir → Direcionar, aproveitamento geral, disciplinas dominadas e para revisar, gráfico por disciplina e o Guru.
 - **Prática com quiz:** até 10 perguntas de uma disciplina, uma por vez, com correção na hora (feita no banco). Perguntas e **alternativas embaralhadas para cada aluno a cada rodada**, com prioridade para as que ele ainda não acertou, o que impede decorar a posição da resposta. Dica 50/50, ilustrações e sons.
 - **Pontuação e ranking:** Fácil 10, Médio 20, Difícil 30, só no 1º acerto de cada pergunta; ranking geral e por disciplina, com opção de aparecer como "Aluno anônimo".
 - **Guru:** indica materiais da disciplina quando o aproveitamento fica abaixo de 60%.
 - **Materiais da comunidade:** links e arquivos dos alunos, com filtro automático, moderação, denúncias e perfil público; o admin gerencia todos, inclusive em massa. As **listas do filtro** (sites permitidos e termos bloqueados) ficam no banco e o admin as edita pela tela, sem mexer no código; link de site novo vai para a análise e pode ser liberado com um clique.
 - **Bússola EduGuru:** autoavaliação de interesses opcional (16 afirmações de 1 a 5). Não é teste vocacional: é uma orientação simples.
 - **EduGuru Carreiras:** vagas das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho e aos interesses, com filtros de área, nível e localidade.
-- **Notas e faltas:** campos do boletim da UMC (M1, ND, NI, MS, Exame), cálculo de M2, MD e MF e limite de 40 faltas.
 - **Minha conta:** ver, corrigir, baixar e excluir os dados, **trocar a senha estando logado** (com a senha atual; a nova precisa ser diferente) e sair do ranking.
 - **Segurança e LGPD:** verificação em duas etapas **opcional para alunos** (ativada e desativada em Minha conta; quem ativa precisa do código em todo login) e **obrigatória para administradores**, RLS em todas as tabelas, logs de auditoria (90 dias), Termo e Política com novo aceite a cada versão; conta de administrador protegida contra exclusão.
 
@@ -63,13 +62,13 @@ eduguru/
 │   └── funcionalidades/          Uma pasta por item do menu, na ordem do site
 │       ├── 1_publico/            Sem login: página inicial (inicio/) e Termo, Política e novo aceite (lgpd/)
 │       ├── 2_acesso/             Login, cadastro, código do aplicativo, código por e-mail, esqueci/redefinir senha
-│       ├── 3_minha_evolucao/     Menu "Minha evolução": painel do aluno (painel/), notas e faltas (notas/), disciplinas (disciplinas/)
+│       ├── 3_minha_evolucao/     Menu "Minha evolução": painel do aluno (painel/) e disciplinas (disciplinas/)
 │       ├── 4_estudar/            Menu "Estudar": quiz/, ranking/ e materiais/ (com a moderação do admin)
 │       ├── 5_carreira/           Bússola EduGuru (bussola/) e EduGuru Carreiras (carreiras/)
 │       ├── 6_conta/              Minha conta: dados, senha, verificação em duas etapas, acessos, exclusão
 │       └── 7_administracao/      Só admin: painel, perguntas, usuários e logs
 ├── testes/                       Testes (Vitest), com as mesmas pastas de src/ (ex.: testes/4_estudar/quiz/)
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 29)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 30)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -96,7 +95,6 @@ eduguru/
 | Quiz embaralhado e pontuação (RF16, RF17) | `4_estudar/quiz/Quiz.tsx` | `11`, `19` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `pedir_dica`) |
 | Guru (RF19) | `3_minha_evolucao/painel/MinhaEvolucao.tsx` | `11` (`recomendacoes_guru`) |
 | Ranking (RF18) | `4_estudar/ranking/Ranking.tsx` | `11` e `27` (`ranking`) |
-| Notas e faltas (RF20) | `3_minha_evolucao/notas/` | `12` |
 | Usuários, MFA e exclusão de contas (RF26) | `7_administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
 | Logs de auditoria, com filtros, e limpeza (RF09, RF10) | `7_administracao/Logs.tsx`, regras em `compartilhado/utilitarios/filtroLogs.ts` | `02`, `06`, `10`, `24` |
 | Últimos acessos, sair dos outros aparelhos e registros com filtros (RF21) | `6_conta/AcessosEAparelhos.tsx`, `6_conta/RegistrosAtividade.tsx` | `24` (`meus_acessos`) |
@@ -123,7 +121,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `09_esqueci_senha.sql` | Log do pedido de redefinição de senha |
 | `10_ajustes_seguranca.sql` | Logs de acesso, limpeza manual, redefinição de MFA e lista de usuários |
 | `11_quiz_ranking_guru.sql` | Quiz, gabaritos, pontuação, ranking e Guru |
-| `12_notas_e_painel.sql` | Notas e faltas e indicadores do painel do admin |
+| `12_notas_e_painel.sql` | Indicadores do painel do admin (a tabela de notas e faltas que ele criava foi retirada no 30) |
 | `13_disciplinas_cursos.sql` | Disciplinas da grade de SI, ADS e ES |
 | `14_perguntas_iniciais.sql` | Banco inicial de 120 perguntas (8 disciplinas), com negrito e explicações; revisado em 16/11 para a certa não ser sempre a alternativa mais longa (rodar de novo atualiza as alternativas) |
 | `15_materiais_comunidade_quiz.sql` | Materiais da comunidade (filtro, moderação, denúncias, perfil público), dica 50/50 e ilustrações |
@@ -141,6 +139,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `27_ranking_admin_ve_anonimos.sql` | No ranking, só o administrador vê quem é o "Aluno anônimo" (nome entre parênteses); os colegas veem só "Aluno anônimo". Apaga qualquer versão antiga da função `ranking` e recria a oficial |
 | `28_perguntas_mais_disciplinas.sql` | Mais 75 perguntas em 5 disciplinas (Software Básico, Paradigmas de Orientação a Objetos, Gestão de Projetos, Inteligência de Negócios e Governança de TI): 13 disciplinas e 195 perguntas até aqui |
 | `29_perguntas_mais_5_disciplinas.sql` | Mais 75 perguntas em 5 disciplinas (Banco de Dados Avançado, Métodos Ágeis, Inteligência Artificial, Implementação e Testes de Projetos de Software e Desenvolvimento de Aplicações): 18 disciplinas e 270 perguntas no total |
+| `30_retirar_notas_e_faltas.sql` | Retira notas e faltas: apaga a tabela `notas`, com os registros, e as funções que só ela usava (LGPD: não guardar dado sem uso). Termo e Política na versão 1.8 |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

@@ -98,7 +98,7 @@ insert into grade_umc (nome, curso) values
 
 
 -- 2) Disciplinas da primeira versão viram a equivalente da grade
---    (mantém as perguntas, notas e materiais ligados a elas)
+--    (mantém as perguntas e materiais ligados a elas)
 update public.disciplinas set nome = 'Lógica e Programação', curso = 'ADS'
 where lower(nome) = lower('Algoritmos e Lógica de Programação')
   and not exists (select 1 from public.disciplinas where lower(nome) = lower('Lógica e Programação'));
@@ -137,13 +137,12 @@ where exists (
     where lower(o.nome) = lower(d.nome) and o.id < d.id
   )
   and not exists (select 1 from public.perguntas p where p.disciplina_id = d.id)
-  and not exists (select 1 from public.notas n where n.disciplina_id = d.id)
   and not exists (select 1 from public.materiais m where m.disciplina_id = d.id)
   and not exists (select 1 from public.tentativas_quiz t where t.disciplina_id = d.id);
 
 
 -- 6) Remove as disciplinas que não estão na grade
---    (as perguntas e notas delas também saem; materiais e quizzes ficam sem disciplina)
+--    (as perguntas delas também saem; materiais e quizzes ficam sem disciplina)
 delete from public.disciplinas d
 where not exists (select 1 from grade_umc g where lower(g.nome) = lower(d.nome));
 

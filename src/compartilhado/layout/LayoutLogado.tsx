@@ -5,7 +5,6 @@ import {
   BookOpen,
   ChevronDown,
   CircleUserRound,
-  ClipboardList,
   GraduationCap,
   HelpCircle,
   LayoutDashboard,
@@ -30,7 +29,7 @@ import { aplicarTema, temaSalvo, type Tema } from '../utilitarios/tema'
 // a tela da vez aparece no <Outlet /> lá embaixo.
 //
 // O menu do ALUNO segue a jornada de aprendizagem, não o quiz:
-//   Minha evolução (painel, notas e disciplinas) → Estudar (quiz, ranking, materiais)
+//   Minha evolução (painel e disciplinas) → Estudar (quiz, ranking, materiais)
 //   → Bússola (interesses) → Carreiras (vagas).
 // O menu do ADMIN segue o trabalho de gestão.
 // ============================================================
@@ -46,7 +45,6 @@ const itensAluno: ItemMenu[] = [
     label: 'Minha evolução',
     filhos: [
       { path: '/painel', label: 'Minha evolução', icone: TrendingUp },
-      { path: '/notas', label: 'Notas e faltas', icone: ClipboardList },
       // Para o aluno, Disciplinas é só consulta (a grade de cada curso), por isso fica no fim
       // deste submenu, e não como item próprio na barra.
       { path: '/disciplinas', label: 'Disciplinas', icone: Library },

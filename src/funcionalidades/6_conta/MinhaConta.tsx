@@ -5,14 +5,14 @@
 // etapas (VerificacaoDuasEtapas.tsx), ver os últimos acessos e sair dos outros aparelhos
 // (AcessosEAparelhos.tsx), filtrar os registros de atividade (RegistrosAtividade.tsx), sair do ranking, revogar a localização,
 // baixar tudo em JSON e excluir a conta (excluir_minha_conta, supabase/07).
-// Banco: lê perfis, materiais, notas, tentativas_quiz, cliques_vagas, bussola_resultados e logs_auditoria.
+// Banco: lê perfis, materiais, tentativas_quiz, cliques_vagas, bussola_resultados e logs_auditoria.
 // ============================================================
 
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
-import { CURSOS, type LogAuditoria, type Material, type Nota, type TentativaQuiz } from '../../compartilhado/tipos'
+import { CURSOS, type LogAuditoria, type Material, type TentativaQuiz } from '../../compartilhado/tipos'
 import { removerArquivosDoUsuario } from './arquivosDoUsuario'
 import TrocarSenha from './TrocarSenha'
 import VerificacaoDuasEtapas from './VerificacaoDuasEtapas'
@@ -27,7 +27,6 @@ const TEXTO_CONFIRMACAO = 'EXCLUIR'
 type DadosExtras = {
   logs: LogAuditoria[]
   materiais: Material[]
-  notas: Nota[]
   tentativas: TentativaQuiz[]
   cliquesVagas: Record<string, unknown>[]
   bussola: Record<string, unknown> | null
@@ -38,7 +37,7 @@ type DadosExtras = {
 // mostrar na tela e para o arquivo "Baixar meus dados". Cada consulta só devolve as linhas do
 // próprio usuário, porque o RLS do banco filtra (mesmo onde não há ".eq(usuarioId)").
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
-  const [logs, materiais, notas, tentativas, fatores, cliques, bussola] = await Promise.all([
+  const [logs, materiais, tentativas, fatores, cliques, bussola] = await Promise.all([
     supabase
       .from('logs_auditoria')
       .select('*')
@@ -46,7 +45,6 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
       .order('criado_em', { ascending: false })
       .limit(1000), // 90 dias de registros: na prática, todos (também vão no arquivo baixado)
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId),
-    supabase.from('notas').select('*'),
     supabase.from('tentativas_quiz').select('*').order('iniciada_em', { ascending: false }),
     supabase.auth.mfa.listFactors(),
     // Vagas abertas em Carreiras (só a vaga e a data; vazio antes do script 17).
@@ -60,7 +58,6 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
   return {
     logs: (logs.data as LogAuditoria[]) ?? [],
     materiais: (materiais.data as Material[]) ?? [],
-    notas: (notas.data as Nota[]) ?? [],
     tentativas: (tentativas.data as TentativaQuiz[]) ?? [],
     cliquesVagas: (cliques.data as Record<string, unknown>[]) ?? [],
     bussola: (bussola.data as Record<string, unknown> | null) ?? null,
@@ -184,7 +181,6 @@ export default function MinhaConta() {
       perfil,
       mfa: { ativo_desde: extras?.mfaAtivoDesde ?? null },
       materiais_enviados: extras?.materiais ?? [],
-      notas_e_faltas: extras?.notas ?? [],
       rodadas_de_quiz: extras?.tentativas ?? [],
       vagas_abertas_em_carreiras: extras?.cliquesVagas ?? [],
       bussola_eduguru: extras?.bussola ?? null,
@@ -203,7 +199,7 @@ export default function MinhaConta() {
   //  1) exige digitar EXCLUIR (evita exclusão por engano);
   //  2) apaga os arquivos dos materiais no Storage (o banco não apaga arquivos sozinho);
   //  3) excluir_minha_conta (supabase/07): função do banco que registra a exclusão no log e apaga a
-  //     conta; perfil, materiais, notas, rodadas, Bússola e cliques saem junto (on delete cascade).
+  //     conta; perfil, materiais, rodadas, Bússola e cliques saem junto (on delete cascade).
   //     A chave administrativa do Supabase nunca fica no navegador: quem apaga é a função do banco.
   //  4) os logs já existentes ficam até completar 90 dias (segurança) e depois somem sozinhos.
   async function excluirConta() {
@@ -272,8 +268,6 @@ export default function MinhaConta() {
           <dd>{extras ? extras.materiais.length : '...'}</dd>
           <dt>Rodadas de quiz</dt>
           <dd>{extras ? extras.tentativas.length : '...'}</dd>
-          <dt>Disciplinas com notas registradas</dt>
-          <dd>{extras ? extras.notas.length : '...'}</dd>
           <dt>Vagas abertas em Carreiras</dt>
           <dd>{extras ? extras.cliquesVagas.length : '...'}</dd>
           <dt>Bússola EduGuru</dt>
@@ -375,7 +369,7 @@ export default function MinhaConta() {
         <ul>
           <li>seu perfil, sua conta de acesso e a verificação em duas etapas são apagados;</li>
           <li>os materiais que você enviou (e os arquivos anexados) são apagados;</li>
-          <li>suas notas, faltas, rodadas de quiz, pontos do ranking, o resultado da Bússola e o registro das vagas que você abriu são apagados;</li>
+          <li>suas rodadas de quiz, pontos do ranking, o resultado da Bússola e o registro das vagas que você abriu são apagados;</li>
           <li>
             os registros de auditoria já feitos ficam guardados até completar 90 dias, por
             segurança, e depois são apagados automaticamente.

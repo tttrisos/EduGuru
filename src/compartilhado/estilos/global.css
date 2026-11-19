@@ -881,7 +881,7 @@ a.btn {
 }
 
 /* ======================================================================
-   Etapa 3 — Painel, Quiz, Ranking, Notas (mesmas cores do tema)
+   Etapa 3 — Painel, Quiz, Ranking (mesmas cores do tema)
    ====================================================================== */
 .pagina-larga {
   max-width: 1100px;
@@ -1054,7 +1054,7 @@ a.btn {
     }
 }
 
-/* ---------- Abas (Notas e Faltas, filtro de cursos) ---------- */
+/* ---------- Abas (filtro de cursos e outras telas) ---------- */
 .abas {
   display: flex;
   flex-wrap: wrap;

@@ -20,7 +20,6 @@ import Privacidade from './funcionalidades/1_publico/lgpd/Privacidade'
 import NovoAceite from './funcionalidades/1_publico/lgpd/NovoAceite'
 import MinhaConta from './funcionalidades/6_conta/MinhaConta'
 import Painel from './funcionalidades/3_minha_evolucao/painel/Painel'
-import Notas from './funcionalidades/3_minha_evolucao/notas/Notas'
 import Disciplinas from './funcionalidades/3_minha_evolucao/disciplinas/Disciplinas'
 import Perguntas from './funcionalidades/7_administracao/Perguntas'
 import Materiais from './funcionalidades/4_estudar/materiais/Materiais'
@@ -55,7 +54,6 @@ function Rotas() {
           }
         >
           <Route path="/painel" element={<Painel />} />
-          <Route path="/notas" element={<Notas />} />
           <Route path="/disciplinas" element={<Disciplinas />} />
           <Route path="/materiais" element={<Materiais />} />
           <Route path="/perfil/:id" element={<PerfilAutor />} />

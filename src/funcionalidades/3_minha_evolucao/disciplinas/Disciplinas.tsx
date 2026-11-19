@@ -104,7 +104,7 @@ export default function Disciplinas() {
   async function excluir(item: Disciplina) {
     const ok = await confirmar({
       titulo: `Excluir a disciplina "${item.nome}"?`,
-      mensagem: 'As perguntas e as notas ligadas a ela também serão apagadas. Isso não pode ser desfeito.',
+      mensagem: 'As perguntas ligadas a ela também serão apagadas. Isso não pode ser desfeito.',
       textoConfirmar: 'Excluir',
       perigo: true,
     })
@@ -135,7 +135,7 @@ export default function Disciplinas() {
         <p>Matérias da grade de cada curso.</p>
         <p className="pagina-fatos">
           {ehAdmin ? (
-            <span>Perguntas, materiais, notas e o quiz são ligados a elas</span>
+            <span>Perguntas, materiais e o quiz são ligados a elas</span>
           ) : (
             <span>Só administradores adicionam, editam ou removem</span>
           )}

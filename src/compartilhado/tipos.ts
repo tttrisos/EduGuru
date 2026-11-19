@@ -123,7 +123,7 @@ export type Perfil = {
 }
 
 // Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo.
-export const VERSAO_TERMOS = '1.7'
+export const VERSAO_TERMOS = '1.8'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).
 export type UsuarioAdmin = {
@@ -214,21 +214,6 @@ export type RecomendacaoGuru = {
   link: string | null
   arquivo_path: string | null
   arquivo_nome: string | null
-}
-
-// Notas e faltas
-
-export type Nota = {
-  id: number
-  disciplina_id: number
-  m1: number | null
-  nd: number | null
-  ni: number | null
-  m2: number | null
-  ms: number | null
-  exame: number | null
-  faltas: number
-  atualizado_em: string
 }
 
 export type EstatisticasAdmin = {

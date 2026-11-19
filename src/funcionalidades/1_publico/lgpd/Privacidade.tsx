@@ -6,8 +6,9 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.7 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
-// 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados).
+// Política de Privacidade, versão 1.8 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
+// 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados;
+// 1.8: notas e faltas retiradas do sistema e apagadas do banco).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -17,9 +18,9 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.7 — 14/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.8 — 19/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
-          pontuação, ranking, Guru, notas e faltas, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô", últimos acessos em Minha conta e código por e-mail ao entrar em aparelho novo). Finalidade
+          pontuação, ranking, Guru, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô", últimos acessos em Minha conta e código por e-mail ao entrar em aparelho novo). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
           real, as decisões abaixo seriam revisadas pelo controlador responsável
           (ex.: a instituição de ensino) e por assessoria jurídica.
@@ -103,11 +104,6 @@ export default function Privacidade() {
             data. Guardamos só o resultado mais recente: refazer substitui o anterior.
           </li>
           <li>
-            <strong>Notas e faltas (opcional):</strong> M1, ND, NI, nota única (MS), nota de exame e
-            quantidade de faltas que você mesmo registra em cada disciplina, para
-            acompanhar sua situação.
-          </li>
-          <li>
             <strong>Registros de auditoria:</strong> login concluído (com o tipo de navegador e
             de sistema, por exemplo &quot;Chrome no Windows&quot;, sem endereço IP nem versão, para
             você conferir os seus acessos em Minha conta), saída dos outros aparelhos, tentativas de login
@@ -116,8 +112,7 @@ export default function Privacidade() {
             desativação da verificação, logout, pedidos de redefinição de senha e senhas redefinidas,
             redefinição da verificação em duas etapas por um administrador, quizzes
             finalizados (acertos e pontos), criação/edição/exclusão de disciplinas,
-            perguntas e materiais, registro de notas (apenas que houve a alteração, sem
-            os valores das notas), alterações no perfil (apenas <em>quais</em> campos mudaram, não os
+            perguntas e materiais, alterações no perfil (apenas <em>quais</em> campos mudaram, não os
             valores) e exclusões de conta — sempre associados a quem realizou a ação e
             quando.
           </li>
@@ -196,12 +191,6 @@ export default function Privacidade() {
                 <td>Enquanto a conta existir</td>
               </tr>
               <tr>
-                <td>Notas e faltas</td>
-                <td>Calcular e mostrar, só para você, a situação em cada disciplina (média, exame, limite de faltas)</td>
-                <td>Consentimento (art. 7º, I): registrar é opcional e você pode apagar a qualquer momento na tela Notas</td>
-                <td>Até você apagar o registro ou excluir a conta</td>
-              </tr>
-              <tr>
                 <td>Vagas abertas em Carreiras (qual vaga e quando)</td>
                 <td>Contar quantas vezes cada vaga e cada área foram abertas, para a equipe avaliar se a funcionalidade é útil. O administrador vê só os totais, nunca quem clicou</td>
                 <td>Legítimo interesse (art. 7º, IX), com dado mínimo: só a vaga, que já é pública, e a data</td>
@@ -241,7 +230,7 @@ export default function Privacidade() {
             cadastro e de redefinição de senha gerados pelo Supabase e o código de acesso ao
             entrar num aparelho novo. Recebe apenas o seu endereço de e-mail e o conteúdo da
             mensagem (o link de confirmação ou de nova senha, ou o código e o tipo de aparelho),
-            somente para fazer a entrega; não recebe senha, curso, notas nem
+            somente para fazer a entrega; não recebe senha, curso nem
             desempenho, e o EduGuru não o usa para enviar propaganda. O Brevo mantém por um
             tempo o registro técnico de cada envio (para quem, quando e se foi entregue),
             conforme a sua própria política de privacidade.
@@ -317,9 +306,8 @@ export default function Privacidade() {
             lista.
           </li>
           <li>
-            Rodadas de quiz, pontos e notas/faltas: mantidos enquanto a conta existir.
-            As notas de uma disciplina podem ser apagadas por você a qualquer momento;
-            tudo é apagado junto com a conta.
+            Rodadas de quiz e pontos: mantidos enquanto a conta existir e apagados junto
+            com ela.
           </li>
           <li>
             Resultado da Bússola EduGuru: só o mais recente, até você apagá-lo na própria
@@ -339,7 +327,7 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Outros alunos:</strong> não veem seu perfil (nome, e-mail, curso,
-            cidade) nem suas notas. Veem os materiais que você compartilhar, depois de
+            cidade). Veem os materiais que você compartilhar, depois de
             aprovados (título, descrição, link e arquivo), com seu nome abreviado e seu
             curso, e podem abrir seu perfil público, que mostra só isso e a lista desses
             materiais. Quem não tem material aprovado não tem perfil público. No ranking,
@@ -348,8 +336,7 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Administradores:</strong> veem os perfis de todos os usuários (para
-            gerenciar contas) e os logs de auditoria. Não veem suas notas nem suas
-            respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
+            gerenciar contas) e os logs de auditoria. Não veem suas respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
             foram feitos e a média de acertos por disciplina). Em Carreiras, veem só
             quantas vezes cada vaga e cada área foram abertas, sem saber por quem, e na
             Bússola só quantos alunos responderam e quantos têm cada área como a preferida.
@@ -377,8 +364,7 @@ export default function Privacidade() {
             e baixar tudo em um arquivo (JSON);
           </li>
           <li>
-            <strong>Correção:</strong> alterar nome, curso, cidade e estado (e, na tela
-            Notas, as suas notas e faltas);
+            <strong>Correção:</strong> alterar nome, curso, cidade e estado;
           </li>
           <li>
             <strong>Oposição ao ranking:</strong> desmarcar &quot;Mostrar meu nome no ranking&quot;;
@@ -388,8 +374,8 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Eliminação:</strong> excluir a conta. Perfil, conta de acesso,
-            verificação em duas etapas, materiais enviados (com os arquivos), notas,
-            faltas, rodadas de quiz, resultado da Bússola e vagas abertas em Carreiras são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
+            verificação em duas etapas, materiais enviados (com os arquivos),
+            rodadas de quiz, resultado da Bússola e vagas abertas em Carreiras são apagados na hora. Os registros de auditoria já existentes são mantidos até completar 90
             dias, por segurança, e então apagados automaticamente.
           </li>
         </ul>
@@ -418,7 +404,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.7, 14/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.8, 19/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

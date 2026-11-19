@@ -24,7 +24,7 @@ import './administracao.css'
 const POR_PAGINA = 100
 
 // Tabelas que têm log automático de criar/editar/excluir (gatilhos dos scripts 02, 12, 18 e 22).
-const TABELAS = ['disciplinas', 'perguntas', 'materiais', 'perfis', 'notas', 'bussola_afirmacoes', 'filtro_sites', 'filtro_termos']
+const TABELAS = ['disciplinas', 'perguntas', 'materiais', 'perfis', 'bussola_afirmacoes', 'filtro_sites', 'filtro_termos']
 
 function formatarData(iso: string) {
   return new Date(iso).toLocaleString('pt-BR')

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import {
   BookOpen,
   Briefcase,
-  ClipboardList,
   Compass,
   GraduationCap,
   Lightbulb,
@@ -44,12 +43,6 @@ const RECURSOS = [
     icone: Briefcase,
     titulo: 'EduGuru Carreiras',
     texto: 'Vagas reais de tecnologia, remotas ou em SP, ligadas ao seu desempenho e aos seus interesses.',
-    disponivel: true,
-  },
-  {
-    icone: ClipboardList,
-    titulo: 'Notas e faltas',
-    texto: 'Sua situação em cada disciplina com a regra de médias e faltas da UMC.',
     disponivel: true,
   },
   {

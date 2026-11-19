@@ -6,8 +6,8 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.7 (1.6: verificação em duas etapas opcional para alunos;
-// 1.7: código por e-mail ao entrar em aparelho novo).
+// Termo de Aceite, versão 1.8 (1.6: verificação em duas etapas opcional para alunos;
+// 1.7: código por e-mail ao entrar em aparelho novo; 1.8: notas e faltas retiradas).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -17,7 +17,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.7 — 14/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.8 — 19/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -56,8 +56,7 @@ export default function TermoDeAceite() {
         <ul>
           <li>
             <strong>Aluno</strong> (padrão de qualquer cadastro): responde quizzes, ganha
-            pontos e participa do ranking, recebe indicações do Guru, registra as próprias
-            notas e faltas, visualiza disciplinas e materiais e pode anexar materiais
+            pontos e participa do ranking, recebe indicações do Guru, visualiza disciplinas e materiais e pode anexar materiais
             próprios — editando ou excluindo apenas os que ele mesmo enviou.
           </li>
           <li>
@@ -136,7 +135,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.7, 14/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.8, 19/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

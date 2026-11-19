@@ -5,7 +5,6 @@ import { supabase } from '../../../compartilhado/banco/supabase'
 import NumeroDestaque from '../../../compartilhado/componentes/NumeroDestaque'
 import GraficoBarras from '../../../compartilhado/componentes/GraficoBarras'
 import { gerarLinksArquivos } from '../../../compartilhado/banco/arquivos'
-import { calcularSituacao } from '../notas/calculoNotas'
 import { combinarSugestoes, destaques, type AfinidadeBussola } from '../../5_carreira/bussola/afinidadeBussola'
 import { fraseAprender, resumirEvolucao } from './evolucao'
 import AvisoAtivarMfa from '../../6_conta/AvisoAtivarMfa'
@@ -13,7 +12,6 @@ import type {
   AreaSugerida,
   DesempenhoDisciplina,
   LinhaRanking,
-  Nota,
   RecomendacaoGuru,
   TentativaQuiz,
 } from '../../../compartilhado/tipos'
@@ -34,14 +32,13 @@ type DadosAluno = {
   ranking: LinhaRanking[]
   guru: RecomendacaoGuru[]
   linksArquivos: Record<string, string>
-  notas: Nota[]
   bussola: AfinidadeBussola[]
   areasDesempenho: AreaSugerida[]
 }
 
 // Todas as consultas ao banco de uma vez (Promise.all = em paralelo).
 async function consultarDadosAluno(): Promise<DadosAluno> {
-  const [tentativas, desempenho, ranking, guru, notas, bussola, areas] = await Promise.all([
+  const [tentativas, desempenho, ranking, guru, bussola, areas] = await Promise.all([
     supabase
       .from('tentativas_quiz')
       .select('*')
@@ -50,7 +47,6 @@ async function consultarDadosAluno(): Promise<DadosAluno> {
     supabase.rpc('meu_desempenho'),
     supabase.rpc('ranking', { p_disciplina_id: null }),
     supabase.rpc('recomendacoes_guru'),
-    supabase.from('notas').select('*'),
     supabase.rpc('minha_bussola'),
     supabase.rpc('minhas_areas_carreira'),
   ])
@@ -65,7 +61,6 @@ async function consultarDadosAluno(): Promise<DadosAluno> {
     ranking: (ranking.data as LinhaRanking[]) ?? [],
     guru: listaGuru,
     linksArquivos: await gerarLinksArquivos(caminhos),
-    notas: (notas.data as Nota[]) ?? [],
     // Bússola e Carreiras: se o script do banco ainda não foi rodado, a etapa só fica vazia.
     bussola: bussola.error ? [] : ((bussola.data as AfinidadeBussola[]) ?? []),
     areasDesempenho: areas.error ? [] : ((areas.data as AreaSugerida[]) ?? []),
@@ -86,14 +81,6 @@ export default function MinhaEvolucao() {
   const disciplinasGuru = [...new Set(dados.guru.map((g) => g.disciplina_id))]
   const areaPrincipal = destaques(dados.bussola)[0] ?? null
   const areasSugeridas = combinarSugestoes(dados.areasDesempenho, dados.bussola)
-
-  // Notas da faculdade (regra da UMC em 3_minha_evolucao/notas/calculoNotas.ts)
-  const situacoes = dados.notas.map((n) => calcularSituacao(n, n.faltas))
-  const comMd = situacoes.filter((s) => s.md !== null)
-  const mediaGeral = comMd.length > 0 ? comMd.reduce((soma, s) => soma + (s.md ?? 0), 0) / comMd.length : null
-  const emAlerta = situacoes.filter(
-    (s) => s.alertaFaltas || s.situacao === 'Em exame' || s.situacao.startsWith('Reprovado'),
-  ).length
 
   // Gamificação (fica por último na tela)
   const pontos = dados.tentativas.reduce((soma, t) => soma + t.pontos, 0)
@@ -169,7 +156,7 @@ export default function MinhaEvolucao() {
         </li>
       </ol>
 
-      {/* 2) Números da aprendizagem e da faculdade */}
+      {/* 2) Números da aprendizagem */}
       <div className="grade-big-numbers">
         <NumeroDestaque
           valor={resumo.aproveitamentoGeral !== null ? `${resumo.aproveitamentoGeral}%` : '—'}
@@ -178,12 +165,6 @@ export default function MinhaEvolucao() {
         />
         <NumeroDestaque valor={resumo.dominadas} legenda="Disciplinas dominadas" detalhe="60% ou mais" />
         <NumeroDestaque valor={resumo.paraRevisar} legenda="Disciplinas para revisar" detalhe="abaixo de 60%" />
-        <NumeroDestaque
-          valor={mediaGeral !== null ? mediaGeral.toFixed(1).replace('.', ',') : '—'}
-          legenda="Média geral (MD)"
-          detalhe="notas da faculdade"
-        />
-        <NumeroDestaque valor={emAlerta} legenda="Disciplinas em alerta" detalhe="exame, reprovação ou faltas" />
       </div>
 
       {/* 3) Gráficos de evolução */}
@@ -267,10 +248,6 @@ export default function MinhaEvolucao() {
 
       {/* 6) Atalhos */}
       <div className="grade-inicio">
-        <Link to="/notas" className="atalho">
-          <h3>Notas e faltas</h3>
-          <p>Registre M1, ND, NI, exame e faltas e veja sua situação na UMC.</p>
-        </Link>
         <Link to="/materiais" className="atalho">
           <h3>Materiais</h3>
           <p>Apostilas e links das disciplinas, enviados pelos colegas.</p>

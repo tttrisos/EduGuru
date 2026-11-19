@@ -22,7 +22,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 ```
 
 - **Tela (`.tsx`):** mostra e coleta dados. Faz validações de conforto (ex.: avisar que a senha está fraca).
-- **Regras puras (`.ts`):** cálculos sem tela (notas, filtros, localidade). São as partes testadas em `testes/`.
+- **Regras puras (`.ts`):** cálculos sem tela (evolução, filtros, localidade). São as partes testadas em `testes/`.
 - **Banco (`supabase/*.sql`):** as regras que **não podem ser burladas** (corrigir o quiz, dar pontos, calcular a Bússola, quem vê o quê).
 - Toda conversa com o banco passa por **um único arquivo**: `src/compartilhado/banco/supabase.ts`.
 
@@ -52,7 +52,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
    - `meu_desempenho` (script 11): acertos por disciplina;
    - `recomendacoes_guru` (11): materiais das disciplinas abaixo de 60%;
    - `minha_bussola` (18) e `minhas_areas_carreira` (17): áreas por interesse e por desempenho;
-   - tabelas `notas` e `tentativas_quiz`, e `ranking` (11).
+   - tabela `tentativas_quiz` e `ranking` (11).
 2. `3_minha_evolucao/painel/evolucao.ts` → `resumirEvolucao()`: dominadas (60%+), para revisar (< 60%), em andamento (< 5 respostas).
 3. A tela monta a jornada **Aprender → Revisar → Descobrir → Direcionar**.
 
@@ -89,10 +89,6 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 3. Termo novo → **`reanalisar_materiais_publicados`** (22): o que já estava publicado e tem o termo volta para a análise.
 4. "Testar o filtro" chama `verificar_material` com um exemplo.
 
-### O aluno registra notas
-1. `3_minha_evolucao/notas/Notas.tsx` grava na tabela `notas` (12). O RLS deixa só o próprio aluno ler e gravar.
-2. `3_minha_evolucao/notas/calculoNotas.ts`: M2 = ND × 70% + NI × 30%; MD = (M1 + 2 × M2) ÷ 3; exame e MF; mais de 40 faltas reprova.
-
 ### O aluno ativa ou desativa a verificação em duas etapas
 1. `6_conta/VerificacaoDuasEtapas.tsx` (em Minha conta) usa `2_acesso/fatoresMfa.ts`.
 2. **Ativar:** `iniciarCadastroTotp()` gera o QR Code → o aluno digita um código → `confirmarCodigo()` → sessão aal2 e log `mfa_ativado`. A partir daí, o banco exige o código em todo login dessa conta.
@@ -118,7 +114,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 |---|---|
 | Quem ativou as duas etapas não entra só com a senha | Política `mfa_obrigatorio` em todas as tabelas (05 em diante), que chama `sessao_mfa_ok()`: aal2 **ou** conta sem MFA (23) |
 | Admin sempre com o código | `eh_admin()` exige aal2 (`sessao_aal2()`, 23) |
-| Cada um só vê o que é seu (ex.: notas) | Políticas RLS de cada tabela (ex.: `notas_proprias`, script 12) |
+| Cada um só vê o que é seu (ex.: rodadas do quiz, Bússola) | Políticas RLS de cada tabela (ex.: `bussola_resultados`, script 18) |
 | O aluno não vê o gabarito | Tabela `gabaritos` só para admin (11); correção só nas funções do quiz (19) |
 | Regras que não podem ser burladas | Funções `security definer` que conferem quem chama (é admin? tem MFA?) |
 | Telas de admin | `RotaProtegida` com `somenteAdmin` (tela) + `eh_admin()` no banco (o que vale) |
