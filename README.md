@@ -29,7 +29,7 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 - **Bússola EduGuru:** autoavaliação de interesses opcional (16 afirmações de 1 a 5). Não é teste vocacional: é uma orientação simples.
 - **EduGuru Carreiras:** vagas das comunidades backend-br e frontendbr (API do GitHub), ligadas ao desempenho e aos interesses, com filtros de área, nível e localidade.
 - **Minha conta:** ver, corrigir, baixar e excluir os dados, **trocar a senha estando logado** (com a senha atual; a nova precisa ser diferente) e sair do ranking.
-- **Segurança e LGPD:** verificação em duas etapas **opcional para alunos** (ativada e desativada em Minha conta; quem ativa precisa do código em todo login) e **obrigatória para administradores**, RLS em todas as tabelas, logs de auditoria (90 dias), Termo e Política com novo aceite a cada versão; conta de administrador protegida contra exclusão.
+- **Segurança e LGPD:** verificação em duas etapas **opcional para alunos** (ativada e desativada em Minha conta; quem ativa precisa do código em todo login) e **obrigatória para administradores**, RLS em todas as tabelas, sessão encerrada sozinha após **30 minutos sem uso** (aviso no login), logs de auditoria (90 dias), Termo e Política com novo aceite a cada versão; conta de administrador protegida contra exclusão.
 
 ## Tecnologias
 
@@ -81,6 +81,7 @@ eduguru/
 | Página inicial (RF23) | `1_publico/inicio/Inicio.tsx` | — |
 | Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `2_acesso/Login.tsx`, `2_acesso/regrasSenha.ts` | `02`, `04` |
 | Verificação em duas etapas (RF03, RF04): código no login e ativar/desativar em Minha conta | `2_acesso/Mfa.tsx`, `2_acesso/fatoresMfa.ts`, `6_conta/VerificacaoDuasEtapas.tsx`, regra em `compartilhado/sessao/nivelSessao.ts` | `05`, `23` |
+| Sessão expirada após 30 min sem uso | regra em `compartilhado/sessao/inatividade.ts`, aplicada em `compartilhado/sessao/ContextoSessao.tsx` | — (só no navegador) |
 | Esqueci minha senha (RF24) | `2_acesso/EsqueciSenha.tsx`, `2_acesso/RedefinirSenha.tsx` | `09` |
 | Trocar a senha estando logado | `6_conta/TrocarSenha.tsx` | `21` (`conferir_senha_atual`) |
 | Termo, Política e novo aceite (RF11 a RF13, RF22) | `1_publico/lgpd/` | `08` |

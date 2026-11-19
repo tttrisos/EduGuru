@@ -47,6 +47,11 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 3. `sessao/RotaProtegida.tsx`: confere o aceite da versão atual dos termos (`VERSAO_TERMOS` em `tipos.ts`); se mudou, manda para `1_publico/lgpd/NovoAceite.tsx`.
 4. Abre `3_minha_evolucao/painel/Painel.tsx` → aluno vê `MinhaEvolucao.tsx`; admin vê `PainelAdmin.tsx`.
 
+### A sessão expira (30 minutos sem uso)
+1. `compartilhado/sessao/ContextoSessao.tsx` grava no navegador o horário do último uso (clique, tecla, toque, rolagem), no máximo a cada 15 s, e confere a cada 30 s e ao voltar para a aba.
+2. A regra está em `compartilhado/sessao/inatividade.ts` (com testes): 30 minutos sem uso, em qualquer aba, encerram a sessão deste navegador (`signOut({ scope: 'local' })`). Vale também para quem fechou o navegador e voltou depois.
+3. O log grava `logout` com `motivo: sessao_expirada` (aparece como "Sessão expirada" em Logs e Minha conta), e o login mostra "Sua sessão expirou depois de 30 minutos sem uso".
+
 ### O aluno abre "Minha evolução"
 1. `3_minha_evolucao/painel/MinhaEvolucao.tsx` → `consultarDadosAluno()` busca tudo em paralelo:
    - `meu_desempenho` (script 11): acertos por disciplina;
