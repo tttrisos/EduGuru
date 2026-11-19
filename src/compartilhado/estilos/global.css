@@ -158,6 +158,14 @@ a {
   position: relative;
 }
 
+/* Primeiro nome no lugar de "Minha conta" (LayoutLogado.tsx): nome muito longo termina em "…" */
+.topo-conta-nome {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Submenu do Quiz (Quiz e Ranking): mesmo visual, alinhado à esquerda */
 .topo-grupo .topo-grupo-menu {
   left: 0;

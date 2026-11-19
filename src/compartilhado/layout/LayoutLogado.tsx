@@ -90,6 +90,10 @@ export default function LayoutLogado() {
 
   const itens = ehAdmin ? itensAdmin : itensAluno
 
+  // No topo aparece o primeiro nome da pessoa (ex.: "Thiago"), no lugar do texto "Minha conta".
+  // Sem perfil carregado ainda, fica "Minha conta".
+  const primeiroNome = perfil?.nome?.trim().split(/\s+/)[0] || 'Minha conta'
+
   // Sair pede confirmação (janela do EduGuru, em compartilhado/Dialogo.tsx).
   async function aoSair() {
     if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: temMfa ? 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.' : 'Para entrar de novo, você vai precisar da sua senha.', textoConfirmar: 'Sair' }))) return
@@ -173,16 +177,17 @@ export default function LayoutLogado() {
             )}
 
             <div className="topo-usuario">
-              {/* "Minha conta": dados pessoais, privacidade, senha e tema */}
+              {/* Menu da conta (mostra o primeiro nome): dados pessoais, privacidade, senha e tema */}
               <div className="topo-conta">
                 <Link
                   to="/minha-conta"
                   className={`topo-link${rotaAtiva('/minha-conta') ? ' ativo' : ''}`}
                   onClick={() => setMenuAberto(false)}
-                  title={perfil?.nome ?? 'Minha conta'}
+                  title={perfil?.nome ? `Minha conta — ${perfil.nome}` : 'Minha conta'}
+                  aria-label={perfil?.nome ? `Minha conta de ${primeiroNome}` : undefined}
                 >
                   <CircleUserRound size={20} aria-hidden="true" />
-                  Minha conta
+                  <span className="topo-conta-nome">{primeiroNome}</span>
                   <span className={`selo${perfil?.papel === 'admin' ? ' selo-admin' : ''}`}>
                     {perfil?.papel === 'admin' ? 'Admin' : 'Aluno'}
                   </span>

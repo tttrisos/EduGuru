@@ -358,7 +358,7 @@ export default function Privacidade() {
         </ul>
         <p>
           Você exerce esses direitos sozinho, dentro do site, na tela{' '}
-          <strong>Minha conta</strong> (depois de entrar, passe o mouse em &quot;Minha conta&quot;, no topo do site, e escolha &quot;Meus dados e privacidade&quot;):
+          <strong>Minha conta</strong> (depois de entrar, passe o mouse no seu nome, no topo do site, e escolha &quot;Meus dados, senha e privacidade&quot;):
         </p>
         <ul>
           <li>
