@@ -8,7 +8,7 @@ import './lgpd.css'
 
 // Política de Privacidade, versão 1.8 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
 // 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados;
-// 1.8: notas e faltas retiradas do sistema e apagadas do banco).
+// 1.8: notas e faltas retiradas do sistema e apagadas do banco; sessão expira após 30 min sem uso).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -281,6 +281,9 @@ export default function Privacidade() {
           apenas para não pedir o código de novo nesse aparelho. Em Carreiras, o navegador guarda por 30 minutos uma cópia
           da lista de vagas (dados públicos, sem nada sobre você), para não consultar o
           GitHub a cada visita e para mostrar a última lista quando ele estiver fora do ar.
+          Enquanto você está logado, o navegador guarda o horário do seu último uso do site,
+          para encerrar a sessão sozinho depois de 30 minutos sem uso; esse horário não é
+          enviado ao EduGuru e é apagado quando você sai.
         </p>
 
         <h2>6. Retenção e descarte</h2>

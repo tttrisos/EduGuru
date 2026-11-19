@@ -7,7 +7,7 @@
 // ============================================================
 
 import { semAcento } from '../../funcionalidades/4_estudar/materiais/filtroMateriais'
-import { ROTULO_ACAO } from '../banco/log'
+import { rotuloDoLog } from '../banco/log'
 import type { LogAuditoria } from '../tipos'
 
 export type Categoria = 'todos' | 'acessos' | 'senha' | 'alteracoes' | 'quiz' | 'sistema'
@@ -62,7 +62,7 @@ export function inicioDoPeriodo(dias: number, agora: Date) {
 // Texto em que a busca procura: nome da ação, tabela, e-mail e aparelho.
 export function textoDoLog(log: LogAuditoria) {
   const aparelho = typeof log.detalhes?.aparelho === 'string' ? log.detalhes.aparelho : ''
-  return semAcento([ROTULO_ACAO[log.acao] ?? log.acao, log.acao, log.tabela ?? '', log.usuario_email ?? '', aparelho].join(' '))
+  return semAcento([rotuloDoLog(log), log.acao, log.tabela ?? '', log.usuario_email ?? '', aparelho].join(' '))
 }
 
 // Filtro no navegador (Minha conta).

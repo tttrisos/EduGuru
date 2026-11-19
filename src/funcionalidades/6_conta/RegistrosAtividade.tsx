@@ -7,7 +7,7 @@
 // ============================================================
 
 import { useState } from 'react'
-import { ROTULO_ACAO } from '../../compartilhado/banco/log'
+import { rotuloDoLog } from '../../compartilhado/banco/log'
 import FiltrosLogs from '../../compartilhado/componentes/FiltrosLogs'
 import type { LogAuditoria } from '../../compartilhado/tipos'
 import { FILTRO_INICIAL, filtrarLogs, totaisPorCategoria } from '../../compartilhado/utilitarios/filtroLogs'
@@ -57,7 +57,7 @@ export default function RegistrosAtividade({ logs }: { logs: LogAuditoria[] | nu
                 <li key={log.id} className="item-lista">
                   <div>
                     <strong>
-                      {ROTULO_ACAO[log.acao] ?? log.acao}
+                      {rotuloDoLog(log)}
                       {log.tabela ? ` · ${log.tabela}` : ''}
                     </strong>
                     <span className="item-meta">

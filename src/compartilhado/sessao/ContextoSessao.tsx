@@ -8,11 +8,13 @@
 // precisa dele (situacao_codigo_email, supabase/25); a tela é 2_acesso/CodigoEmail.tsx.
 // Sessão encerrada em outro aparelho ("Sair dos outros aparelhos"): a cada minuto e ao voltar para a
 // aba, pergunta ao Supabase Auth se a sessão ainda existe; se não, sai e avisa no login (supabase/26).
+// Sessão expirada: 30 minutos sem usar o site (regra em inatividade.ts) encerram a sessão e o login
+// avisa "Sua sessão expirou". Vale também para quem fechou o navegador e voltou depois.
 // Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
 // Usado por: quase todas as telas (ex.: ehAdmin decide o que mostrar).
 // ============================================================
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../banco/supabase'
 import { VERSAO_TERMOS, type Perfil } from '../tipos'
@@ -20,6 +22,15 @@ import { registrarLogEvento, registrarLoginFalhou } from '../banco/log'
 import { situacaoDaSessao } from './nivelSessao'
 import { descreverAparelho } from '../utilitarios/aparelho'
 import { esquecerTokenAparelho, lerTokenAparelho } from '../../funcionalidades/2_acesso/regrasCodigoEmail'
+import {
+  AVISO_SESSAO_EXPIRADA,
+  INTERVALO_CONFERENCIA_MS,
+  lerUltimaAtividade,
+  limparAtividade,
+  marcarAtividade,
+  precisaGravar,
+  sessaoExpirou,
+} from './inatividade'
 
 type AuthContextValor = {
   usuario: User | null
@@ -34,7 +45,7 @@ type AuthContextValor = {
   // aparelho novo sem o aplicativo: falta o código enviado por e-mail (tela /mfa mostra CodigoEmail)
   precisaCodigoEmail: boolean
   emailMascarado: string | null
-  // mensagem para a tela de login quando a sessão foi encerrada em outro aparelho
+  // mensagem para a tela de login quando a sessão foi encerrada em outro aparelho ou expirou
   avisoSaida: string | null
   atualizarMfa: () => Promise<void>
   recarregarPerfil: () => Promise<void>
@@ -52,6 +63,10 @@ type AuthContextValor = {
 }
 
 const AuthContext = createContext<AuthContextValor | null>(null)
+
+// Link do e-mail (confirmação de cadastro ou nova senha, fluxo PKCE): o endereço chega com ?code=.
+// Lido assim que o site carrega, antes de o Supabase trocar o código pela sessão e limpar o endereço.
+const VEIO_DE_LINK_DO_EMAIL = new URLSearchParams(window.location.search).has('code')
 
 type DadosSessao = {
   verificacaoOk: boolean
@@ -128,6 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [precisaCodigoEmail, setPrecisaCodigoEmail] = useState(false)
   const [emailMascarado, setEmailMascarado] = useState<string | null>(null)
   const [avisoSaida, setAvisoSaida] = useState<string | null>(null)
+  const expirando = useRef(false) // evita encerrar duas vezes (intervalo e volta para a aba juntos)
 
   function aplicar(dados: DadosSessao) {
     setVerificacaoOk(dados.verificacaoOk)
@@ -153,6 +169,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // onAuthStateChange, e a situação da sessão é lida de novo.
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
+      // Chegou por um link do e-mail: é um acesso novo, então o relógio de inatividade começa agora.
+      if (session && VEIO_DE_LINK_DO_EMAIL) marcarAtividade()
+      if (!session) limparAtividade()
+      // Sessão guardada, mas o site ficou mais de 30 minutos sem uso (ex.: fechou o navegador e
+      // voltou no outro dia): encerra antes de mostrar qualquer tela logada.
+      if (session && sessaoExpirou(lerUltimaAtividade(), Date.now())) {
+        await expirarSessao()
+        setCarregando(false)
+        return
+      }
+      if (session && lerUltimaAtividade() === null) marcarAtividade()
       const dados = await lerDadosSessao(session)
       setUsuario(session?.user ?? null)
       aplicar(dados)
@@ -169,6 +196,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => assinatura.subscription.unsubscribe()
   }, [])
+
+  // SESSÃO EXPIRADA (30 min sem uso): grava o log como logout por inatividade, encerra só a
+  // sessão deste navegador (os outros aparelhos continuam) e deixa o aviso para a tela de login.
+  async function expirarSessao() {
+    if (expirando.current) return
+    expirando.current = true
+    setAvisoSaida(AVISO_SESSAO_EXPIRADA)
+    await registrarLogEvento('logout', { motivo: 'sessao_expirada' })
+    limparAtividade()
+    await supabase.auth.signOut({ scope: 'local' })
+    expirando.current = false
+  }
+
+  // Conta o tempo sem uso enquanto alguém está logado. Clique, tecla, toque, rolagem ou mouse
+  // contam como uso (gravado no máximo a cada 15 s). A cada 30 s, e ao voltar para a aba, confere
+  // se passou de 30 minutos. O horário fica no navegador, então vale para todas as abas abertas.
+  useEffect(() => {
+    if (!usuario) return
+    let ultimaGravacao = 0
+    function aoUsar() {
+      const agora = Date.now()
+      // Voltou a mexer depois de 30 min parado: não renova, encerra (o tempo já tinha passado).
+      if (sessaoExpirou(lerUltimaAtividade(), agora)) return void expirarSessao()
+      if (precisaGravar(ultimaGravacao, agora)) {
+        ultimaGravacao = agora
+        marcarAtividade(agora)
+      }
+    }
+    function conferirExpiracao() {
+      if (sessaoExpirou(lerUltimaAtividade(), Date.now())) expirarSessao()
+    }
+    function aoVoltarParaAba() {
+      if (document.visibilityState === 'visible') conferirExpiracao()
+    }
+    const eventos = ['pointerdown', 'keydown', 'scroll', 'touchstart', 'mousemove'] as const
+    eventos.forEach((e) => window.addEventListener(e, aoUsar, { passive: true }))
+    document.addEventListener('visibilitychange', aoVoltarParaAba)
+    const intervalo = setInterval(conferirExpiracao, INTERVALO_CONFERENCIA_MS)
+    return () => {
+      eventos.forEach((e) => window.removeEventListener(e, aoUsar))
+      document.removeEventListener('visibilitychange', aoVoltarParaAba)
+      clearInterval(intervalo)
+    }
+  }, [usuario])
 
   // Esta sessão foi encerrada em outro aparelho? O banco já recusa os dados (supabase/26);
   // aqui o site percebe e volta para o login, em até 1 minuto ou ao voltar para a aba.
@@ -197,6 +268,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // captcha = token do "não sou um robô" (Captcha.tsx); o Supabase confere quando a proteção está ligada.
   async function entrar(email: string, senha: string, captcha?: string | null) {
     setAvisoSaida(null)
+    expirando.current = false
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password: senha,
@@ -223,6 +295,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     // Lê a situação ANTES de voltar, para a próxima tela já saber se precisa do código.
     setUsuario(data.user)
+    marcarAtividade() // login novo: o relógio de inatividade começa agora
     const dados = await carregarDadosSessao(data.session)
     // O login só vai para o log quando a sessão já está liberada. Quem ainda precisa do código
     // (aplicativo ou e-mail) tem o login registrado depois, na tela que confere o código.
@@ -275,6 +348,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function sair() {
     await registrarLogEvento('logout')
     await supabase.auth.signOut()
+    limparAtividade()
   }
 
   const valor: AuthContextValor = {

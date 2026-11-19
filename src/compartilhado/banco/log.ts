@@ -39,6 +39,13 @@ export const ROTULO_ACAO: Record<string, string> = {
   excluir: 'Excluiu',
 }
 
+// Texto do log na tela: igual ao ROTULO_ACAO, mas o logout por inatividade aparece como
+// "Sessão expirada (30 min sem uso)" (ContextoSessao.tsx grava detalhes.motivo = "sessao_expirada").
+export function rotuloDoLog(log: { acao: string; detalhes?: Record<string, unknown> | null }) {
+  if (log.acao === 'logout' && log.detalhes?.motivo === 'sessao_expirada') return 'Sessão expirada (30 min sem uso)'
+  return ROTULO_ACAO[log.acao] ?? log.acao
+}
+
 export type EventoAuth =
   | 'login'
   | 'logout'

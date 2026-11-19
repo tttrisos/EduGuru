@@ -11,7 +11,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import type { LogAuditoria } from '../../compartilhado/tipos'
-import { ROTULO_ACAO } from '../../compartilhado/banco/log'
+import { rotuloDoLog } from '../../compartilhado/banco/log'
 import FiltrosLogs from '../../compartilhado/componentes/FiltrosLogs'
 import {
   FILTRO_INICIAL,
@@ -163,7 +163,7 @@ export default function Logs() {
               <li key={log.id} className="item-lista">
                 <div>
                   <strong>
-                    {ROTULO_ACAO[log.acao] ?? log.acao}
+                    {rotuloDoLog(log)}
                     {log.tabela ? ` · ${log.tabela}` : ''}
                   </strong>
                   <span className="item-meta">
