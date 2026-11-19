@@ -143,6 +143,11 @@
   text-decoration: underline;
 }
 
+/* Minha evolução: um só gráfico (aproveitamento por disciplina), largura total */
+.evolucao-grafico {
+  margin-bottom: 16px;
+}
+
 .evolucao-gamificacao {
   display: flex;
   align-items: center;

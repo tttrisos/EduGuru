@@ -23,7 +23,8 @@ import type {
 //   2) Revisar    → Guru indica materiais abaixo de 60%        → banco: recomendacoes_guru()
 //   3) Descobrir  → Bússola: áreas que combinam com o aluno    → banco: minha_bussola()
 //   4) Direcionar → Carreiras: áreas sugeridas e vagas         → banco: minhas_areas_carreira()
-// Depois vêm os números, os gráficos, o Guru e os atalhos. Pontos e ranking ficam por último.
+// Depois vêm só 3 números, 1 gráfico (aproveitamento por disciplina) e o Guru; pontos e ranking
+// ficam numa linha curta no fim. A tela foi enxugada em 19/11 para não ficar poluída.
 // ============================================================
 
 type DadosAluno = {
@@ -85,11 +86,6 @@ export default function MinhaEvolucao() {
   // Gamificação (fica por último na tela)
   const pontos = dados.tentativas.reduce((soma, t) => soma + t.pontos, 0)
   const minhaPosicao = dados.ranking.find((l) => l.eh_voce)?.posicao
-
-  const ultimasRodadas = dados.tentativas.slice(-10).map((t, i) => ({
-    rotulo: `${new Date(t.finalizada_em ?? t.iniciada_em).toLocaleDateString('pt-BR')} #${i + 1}`,
-    valor: t.total_perguntas > 0 ? Math.round((t.acertos / t.total_perguntas) * 100) : 0,
-  }))
 
   return (
     <>
@@ -167,26 +163,15 @@ export default function MinhaEvolucao() {
         <NumeroDestaque valor={resumo.paraRevisar} legenda="Disciplinas para revisar" detalhe="abaixo de 60%" />
       </div>
 
-      {/* 3) Gráficos de evolução */}
-      <div className="grade-graficos">
-        <div className="cartao">
-          <GraficoBarras
-            titulo="Aproveitamento por disciplina (%)"
-            itens={dados.desempenho.map((d) => ({ rotulo: d.disciplina, valor: d.aproveitamento }))}
-            maximo={100}
-            sufixo="%"
-            vazio="Pratique uma disciplina para ver seu aproveitamento."
-          />
-        </div>
-        <div className="cartao">
-          <GraficoBarras
-            titulo="Evolução nas últimas práticas (%)"
-            itens={ultimasRodadas}
-            maximo={100}
-            sufixo="%"
-            vazio="Nenhuma prática finalizada ainda."
-          />
-        </div>
+      {/* 3) Gráfico: aproveitamento por disciplina */}
+      <div className="cartao evolucao-grafico">
+        <GraficoBarras
+          titulo="Aproveitamento por disciplina (%)"
+          itens={dados.desempenho.map((d) => ({ rotulo: d.disciplina, valor: d.aproveitamento }))}
+          maximo={100}
+          sufixo="%"
+          vazio="Pratique uma disciplina para ver seu aproveitamento."
+        />
       </div>
 
       {/* 4) Guru: materiais das disciplinas com aproveitamento abaixo de 60% */}
@@ -243,18 +228,6 @@ export default function MinhaEvolucao() {
         </p>
         <Link to="/ranking" className="item-meta">
           Ver o ranking →
-        </Link>
-      </div>
-
-      {/* 6) Atalhos */}
-      <div className="grade-inicio">
-        <Link to="/materiais" className="atalho">
-          <h3>Materiais</h3>
-          <p>Apostilas e links das disciplinas, enviados pelos colegas.</p>
-        </Link>
-        <Link to="/carreiras" className="atalho">
-          <h3>Carreiras</h3>
-          <p>Vagas de tecnologia ligadas ao seu desempenho e aos seus interesses.</p>
         </Link>
       </div>
     </>
