@@ -15,6 +15,7 @@ import { CURSOS } from '../../compartilhado/tipos'
 import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
 import Rodape from '../../compartilhado/layout/Rodape'
 import Captcha, { captchaLigado } from '../../compartilhado/componentes/Captcha'
+import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 import './acesso.css'
 
 // A MESMA tela serve para entrar e para criar conta: o estado "modo" troca o formulário.
@@ -277,9 +278,7 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
           />
-          <input
-            className="campo"
-            type="password"
+          <CampoSenha
             placeholder="Senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
@@ -300,9 +299,7 @@ export default function Login() {
                 })}
               </ul>
 
-              <input
-                className="campo"
-                type="password"
+              <CampoSenha
                 placeholder="Confirmar senha"
                 value={confirmarSenha}
                 onChange={(e) => setConfirmarSenha(e.target.value)}

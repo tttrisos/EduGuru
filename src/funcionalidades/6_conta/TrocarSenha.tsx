@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
 import { REGRAS_SENHA, validarTrocaDeSenha } from '../2_acesso/regrasSenha'
+import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 
 // Trocar a senha estando logado (cartão da tela Minha conta).
 // Passo a passo:
@@ -73,9 +74,7 @@ export default function TrocarSenha() {
       <form onSubmit={salvar} className="trocar-senha-form">
         <label className="rotulo">
           Senha atual
-          <input
-            className="campo"
-            type="password"
+          <CampoSenha
             value={atual}
             onChange={(e) => setAtual(e.target.value)}
             autoComplete="current-password"
@@ -83,9 +82,7 @@ export default function TrocarSenha() {
         </label>
         <label className="rotulo">
           Nova senha
-          <input
-            className="campo"
-            type="password"
+          <CampoSenha
             value={nova}
             onChange={(e) => setNova(e.target.value)}
             autoComplete="new-password"
@@ -93,9 +90,7 @@ export default function TrocarSenha() {
         </label>
         <label className="rotulo">
           Confirmar a nova senha
-          <input
-            className="campo"
-            type="password"
+          <CampoSenha
             value={confirmar}
             onChange={(e) => setConfirmar(e.target.value)}
             autoComplete="new-password"

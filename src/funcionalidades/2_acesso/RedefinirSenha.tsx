@@ -13,6 +13,7 @@ import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
 import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
 import Rodape from '../../compartilhado/layout/Rodape'
+import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 import './acesso.css'
 
 // Aberta pelo link do e-mail. Se a conta tem MFA, pede o código antes da nova senha.
@@ -142,9 +143,7 @@ export default function RedefinirSenha() {
   } else {
     conteudo = (
       <form onSubmit={salvarSenha} className="login-form">
-        <input
-          className="campo"
-          type="password"
+        <CampoSenha
           placeholder="Nova senha"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
@@ -162,9 +161,7 @@ export default function RedefinirSenha() {
             )
           })}
         </ul>
-        <input
-          className="campo"
-          type="password"
+        <CampoSenha
           placeholder="Confirmar nova senha"
           value={confirmarSenha}
           onChange={(e) => setConfirmarSenha(e.target.value)}

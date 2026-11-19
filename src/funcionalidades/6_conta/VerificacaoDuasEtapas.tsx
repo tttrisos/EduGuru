@@ -17,6 +17,7 @@ import { supabase } from '../../compartilhado/banco/supabase'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
+import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 import {
   confirmarCodigo,
   fatorVerificado,
@@ -214,9 +215,7 @@ export default function VerificacaoDuasEtapas() {
         <form onSubmit={desativar} className="trocar-senha-form">
           <label className="rotulo">
             Para confirmar, digite a sua senha atual
-            <input
-              className="campo"
-              type="password"
+            <CampoSenha
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               autoComplete="current-password"
