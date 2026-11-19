@@ -6,9 +6,10 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.8 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
+// Política de Privacidade, versão 1.9 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
 // 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados;
-// 1.8: notas e faltas retiradas do sistema e apagadas do banco; sessão expira após 30 min sem uso).
+// 1.8: notas e faltas retiradas do sistema e apagadas do banco; sessão expira após 30 min sem uso;
+// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado sozinho).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -18,7 +19,7 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.8 — 19/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 1.9 — 19/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
           pontuação, ranking, Guru, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô", últimos acessos em Minha conta e código por e-mail ao entrar em aparelho novo). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
@@ -291,7 +292,10 @@ export default function Privacidade() {
           <li>
             Conta, perfil, registro do aceite e fator MFA: mantidos enquanto a conta
             existir. Apagados na hora quando o titular exclui a conta (tela Minha conta)
-            ou quando um administrador a exclui.
+            ou quando um administrador a exclui. Cadastro que não foi confirmado pelo link
+            enviado ao e-mail em 24 horas (por exemplo, com o e-mail digitado errado) é apagado
+            sozinho, com o perfil, por uma tarefa agendada que roda de hora em hora; o log guarda
+            só quantos cadastros foram apagados, sem os e-mails.
           </li>
           <li>
             Logs de auditoria: <strong>90 dias</strong>. A exclusão é automática,
@@ -407,7 +411,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.8, 19/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 1.9, 19/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

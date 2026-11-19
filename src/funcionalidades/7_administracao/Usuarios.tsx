@@ -3,6 +3,8 @@
 // USUÁRIOS (endereço /usuarios, só admin) — RF26 e exclusão de contas.
 // Banco: listar_usuarios_admin e redefinir_mfa_usuario (supabase/10), excluir_conta_usuario (supabase/07 e 20).
 // Conta de administrador é protegida: o botão não aparece e o banco também recusa.
+// Só aparecem contas confirmadas pelo link do e-mail; as não confirmadas em 24 h são apagadas sozinhas
+// (listar_usuarios_admin e limpar_cadastros_nao_confirmados, supabase/31).
 // ============================================================
 
 import { useEffect, useState } from 'react'
@@ -115,6 +117,7 @@ export default function Usuarios() {
           <span>Excluir apaga perfil, acesso e materiais do aluno</span>
           <span>Contas de administrador não podem ser excluídas</span>
           <span>Toda exclusão fica no log</span>
+          <span>Cadastro não confirmado pelo e-mail não aparece aqui e é apagado em 24 horas</span>
           <span>A sua própria conta é excluída em Meus dados e privacidade</span>
         </p>
       </header>

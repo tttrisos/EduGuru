@@ -68,7 +68,7 @@ eduguru/
 │       ├── 6_conta/              Minha conta: dados, senha, verificação em duas etapas, acessos, exclusão
 │       └── 7_administracao/      Só admin: painel, perguntas, usuários e logs
 ├── testes/                       Testes (Vitest), com as mesmas pastas de src/ (ex.: testes/4_estudar/quiz/)
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 30)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 31)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -96,7 +96,7 @@ eduguru/
 | Quiz embaralhado e pontuação (RF16, RF17) | `4_estudar/quiz/Quiz.tsx` | `11`, `19` (`iniciar_quiz`, `responder_pergunta`, `finalizar_quiz`, `pedir_dica`) |
 | Guru (RF19) | `3_minha_evolucao/painel/MinhaEvolucao.tsx` | `11` (`recomendacoes_guru`) |
 | Ranking (RF18) | `4_estudar/ranking/Ranking.tsx` | `11` e `27` (`ranking`) |
-| Usuários, MFA e exclusão de contas (RF26) | `7_administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido) |
+| Usuários, MFA e exclusão de contas (RF26) | `7_administracao/Usuarios.tsx` | `07`, `10`, `20` (admin protegido), `31` (só contas confirmadas) |
 | Logs de auditoria, com filtros, e limpeza (RF09, RF10) | `7_administracao/Logs.tsx`, regras em `compartilhado/utilitarios/filtroLogs.ts` | `02`, `06`, `10`, `24` |
 | Últimos acessos, sair dos outros aparelhos e registros com filtros (RF21) | `6_conta/AcessosEAparelhos.tsx`, `6_conta/RegistrosAtividade.tsx` | `24` (`meus_acessos`) |
 | Código por e-mail ao entrar em aparelho novo e aparelhos lembrados (RF03, RF21) | `2_acesso/CodigoEmail.tsx`, regras em `2_acesso/regrasCodigoEmail.ts` | `25` (`situacao_codigo_email`, `enviar_codigo_email`, `confirmar_codigo_email`) |
@@ -141,6 +141,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `28_perguntas_mais_disciplinas.sql` | Mais 75 perguntas em 5 disciplinas (Software Básico, Paradigmas de Orientação a Objetos, Gestão de Projetos, Inteligência de Negócios e Governança de TI): 13 disciplinas e 195 perguntas até aqui |
 | `29_perguntas_mais_5_disciplinas.sql` | Mais 75 perguntas em 5 disciplinas (Banco de Dados Avançado, Métodos Ágeis, Inteligência Artificial, Implementação e Testes de Projetos de Software e Desenvolvimento de Aplicações): 18 disciplinas e 270 perguntas no total |
 | `30_retirar_notas_e_faltas.sql` | Retira notas e faltas: apaga a tabela `notas`, com os registros, e as funções que só ela usava (LGPD: não guardar dado sem uso). Termo e Política na versão 1.8 |
+| `31_apagar_cadastros_nao_confirmados.sql` | Cadastro com e-mail errado não vira "usuário fantasma": conta não confirmada pelo link não aparece em Usuários nem no painel e é apagada depois de 24 h (pg_cron, de hora em hora); Termo e Política na versão 1.9 |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

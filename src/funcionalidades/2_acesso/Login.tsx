@@ -179,7 +179,10 @@ export default function Login() {
       setErro(erro)
     } else {
       // A conta só passa a valer depois que o usuário clica no link enviado ao e-mail (Brevo).
-      setAvisoCadastro('Conta criada! Verifique seu e-mail para confirmar o cadastro e depois faça login.')
+      setAvisoCadastro(
+        'Conta criada! Abra o link que enviamos para o seu e-mail para confirmar o cadastro e depois faça login. ' +
+          'Se o link não for aberto em 24 horas (por exemplo, com o e-mail digitado errado), o cadastro é apagado e você pode criar a conta de novo.',
+      )
       setSenha('')
       limparCamposCadastro()
       setModo('entrar')

@@ -31,7 +31,7 @@ export const CATEGORIAS_LOG: { valor: Categoria; rotulo: string; acoes: string[]
   },
   { valor: 'alteracoes', rotulo: 'Cadastros e alterações', acoes: ['criar', 'editar', 'excluir'] },
   { valor: 'quiz', rotulo: 'Quiz', acoes: ['quiz_finalizado'] },
-  { valor: 'sistema', rotulo: 'Sistema', acoes: ['limpeza_automatica', 'limpeza_manual', 'conta_excluida'] },
+  { valor: 'sistema', rotulo: 'Sistema', acoes: ['limpeza_automatica', 'limpeza_manual', 'limpeza_cadastros', 'conta_excluida'] },
 ]
 
 // Os logs ficam guardados 90 dias; por isso o maior período é 90.

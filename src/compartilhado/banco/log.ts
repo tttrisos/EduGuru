@@ -28,6 +28,7 @@ export const ROTULO_ACAO: Record<string, string> = {
   mfa_redefinido: 'MFA redefinido pelo admin',
   limpeza_automatica: 'Limpeza automática',
   limpeza_manual: 'Limpeza manual de logs',
+  limpeza_cadastros: 'Cadastros não confirmados apagados (24 h)',
   quiz_finalizado: 'Quiz finalizado',
   redefinicao_senha_solicitada: 'Pediu redefinição de senha',
   senha_redefinida: 'Senha redefinida',

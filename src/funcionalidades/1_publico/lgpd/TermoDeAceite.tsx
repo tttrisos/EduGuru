@@ -6,8 +6,9 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.8 (1.6: verificação em duas etapas opcional para alunos;
-// 1.7: código por e-mail ao entrar em aparelho novo; 1.8: notas e faltas retiradas).
+// Termo de Aceite, versão 1.9 (1.6: verificação em duas etapas opcional para alunos;
+// 1.7: código por e-mail ao entrar em aparelho novo; 1.8: notas e faltas retiradas;
+// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -17,7 +18,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.8 — 19/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 1.9 — 19/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -48,7 +49,10 @@ export default function TermoDeAceite() {
         <h2>2. Quem pode usar</h2>
         <p>
           O acesso é destinado a estudantes de graduação da UMC nos cursos listados
-          acima. Cada pessoa deve manter apenas uma conta, com informações verdadeiras.
+          acima. Cada pessoa deve manter apenas uma conta, com informações verdadeiras. A conta
+          só passa a valer depois que você abre o link enviado ao e-mail informado; se ele não
+          for aberto em 24 horas (por exemplo, por um e-mail digitado errado), o cadastro é
+          apagado sozinho e você pode se cadastrar de novo.
         </p>
 
         <h2>3. Contas e papéis de acesso</h2>
@@ -135,7 +139,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.8, 19/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 1.9, 19/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

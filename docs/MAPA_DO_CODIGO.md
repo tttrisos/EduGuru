@@ -112,6 +112,7 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 ### Exclusão de conta
 - Pelo próprio aluno: `6_conta/MinhaConta.tsx` → apaga os arquivos (`6_conta/arquivosDoUsuario.ts`) → **`excluir_minha_conta`** (07).
 - Pelo admin: `7_administracao/Usuarios.tsx` → **`excluir_conta_usuario`** (07 e 20). Conta de administrador é protegida: a tela não mostra o botão e o banco recusa.
+- Cadastro nunca confirmado (ex.: e-mail digitado errado): **`limpar_cadastros_nao_confirmados`** (31), agendada no pg_cron de hora em hora, apaga as contas sem confirmação há mais de 24 h; até lá, elas não aparecem em Usuários nem no painel (`conta_confirmada`, 31).
 
 ## 4. Onde está a segurança
 

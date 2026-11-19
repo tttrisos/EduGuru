@@ -33,6 +33,10 @@ describe('categorias', () => {
     expect(categoriaDaAcao('inventada')).toBeNull()
     expect(acoesDaCategoria('todos')).toBeNull()
   })
+
+  it('a limpeza dos cadastros não confirmados (script 31) fica em Sistema', () => {
+    expect(categoriaDaAcao('limpeza_cadastros')).toBe('sistema')
+  })
 })
 
 describe('filtrarLogs', () => {
