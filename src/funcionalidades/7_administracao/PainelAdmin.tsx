@@ -8,10 +8,11 @@ import type { EstatisticasAdmin, EstatisticasBussola, EstatisticasCarreiras } fr
 
 // ============================================================
 // Painel do administrador (RF25): números gerais da plataforma, nunca dados de um aluno.
-//   - estatisticas_admin()      → supabase/12_notas_e_painel.sql (alunos, quizzes, acertos)
+//   - estatisticas_admin()      → criada no supabase/12 e reescrita no 31 (versão atual: conta só alunos
+//                                 que confirmaram o e-mail; alunos, quizzes, acertos)
 //   - estatisticas_carreiras()  → supabase/17_carreiras.sql (cliques em "Candidatar-se")
 //   - estatisticas_bussola()    → supabase/18_bussola.sql (quantos responderam, área preferida)
-//   - total_alunos_com_mfa()    → supabase/23_mfa_opcional.sql (quantos alunos ativaram as duas etapas)
+//   - total_alunos_com_mfa()    → supabase/23, reescrita no 31 (quantos alunos ativaram as duas etapas)
 // Todas conferem no banco se quem chama é admin com verificação em duas etapas.
 // ============================================================
 

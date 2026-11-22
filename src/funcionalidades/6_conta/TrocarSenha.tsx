@@ -28,7 +28,7 @@ export default function TrocarSenha() {
     setErro('')
     setSucesso('')
 
-    // 1) Validações rápidas, sem ir ao servidor (regras em 2_acesso/senha.ts, com testes)
+    // 1) Validações rápidas, sem ir ao servidor (regras em 2_acesso/regrasSenha.ts, com testes em testes/2_acesso/)
     const problema = validarTrocaDeSenha(atual, nova, confirmar)
     if (problema) return setErro(problema)
 
@@ -97,7 +97,7 @@ export default function TrocarSenha() {
           />
         </label>
 
-        {/* As mesmas 5 regras do cadastro (2_acesso/senha.ts), marcadas enquanto digita */}
+        {/* As mesmas 5 regras do cadastro (2_acesso/regrasSenha.ts), marcadas enquanto digita */}
         <ul className="lista-regras-senha">
           {REGRAS_SENHA.map((regra) => {
             const ok = regra.testar(nova)

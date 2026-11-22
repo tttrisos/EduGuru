@@ -53,10 +53,11 @@ eduguru/
 │   ├── Rotas.tsx                 Endereço de cada tela (#/quiz, #/carreiras...) e quem pode abrir
 │   ├── compartilhado/            Usado por várias telas
 │   │   ├── banco/                Conexão com o Supabase (supabase.ts), links de arquivos e logs
-│   │   ├── sessao/               Quem está logado (ContextoSessao.tsx) e o porteiro das telas (RotaProtegida.tsx)
+│   │   ├── sessao/               Quem está logado (ContextoSessao.tsx), o porteiro das telas (RotaProtegida.tsx),
+│   │   │                         MFA (nivelSessao.ts), 30 min sem uso (inatividade.ts) e link de nova senha (recuperacaoSenha.ts)
 │   │   ├── layout/               Barra superior com o menu (LayoutLogado.tsx) e rodapé
-│   │   ├── componentes/          Peças de tela: Ajuda, Dialogo, GraficoBarras, NumeroDestaque, TextoRico
-│   │   ├── utilitarios/          Tema escuro/claro e negrito nos textos
+│   │   ├── componentes/          Peças de tela: Ajuda, CampoSenha, Captcha, Dialogo, FiltrosLogs, GraficoBarras, NumeroDestaque, TextoRico
+│   │   ├── utilitarios/          Tema escuro/claro, negrito nos textos, tipo de aparelho e filtros dos logs
 │   │   ├── estilos/              global.css (cores, botões, campos, tabelas)
 │   │   └── tipos.ts              Formato dos dados que vêm do banco
 │   └── funcionalidades/          Uma pasta por item do menu, na ordem do site
@@ -68,7 +69,7 @@ eduguru/
 │       ├── 6_conta/              Minha conta: dados, senha, verificação em duas etapas, acessos, exclusão
 │       └── 7_administracao/      Só admin: painel, perguntas, usuários e logs
 ├── testes/                       Testes (Vitest), com as mesmas pastas de src/ (ex.: testes/4_estudar/quiz/)
-├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 31)
+├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 32)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
 └── .github/workflows/            Publicação automática no GitHub Pages
@@ -82,7 +83,7 @@ eduguru/
 | Login e cadastro (RF01, RF02), CEP via ViaCEP (RF05) | `2_acesso/Login.tsx`, `2_acesso/regrasSenha.ts` | `02`, `04` |
 | Verificação em duas etapas (RF03, RF04): código no login e ativar/desativar em Minha conta | `2_acesso/Mfa.tsx`, `2_acesso/fatoresMfa.ts`, `6_conta/VerificacaoDuasEtapas.tsx`, regra em `compartilhado/sessao/nivelSessao.ts` | `05`, `23` |
 | Sessão expirada após 30 min sem uso | regra em `compartilhado/sessao/inatividade.ts`, aplicada em `compartilhado/sessao/ContextoSessao.tsx` | — (só no navegador) |
-| Esqueci minha senha (RF24) | `2_acesso/EsqueciSenha.tsx`, `2_acesso/RedefinirSenha.tsx` | `09` |
+| Esqueci minha senha (RF24) | `2_acesso/EsqueciSenha.tsx`, `2_acesso/RedefinirSenha.tsx` (só com o link do e-mail: `compartilhado/sessao/recuperacaoSenha.ts`) | `09` |
 | Trocar a senha estando logado | `6_conta/TrocarSenha.tsx` | `21` (`conferir_senha_atual`) |
 | Termo, Política e novo aceite (RF11 a RF13, RF22) | `1_publico/lgpd/` | `08` |
 | Minha conta e exclusão de conta (RF15, RF21) | `6_conta/MinhaConta.tsx`, `6_conta/arquivosDoUsuario.ts` | `07` |
@@ -142,6 +143,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `29_perguntas_mais_5_disciplinas.sql` | Mais 75 perguntas em 5 disciplinas (Banco de Dados Avançado, Métodos Ágeis, Inteligência Artificial, Implementação e Testes de Projetos de Software e Desenvolvimento de Aplicações): 18 disciplinas e 270 perguntas no total |
 | `30_retirar_notas_e_faltas.sql` | Retira notas e faltas: apaga a tabela `notas`, com os registros, e as funções que só ela usava (LGPD: não guardar dado sem uso). Termo e Política na versão 1.8 |
 | `31_apagar_cadastros_nao_confirmados.sql` | Cadastro com e-mail errado não vira "usuário fantasma": conta não confirmada pelo link não aparece em Usuários nem no painel e é apagada depois de 24 h (pg_cron, de hora em hora); Termo e Política na versão 1.9 |
+| `32_explicacoes_sem_notas.sql` | Corrige três explicações do quiz que ainda citavam as notas (retiradas no 30). Só troca o texto da explicação; Termo e Política na versão 2.0 (mudança só no site, sem script) |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 
