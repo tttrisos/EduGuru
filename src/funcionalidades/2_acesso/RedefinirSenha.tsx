@@ -1,7 +1,9 @@
 // ============================================================
 // funcionalidades/2_acesso/RedefinirSenha.tsx
 // NOVA SENHA PELO LINK DO E-MAIL (endereço /redefinir-senha) — RF24.
-// Se a conta tem duas etapas, pede o código antes. Grava a senha (updateUser) e desconecta todos os aparelhos.
+// Só funciona para quem chegou pelo link de recuperação aberto NESTE navegador (RF24-RN06, regra em
+// compartilhado/sessao/recuperacaoSenha.ts). Se a conta tem duas etapas, pede o código antes.
+// Grava a senha (updateUser) e desconecta todos os aparelhos.
 // Para trocar a senha JÁ LOGADO, veja 6_conta/TrocarSenha.tsx.
 // ============================================================
 
@@ -11,6 +13,7 @@ import { GraduationCap } from 'lucide-react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
+import { lerRecuperacao, limparRecuperacao, podeRedefinirSenha } from '../../compartilhado/sessao/recuperacaoSenha'
 import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
 import Rodape from '../../compartilhado/layout/Rodape'
 import CampoSenha from '../../compartilhado/componentes/CampoSenha'
@@ -43,14 +46,18 @@ export default function RedefinirSenha() {
   const [enviando, setEnviando] = useState(false)
   const jaPreparou = useRef(false)
 
+  // Esta sessão veio mesmo do link de recuperação desta conta? Se não (ex.: alguém logado só com a
+  // senha digitou #/redefinir-senha no endereço), a tela trata como "link inválido".
+  const veioDoLink = podeRedefinirSenha(lerRecuperacao(), usuario?.id)
+
   useEffect(() => {
-    if (carregando || !usuario || jaPreparou.current) return
+    if (carregando || !usuario || !veioDoLink || jaPreparou.current) return
     jaPreparou.current = true
     descobrirEtapa().then((r) => {
       setEtapa(r.etapa)
       setFatorId(r.fatorId)
     })
-  }, [carregando, usuario])
+  }, [carregando, usuario, veioDoLink])
 
   async function verificarCodigo(e: React.FormEvent) {
     e.preventDefault()
@@ -96,7 +103,9 @@ export default function RedefinirSenha() {
       return
     }
     await registrarLogEvento('senha_redefinida')
-    // Encerra as sessões em todos os aparelhos.
+    // O link já foi usado: apaga a marca, para a tela não aceitar uma segunda troca.
+    limparRecuperacao()
+    // Encerra as sessões em todos os aparelhos (inclusive este: entra de novo com a senha nova).
     await supabase.auth.signOut({ scope: 'global' })
     window.history.replaceState(null, '', window.location.pathname)
     navigate('/login', {
@@ -105,15 +114,18 @@ export default function RedefinirSenha() {
     })
   }
 
+  // O que mostrar, na ordem: carregando → link inválido (sem sessão ou sessão que não veio do link)
+  // → código do aplicativo (se a conta tem MFA) → campos da nova senha.
   let conteudo
-  if (carregando || (usuario && !etapa)) {
+  if (carregando || (usuario && veioDoLink && !etapa)) {
     conteudo = <p className="status">Carregando...</p>
-  } else if (!usuario) {
+  } else if (!usuario || !veioDoLink) {
     conteudo = (
       <div className="mfa-passos">
         <p className="aviso erro">Este link é inválido ou já expirou.</p>
         <p className="item-meta">
-          Peça um novo link e abra-o <strong>no mesmo navegador</strong> em que fez o pedido.
+          Peça um novo link e abra-o <strong>no mesmo navegador</strong> em que fez o pedido. Se você já está
+          logado e só quer trocar a senha, use <strong>Minha conta → Trocar senha</strong>.
         </p>
         <Link to="/esqueci-senha" className="btn btn-primario">
           Pedir novo link

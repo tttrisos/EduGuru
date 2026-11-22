@@ -99,6 +99,12 @@ compartilhado/banco/supabase.ts ──────▶  RLS (quem pode ler/gravar
 2. **Ativar:** `iniciarCadastroTotp()` gera o QR Code → o aluno digita um código → `confirmarCodigo()` → sessão aal2 e log `mfa_ativado`. A partir daí, o banco exige o código em todo login dessa conta.
 3. **Desativar:** senha atual (**`conferir_senha_atual`**, 21) + sessão que digitou o código (o Supabase exige) → `mfa.unenroll()` → log `mfa_desativado`. O admin não vê o botão.
 
+### O usuário esqueceu a senha (link do e-mail)
+1. `2_acesso/EsqueciSenha.tsx` → `resetPasswordForEmail` (Supabase Auth manda o link pelo Brevo) e `registrar_pedido_redefinicao` (09) no log.
+2. O link volta com `?code=...&recuperar-senha=1`; `principal.tsx` abre `#/redefinir-senha`. O Supabase troca o código pela sessão e avisa `PASSWORD_RECOVERY`, só se o pedido foi feito **neste navegador** (fluxo PKCE).
+3. `compartilhado/sessao/recuperacaoSenha.ts` guarda esse aviso; `2_acesso/RedefinirSenha.tsx` só mostra os campos de nova senha para quem tem o aviso (`podeRedefinirSenha`). Quem está logado só com a senha e digita o endereço na mão vê "link inválido".
+4. Conta com MFA: pede o código do aplicativo antes. Depois: `updateUser`, log `senha_redefinida` e `signOut({ scope: 'global' })`.
+
 ### O usuário troca a senha estando logado
 1. `6_conta/TrocarSenha.tsx` → `validarTrocaDeSenha()` em `2_acesso/regrasSenha.ts` (regras, confirmação, nova ≠ atual).
 2. **`conferir_senha_atual`** (script 21): compara a senha atual com o hash guardado; 5 erros em 15 min bloqueiam.

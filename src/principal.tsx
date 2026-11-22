@@ -14,9 +14,14 @@ import Rotas from './Rotas.tsx'
 import { AuthProvider } from './compartilhado/sessao/ContextoSessao.tsx'
 import { DialogoProvider } from './compartilhado/componentes/Dialogo.tsx'
 import { aplicarTema, temaSalvo } from './compartilhado/utilitarios/tema.ts'
+import { ouvirLinkDeRecuperacao } from './compartilhado/sessao/recuperacaoSenha.ts'
 
 // Aplica o tema escolhido (escuro ou claro) antes de desenhar a tela.
 aplicarTema(temaSalvo())
+
+// Começa a escutar o aviso "veio do link de recuperação de senha" ANTES de desenhar a tela, porque o
+// Supabase dá esse aviso uma vez só, logo que o site abre (ver compartilhado/sessao/recuperacaoSenha.ts).
+ouvirLinkDeRecuperacao()
 
 // Link do e-mail de "esqueci minha senha" abre a tela de nova senha.
 if (new URLSearchParams(window.location.search).has('recuperar-senha')) {
