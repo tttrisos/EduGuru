@@ -99,13 +99,13 @@ export default function Login() {
       const dados = await resposta.json()
 
       if (dados.erro) {
-        setErroCep('CEP não encontrado. Você pode deixar em branco e continuar.')
+        setErroCep('CEP não encontrado. Pode deixar em branco e continuar (cidade e estado podem ser informados depois, em Minha conta).')
       } else {
         setCidade(dados.localidade)
         setEstado(dados.uf)
       }
     } catch {
-      setErroCep('Não foi possível consultar o CEP agora. Pode deixar em branco e continuar.')
+      setErroCep('Não foi possível consultar o CEP agora. Pode deixar em branco e continuar (cidade e estado podem ser informados depois, em Minha conta).')
     } finally {
       setBuscandoCep(false)
     }
@@ -158,6 +158,12 @@ export default function Login() {
     }
     if (!aceitouTermos) {
       setErro('Você precisa aceitar o Termo de Aceite e a Política de Privacidade para continuar.')
+      return
+    }
+    // A consulta ao ViaCEP começa quando o campo CEP perde o foco, e clicar em "Criar conta" já tira o
+    // foco. Sem esta espera, o cadastro seguia antes da resposta e a cidade/estado se perdiam.
+    if (buscandoCep) {
+      setErro('Aguarde a consulta do CEP terminar e clique de novo em "Criar conta".')
       return
     }
 
@@ -341,7 +347,8 @@ export default function Login() {
           <button
             type="submit"
             className="btn btn-primario login-botao"
-            disabled={enviando || (captchaLigado && !captcha)}
+            // Desabilitado enquanto envia, sem o captcha resolvido ou com o CEP ainda em consulta.
+            disabled={enviando || buscandoCep || (captchaLigado && !captcha)}
           >
             {enviando ? 'Aguarde...' : modo === 'entrar' ? 'Entrar' : 'Criar conta'}
           </button>
