@@ -6,10 +6,12 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 1.9 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
+// Política de Privacidade, versão 2.0 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
 // 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados;
 // 1.8: notas e faltas retiradas do sistema e apagadas do banco; sessão expira após 30 min sem uso;
-// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado sozinho).
+// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado sozinho;
+// 2.0: diz que o administrador vê quem está como "Aluno anônimo" no ranking (supabase/27) e que o
+// arquivo "Baixar meus dados" traz também as respostas do quiz).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -19,7 +21,7 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 1.9 — 19/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 2.0 — 21/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
           pontuação, ranking, Guru, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô", últimos acessos em Minha conta e código por e-mail ao entrar em aparelho novo). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
@@ -188,7 +190,7 @@ export default function Privacidade() {
               <tr>
                 <td>Nome abreviado e pontos no ranking</td>
                 <td>Gamificação: mostrar a classificação aos demais alunos. Só aparecem o primeiro nome e a inicial do sobrenome (ex.: &quot;Maria S.&quot;)</td>
-                <td>Legítimo interesse educacional (art. 7º, IX), com direito de oposição: na tela Minha conta você passa a aparecer como &quot;Aluno anônimo&quot;</td>
+                <td>Legítimo interesse educacional (art. 7º, IX), com direito de oposição: na tela Minha conta você passa a aparecer como &quot;Aluno anônimo&quot; para os colegas. O administrador continua vendo quem é, para gerenciar a plataforma (ex.: identificar contas extras usadas para acumular pontos, o que o Termo de Aceite proíbe)</td>
                 <td>Enquanto a conta existir</td>
               </tr>
               <tr>
@@ -343,7 +345,8 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>Administradores:</strong> veem os perfis de todos os usuários (para
-            gerenciar contas) e os logs de auditoria. Não veem suas respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
+            gerenciar contas) e os logs de auditoria. No ranking, veem também o nome de quem
+            escolheu aparecer como &quot;Aluno anônimo&quot; (os colegas não veem). Não veem suas respostas no quiz — apenas totais gerais da turma (ex.: quantos quizzes
             foram feitos e a média de acertos por disciplina). Em Carreiras, veem só
             quantas vezes cada vaga e cada área foram abertas, sem saber por quem, e na
             Bússola só quantos alunos responderam e quantos têm cada área como a preferida.
@@ -367,7 +370,7 @@ export default function Privacidade() {
         <ul>
           <li>
             <strong>Acesso:</strong> ver todos os dados do seu perfil, a data e a versão do
-            aceite destes documentos, seus materiais enviados e seus registros de atividade,
+            aceite destes documentos, seus materiais enviados, suas rodadas e respostas do quiz e seus registros de atividade,
             e baixar tudo em um arquivo (JSON);
           </li>
           <li>
@@ -411,7 +414,7 @@ export default function Privacidade() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 1.9, 19/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 2.0, 21/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

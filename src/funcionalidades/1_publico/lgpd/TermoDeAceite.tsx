@@ -6,9 +6,10 @@
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 1.9 (1.6: verificação em duas etapas opcional para alunos;
+// Termo de Aceite, versão 2.0 (1.6: verificação em duas etapas opcional para alunos;
 // 1.7: código por e-mail ao entrar em aparelho novo; 1.8: notas e faltas retiradas;
-// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado).
+// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado; 2.0: regra correta dos links de
+// materiais (site novo vai para análise), sessão de 30 min e admin vê quem é o "Aluno anônimo").
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -18,7 +19,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 1.9 — 19/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 2.0 — 21/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -68,7 +69,8 @@ export default function TermoDeAceite() {
             projeto): além do que o aluno pode fazer, cadastra/edita/exclui disciplinas
             e perguntas do quiz (com o gabarito), remove qualquer material, gerencia e
             exclui contas de usuários, redefine a verificação em duas etapas de quem
-            perdeu o celular e acessa o histórico de auditoria.
+            perdeu o celular e acessa o histórico de auditoria. No ranking, vê também o
+            nome de quem escolheu aparecer como &quot;Aluno anônimo&quot; para os colegas.
           </li>
         </ul>
         <p>
@@ -83,6 +85,7 @@ export default function TermoDeAceite() {
           controle; nunca passe o código para outra pessoa. Se perder o acesso
           ao aplicativo, peça a um administrador para redefinir a verificação. Avise a
           equipe do projeto imediatamente se suspeitar de acesso indevido à sua conta.
+          Por segurança, a sessão é encerrada sozinha depois de 30 minutos sem uso do site.
         </p>
         <p>
           Você pode excluir sua conta a qualquer momento, na tela <strong>Minha
@@ -114,8 +117,9 @@ export default function TermoDeAceite() {
           compartilhá-lo com os demais usuários da plataforma. Depois de aprovado, o
           material aparece para todo usuário logado no fim do quiz da disciplina e no seu
           perfil público, junto do seu <strong>nome abreviado</strong> (ex.: Maria S.) e do
-          seu <strong>curso</strong>. Links só são aceitos de sites permitidos e passam por
-          um filtro automático; arquivos ficam em análise até a equipe aprovar. Qualquer
+          seu <strong>curso</strong>. Todo material passa por um filtro automático: links de
+          sites da lista de permitidos são publicados na hora; links de outros sites e arquivos
+          ficam em análise até a equipe aprovar. Qualquer
           usuário pode denunciar um material: com 3 denúncias ele é ocultado até a equipe
           analisar. A equipe do EduGuru pode recusar ou remover qualquer conteúdo que
           viole este Termo, sem aviso prévio. Ao excluir sua conta, os materiais que você
@@ -139,7 +143,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 1.9, 19/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 2.0, 21/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>

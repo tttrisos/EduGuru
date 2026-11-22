@@ -18,7 +18,7 @@ import './lgpd.css'
 // Pede novo aceite quando o Termo/Política mudam de versão.
 export default function NovoAceite() {
   const { confirmar, pedirTexto } = useDialogo()
-  const { usuario, perfil, carregando, verificacaoOk, recarregarPerfil, sair } = useAuth()
+  const { usuario, perfil, carregando, verificacaoOk, temMfa, recarregarPerfil, sair } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const destino = (location.state as { rotaOrigem?: string } | null)?.rotaOrigem ?? '/painel'
@@ -77,7 +77,7 @@ export default function NovoAceite() {
   }
 
   async function aoSair() {
-    if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.', textoConfirmar: 'Sair' }))) return
+    if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: temMfa ? 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.' : 'Para entrar de novo, você vai precisar da sua senha.', textoConfirmar: 'Sair' }))) return
     await sair()
     navigate('/login', { replace: true })
   }
@@ -113,11 +113,12 @@ export default function NovoAceite() {
             </li>
           </ul>
           <p className="item-meta">
-            Principais mudanças: ao entrar num aparelho novo, quem não usa o aplicativo autenticador
-            recebe um código por e-mail (o aparelho pode ser lembrado por 30 dias); a verificação em
-            duas etapas é opcional para alunos (ative ou desative em Minha conta); os e-mails são
-            entregues pelo serviço Brevo; o login tem a verificação "não sou um robô" (Cloudflare); e
-            Minha conta mostra os seus últimos acessos e aparelhos lembrados.
+            {/* Atualizar este resumo sempre que VERSAO_TERMOS mudar (compartilhado/tipos.ts). */}
+            Principais mudanças desde a versão 1.7: notas e faltas saíram do sistema e foram apagadas
+            do banco; a sessão é encerrada sozinha depois de 30 minutos sem uso; cadastro não
+            confirmado pelo e-mail em 24 horas é apagado; no ranking, o administrador vê quem escolheu
+            aparecer como "Aluno anônimo" (os colegas continuam vendo só "Aluno anônimo"); e o arquivo
+            "Baixar meus dados", em Minha conta, traz também as respostas do quiz.
           </p>
         </div>
 

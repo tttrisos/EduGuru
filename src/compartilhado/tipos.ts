@@ -34,7 +34,8 @@ export type Pergunta = {
 export type Nivel = 'Fácil' | 'Médio' | 'Difícil'
 export const NIVEIS: Nivel[] = ['Fácil', 'Médio', 'Difícil']
 
-// Mesmos pontos da função finalizar_quiz do banco.
+// Mesmos pontos que o banco dá em responder_pergunta (supabase/19). Aqui servem só para MOSTRAR
+// quanto cada pergunta vale; quem calcula os pontos de verdade é o banco.
 export const PONTOS_POR_NIVEL: Record<Nivel, number> = { Fácil: 10, Médio: 20, Difícil: 30 }
 
 export type Letra = 'A' | 'B' | 'C' | 'D'
@@ -122,8 +123,10 @@ export type Perfil = {
   criado_em: string
 }
 
-// Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo.
-export const VERSAO_TERMOS = '1.9'
+// Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo (RotaProtegida → NovoAceite,
+// registrar_aceite no supabase/08). 2.0 (21/11/2026): Política diz que o admin vê o nome de quem está
+// como "Aluno anônimo" no ranking (supabase/27) e Termo corrige a regra dos links de materiais.
+export const VERSAO_TERMOS = '2.0'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).
 export type UsuarioAdmin = {
