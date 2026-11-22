@@ -328,7 +328,7 @@ select pg_temp.q('Inteligência Artificial', 'Difícil',
 select pg_temp.q('Implementação e Testes de Projetos de Software', 'Fácil',
   'O que é um **teste unitário**?',
   'Um teste que confere uma pequena parte do código, isolada', 'Um teste feito pelo usuário final', 'Um teste que só roda uma única vez', 'Um teste do sistema inteiro, com banco de dados, rede e servidor funcionando juntos',
-  'O teste unitário confere uma função ou módulo sozinho, sem banco nem rede, por isso é rápido. O EduGuru testa assim o cálculo das notas, por exemplo.');
+  'O teste unitário confere uma função ou módulo sozinho, sem banco nem rede, por isso é rápido. O EduGuru testa assim o cálculo da evolução do aluno, por exemplo.');
 
 select pg_temp.q('Implementação e Testes de Projetos de Software', 'Fácil',
   'O que é um **bug**?',

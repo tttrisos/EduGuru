@@ -279,7 +279,7 @@ select pg_temp.q('Banco de Dados', 'SI', 'Difícil',
 select pg_temp.q('Banco de Dados', 'SI', 'Difícil',
   'No PostgreSQL (usado pelo Supabase), qual recurso **restringe quais linhas** cada usuário pode ler ou alterar?',
   'Row Level Security (RLS)', 'Trigger de auditoria (log)', 'Sequence', 'Vacuum',
-  'O RLS (Row Level Security) aplica regras linha a linha. O EduGuru usa esse recurso para que cada aluno leia só as próprias notas.');
+  'O RLS (Row Level Security) aplica regras linha a linha. O EduGuru usa esse recurso para que cada aluno leia só as próprias rodadas de quiz.');
 select pg_temp.q('Banco de Dados', 'SI', 'Difícil',
   'Para que serve criar um **índice** em uma coluna?',
   'Para acelerar buscas nessa coluna, com custo extra nas gravações', 'Para garantir que a coluna nunca fique vazia nem tenha valores repetidos', 'Para criptografar os dados da coluna', 'Para fazer backup automático da coluna sempre que ela for alterada',
@@ -322,7 +322,7 @@ select pg_temp.q('Engenharia de Software', 'ES', 'Médio',
 select pg_temp.q('Engenharia de Software', 'ES', 'Médio',
   'Um teste que verifica uma **função isolada**, como o cálculo da média, é um teste de quê?',
   'De unidade', 'De aceitação', 'De carga', 'De usabilidade',
-  'O teste de unidade verifica a menor parte do código, sem tela nem banco. O EduGuru testa assim o cálculo das notas.');
+  'O teste de unidade verifica a menor parte do código, sem tela nem banco. O EduGuru testa assim o cálculo da afinidade da Bússola.');
 select pg_temp.q('Engenharia de Software', 'ES', 'Médio',
   'No Kanban, para que serve o **limite de WIP** (Work In Progress)?',
   'Para limitar quantas tarefas ficam em andamento em cada etapa', 'Para aumentar o número de tarefas simultâneas e entregar o projeto mais rápido', 'Para definir o prazo final de cada sprint e de todo o projeto', 'Para escolher o Product Owner',
