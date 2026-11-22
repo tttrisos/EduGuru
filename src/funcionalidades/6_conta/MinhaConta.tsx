@@ -28,6 +28,9 @@ type DadosExtras = {
   logs: LogAuditoria[]
   materiais: Material[]
   tentativas: TentativaQuiz[]
+  // Respostas de cada pergunta das rodadas (letra escolhida, se acertou e os pontos). A Política de
+  // Privacidade diz que guardamos as "respostas escolhidas", então elas também vão no arquivo baixado.
+  respostas: Record<string, unknown>[]
   cliquesVagas: Record<string, unknown>[]
   bussola: Record<string, unknown> | null
   mfaAtivoDesde: string | null
@@ -37,7 +40,7 @@ type DadosExtras = {
 // mostrar na tela e para o arquivo "Baixar meus dados". Cada consulta só devolve as linhas do
 // próprio usuário, porque o RLS do banco filtra (mesmo onde não há ".eq(usuarioId)").
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
-  const [logs, materiais, tentativas, fatores, cliques, bussola] = await Promise.all([
+  const [logs, materiais, tentativas, respostas, fatores, cliques, bussola] = await Promise.all([
     supabase
       .from('logs_auditoria')
       .select('*')
@@ -46,6 +49,12 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
       .limit(1000), // 90 dias de registros: na prática, todos (também vão no arquivo baixado)
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId),
     supabase.from('tentativas_quiz').select('*').order('iniciada_em', { ascending: false }),
+    // RLS "respostas_select_propria" (supabase/11): o aluno lê só as respostas das próprias rodadas.
+    // ordem_alternativas = em que ordem as alternativas apareceram para ele naquela rodada (supabase/19).
+    supabase
+      .from('respostas_quiz')
+      .select('tentativa_id, pergunta_id, ordem_alternativas, resposta, correta, pontos')
+      .order('tentativa_id', { ascending: false }),
     supabase.auth.mfa.listFactors(),
     // Vagas abertas em Carreiras (só a vaga e a data; vazio antes do script 17).
     supabase
@@ -59,6 +68,7 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
     logs: (logs.data as LogAuditoria[]) ?? [],
     materiais: (materiais.data as Material[]) ?? [],
     tentativas: (tentativas.data as TentativaQuiz[]) ?? [],
+    respostas: (respostas.data as Record<string, unknown>[]) ?? [],
     cliquesVagas: (cliques.data as Record<string, unknown>[]) ?? [],
     bussola: (bussola.data as Record<string, unknown> | null) ?? null,
     mfaAtivoDesde: fatores.data?.totp[0]?.created_at ?? null,
@@ -135,8 +145,8 @@ export default function MinhaConta() {
   }
 
   // DIREITO DE OPOSIÇÃO (art. 18, § 2º): o ranking usa o legítimo interesse educacional, e o aluno
-  // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para os colegas (só o admin vê o nome,
-  // supabase/27), mas continua pontuando.
+  // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para os colegas, mas continua pontuando.
+  // O administrador continua vendo quem é (supabase/27) — isso está escrito na tela e na Política 2.0.
   async function mudarRanking(aparecer: boolean) {
     setErro('')
     setMensagem('')
@@ -182,6 +192,7 @@ export default function MinhaConta() {
       mfa: { ativo_desde: extras?.mfaAtivoDesde ?? null },
       materiais_enviados: extras?.materiais ?? [],
       rodadas_de_quiz: extras?.tentativas ?? [],
+      respostas_do_quiz: extras?.respostas ?? [],
       vagas_abertas_em_carreiras: extras?.cliquesVagas ?? [],
       bussola_eduguru: extras?.bussola ?? null,
       registros_de_atividade: extras?.logs ?? [],
@@ -332,7 +343,8 @@ export default function MinhaConta() {
           <h3>Ranking</h3>
           <p>
             No ranking aparecem só o primeiro nome e a inicial do sobrenome (ex.: "Maria S.") e os
-            pontos. Se preferir, apareça como "Aluno anônimo" — seus pontos continuam contando.
+            pontos. Se preferir, apareça como "Aluno anônimo" para os colegas — seus pontos continuam
+            contando. Os administradores continuam vendo o seu nome, para poderem gerenciar a plataforma.
           </p>
           <label className="conta-opcao">
             <input
