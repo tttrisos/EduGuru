@@ -345,9 +345,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { erro: null }
   }
 
+  // BOTÃO "SAIR": encerra só a sessão DESTE navegador.
+  // Atenção ao "scope": sem ele, o Supabase usa 'global' por padrão, que encerra a conta em TODOS os
+  // aparelhos (sair no celular derrubaria o computador também). Os três escopos usados no EduGuru:
+  //   'local'  → só este navegador (Sair, sessão expirada, sessão encerrada em outro aparelho);
+  //   'others' → todos os outros, menos este ("Sair dos outros aparelhos" e troca de senha logado);
+  //   'global' → todos, inclusive este (só depois de redefinir a senha pelo link do e-mail).
   async function sair() {
     await registrarLogEvento('logout')
-    await supabase.auth.signOut()
+    await supabase.auth.signOut({ scope: 'local' })
     limparAtividade()
   }
 
