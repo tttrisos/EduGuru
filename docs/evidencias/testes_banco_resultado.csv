@@ -1,0 +1,28 @@
+teste,resultado,detalhe
+01. RLS: aluno lê o próprio perfil e não lê o de outro aluno,PASSOU,"próprio=1, outro=0"
+02. Aluno não consegue mudar o próprio papel para administrador,PASSOU,permission denied for table perfis
+03. RLS: aluno não lê a tabela de gabaritos,PASSOU,linhas visíveis=0
+04. RLS: aluno não lê logs de outras pessoas,PASSOU,linhas visíveis=0
+05. Quiz: iniciar_quiz sorteia perguntas sem o gabarito,PASSOU,10 perguntas na rodada 58
+06. Quiz: responder_pergunta corrige no banco e só então devolve o gabarito,PASSOU,"gabarito=B, acertou=f, pontos=0"
+07. Quiz: a mesma pergunta não pode ser respondida de novo,PASSOU,Esta pergunta já foi respondida.
+08. Quiz: dica 50/50 risca 2 alternativas e só vale uma vez por rodada,PASSOU,"dica={A,C}; 2ª: Você já usou a dica desta rodada."
+09. Aluno não altera os próprios pontos direto na tabela,PASSOU,linhas alteradas=0
+10. Filtro: material com CPF é recusado (verificar_material),PASSOU,"motivo=Não coloque dados pessoais (CPF, e-mail ou telefone) no material. Isso protege você e os colegas (LGPD)."
+11. Filtro: link de site fora da lista é marcado como site novo,PASSOU,"{""motivo"": null, ""site_novo"": true}"
+12. Materiais: site novo vai para análise e site permitido é publicado,PASSOU,"site novo=pendente, permitido=aprovado"
+13. Materiais: o gatilho do banco recusa dados pessoais mesmo vindo direto pela API,PASSOU,"Não coloque dados pessoais (CPF, e-mail ou telefone) no material. Isso protege você e os colegas (LGPD)."
+13b. Materiais: aluno não grava material em nome de outra pessoa,PASSOU,permission denied for table materiais
+14. Bússola: respostas incompletas são recusadas,PASSOU,Responda todas as afirmações (faltam 16).
+15. Bússola: o banco calcula a afinidade (tudo 3 = 50%),PASSOU,8 de 8 áreas com 50%
+16. Log: o navegador não consegue gravar um evento inventado,PASSOU,Evento de log não permitido: evento_inventado
+"17. Log: ""Baixar meus dados"" fica registrado (script 33)",PASSOU,registros=1
+18. Aceite: versão dos termos fora do formato é recusada,PASSOU,Versão dos termos inválida.
+19. Aluno não exclui a conta de outra pessoa,PASSOU,Apenas administradores podem excluir contas de outros usuários.
+20. Aluno não limpa os logs,PASSOU,Apenas administradores podem limpar logs.
+21. Sessão encerrada em outro aparelho não lê mais nada,PASSOU,linhas do próprio perfil=0
+22. Aparelho novo sem o código do e-mail não lê os dados,PASSOU,linhas do próprio perfil=0
+23. Administrador lê os gabaritos (para editar as perguntas),PASSOU,linhas visíveis=195
+24. Conta de administrador é protegida contra exclusão,PASSOU,Contas de administrador não podem ser excluídas.
+25. Limpeza manual só apaga logs com mais de 90 dias,PASSOU,"100 dias=0, 10 dias=1"
+26. Administrador exclui a conta de um aluno (perfil e acesso),PASSOU,"perfil=0, conta=0"

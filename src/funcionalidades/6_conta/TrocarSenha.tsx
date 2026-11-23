@@ -32,7 +32,7 @@ export default function TrocarSenha() {
       return setErro('A senha atual está incorreta.')
     }
 
-    // 3) Grava a nova senha (o Supabase também recusa senha igual à atual: same_password)
+    // O Supabase também recusa senha igual à atual (same_password).
     const { error } = await supabase.auth.updateUser({ password: nova })
     if (error) {
       setEnviando(false)

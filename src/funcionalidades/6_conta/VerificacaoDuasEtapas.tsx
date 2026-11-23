@@ -96,13 +96,13 @@ export default function VerificacaoDuasEtapas() {
     if (!ok) return
 
     setEnviando(true)
-    // 1) A senha atual está certa? (mesma função da troca de senha; 5 erros em 15 min bloqueiam)
+    // Mesma conferência da troca de senha: 5 erros em 15 minutos bloqueiam.
     const conferencia = await supabase.rpc('conferir_senha_atual', { p_senha: senha })
     if (conferencia.error || conferencia.data !== true) {
       setEnviando(false)
       return setErro(conferencia.error?.message ?? 'A senha atual está incorreta.')
     }
-    // 2) Remove o aplicativo (o Supabase só deixa se esta sessão digitou o código)
+    // O Supabase só remove o aplicativo se esta sessão digitou o código.
     try {
       const fatorId = await fatorVerificado()
       if (fatorId) {

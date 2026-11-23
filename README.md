@@ -39,11 +39,11 @@ Público-alvo: alunos da UMC de Sistemas de Informação, Análise e Desenvolvim
 - **E-mails (confirmação de cadastro e redefinição de senha):** Brevo, ligado ao Supabase Auth por SMTP (o envio padrão do Supabase tem limite muito baixo). Configuração: Supabase → Authentication → Emails → SMTP Settings; não há chave no código.
 - **Código por e-mail em aparelho novo:** o próprio banco envia pela API do Brevo (extensão `pg_net`); a chave fica no Vault do Supabase e a proteção é ligada em `config_seguranca` (passo a passo no topo do script `25`).
 - **APIs externas:** API do GitHub (vagas do EduGuru Carreiras) e ViaCEP (cidade e estado no cadastro, opcional).
-- **Testes:** Vitest (`npm test`).
+- **Testes:** Vitest e React Testing Library (`npm test`). A cobertura conta todo o código do site e precisa ficar acima de 50% para publicar (`npm run test:cobertura`, hoje em ~83%). As regras do banco têm um script de teste próprio, `supabase/testes/testes_funcoes_banco.sql`. Evidências em [`docs/evidencias/`](docs/evidencias/README.md).
 
 ## Estrutura do projeto
 
-Tudo em português. As pastas de `src/funcionalidades/` são numeradas na **ordem do menu do site** (1 = público, 2 = acesso, 3 = Minha evolução, 4 = Estudar, 5 = Bússola e Carreiras, 6 = Minha conta, 7 = administração). Cada pasta reúne **tudo** da funcionalidade: as telas (`.tsx`), as regras (`.ts`, testáveis) e o estilo (`.css`). O que é usado por várias telas fica em `src/compartilhado/`. Os testes ficam em `testes/`, nas mesmas pastas. **Todo arquivo começa com um cabeçalho** dizendo o que faz, em qual tela aparece e com quais funções do banco conversa. O mapa completo, com o caminho de cada ação (ex.: "o que acontece quando o aluno responde uma pergunta"), está em [`docs/MAPA_DO_CODIGO.md`](docs/MAPA_DO_CODIGO.md).
+Tudo em português. As pastas de `src/funcionalidades/` são numeradas na **ordem do menu do site** (1 = público, 2 = acesso, 3 = Minha evolução, 4 = Estudar, 5 = Bússola e Carreiras, 6 = Minha conta, 7 = administração). Cada pasta reúne **tudo** da funcionalidade: as telas (`.tsx`), as regras (`.ts`, testáveis) e o estilo (`.css`). O que é usado por várias telas fica em `src/compartilhado/`. Os testes ficam em `testes/`, nas mesmas pastas, e os testes de tela em `testes/telas/`. O mapa completo, com o caminho de cada ação (ex.: "o que acontece quando o aluno responde uma pergunta"), está em [`docs/MAPA_DO_CODIGO.md`](docs/MAPA_DO_CODIGO.md).
 
 ```
 eduguru/
@@ -68,7 +68,7 @@ eduguru/
 │       ├── 5_carreira/           Bússola EduGuru (bussola/) e EduGuru Carreiras (carreiras/)
 │       ├── 6_conta/              Minha conta: dados, senha, verificação em duas etapas, acessos, exclusão
 │       └── 7_administracao/      Só admin: painel, perguntas, usuários e logs
-├── testes/                       Testes (Vitest), com as mesmas pastas de src/ (ex.: testes/4_estudar/quiz/)
+├── testes/                       Testes (Vitest), com as mesmas pastas de src/; testes/telas/ abre as telas
 ├── supabase/                     Scripts do banco (rodar em ordem, de 01 a 32)
 ├── docs/                         Mapa do código e integrações com as APIs externas
 ├── public/                       Ícone do site e ilustrações das perguntas
@@ -162,8 +162,8 @@ npm run dev          # abre o site em http://localhost:5173
 Outros comandos:
 
 ```bash
-npm test             # testes unitários
-npm run test:cobertura
+npm test                 # todos os testes (unitários e de tela)
+npm run test:cobertura   # o mesmo, com a cobertura do código todo (mínimo de 50%)
 npm run lint
 npm run build        # gera a versão de publicação em dist/
 ```
