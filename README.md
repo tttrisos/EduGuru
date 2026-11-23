@@ -144,6 +144,7 @@ Os scripts da pasta `supabase/` criam o banco completo quando executados **em or
 | `30_retirar_notas_e_faltas.sql` | Retira notas e faltas: apaga a tabela `notas`, com os registros, e as funções que só ela usava (LGPD: não guardar dado sem uso). Termo e Política na versão 1.8 |
 | `31_apagar_cadastros_nao_confirmados.sql` | Cadastro com e-mail errado não vira "usuário fantasma": conta não confirmada pelo link não aparece em Usuários nem no painel e é apagada depois de 24 h (pg_cron, de hora em hora); Termo e Política na versão 1.9 |
 | `32_explicacoes_sem_notas.sql` | Corrige três explicações do quiz que ainda citavam as notas (retiradas no 30). Só troca o texto da explicação; Termo e Política na versão 2.0 (mudança só no site, sem script) |
+| `33_log_baixar_meus_dados.sql` | O "Baixar meus dados" de Minha conta passa a ficar no log de auditoria (`dados_exportados`, só quem e quando). Termo e Política na versão 2.1 (e-mail de contato eduguru.tcc@gmail.com e plano de incidentes com a ANPD) |
 
 Antes dos scripts 05, 06 e 17, habilitar no painel do Supabase o **TOTP** (Authentication → Multi-Factor) e a extensão **pg_cron** (Database → Extensions). Para tornar alguém administrador, ver o fim do script 02.
 

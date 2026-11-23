@@ -11,7 +11,9 @@ import './lgpd.css'
 // 1.8: notas e faltas retiradas do sistema e apagadas do banco; sessão expira após 30 min sem uso;
 // 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado sozinho;
 // 2.0: diz que o administrador vê quem está como "Aluno anônimo" no ranking (supabase/27) e que o
-// arquivo "Baixar meus dados" traz também as respostas do quiz).
+// arquivo "Baixar meus dados" traz também as respostas do quiz;
+// 2.1: e-mail de contato real (eduguru.tcc@gmail.com), download dos próprios dados fica no log
+// e o plano de incidentes diz quando a ANPD e os titulares são comunicados; GitHub Pages na lista de serviços).
 export default function Privacidade() {
   return (
     <div className="termos-tela">
@@ -21,7 +23,7 @@ export default function Privacidade() {
         </Link>
 
         <p className="aviso">
-          Versão 2.0 — 21/11/2026. Documento vivo: atualizado sempre que uma
+          Versão 2.1 — 22/11/2026. Documento vivo: atualizado sempre que uma
           funcionalidade nova passa a tratar dados pessoais (nesta versão: quiz,
           pontuação, ranking, Guru, materiais compartilhados com perfil público do autor, Carreiras, com vagas de tecnologia, Bússola EduGuru, envio de e-mails pelo Brevo, verificação em duas etapas opcional, verificação "não sou um robô", últimos acessos em Minha conta e código por e-mail ao entrar em aparelho novo). Finalidade
           acadêmica — este é um protótipo de Projeto Final de Curso; numa implantação
@@ -42,8 +44,10 @@ export default function Privacidade() {
           instituição de ensino que viesse a adotar a plataforma.
         </p>
         <p>
-          Canal de contato para assuntos de privacidade (nesta fase acadêmica):
-          e-mail da equipe do projeto, informado ao orientador.
+          Canal de contato para assuntos de privacidade (nesta fase acadêmica):{' '}
+          <a href="mailto:eduguru.tcc@gmail.com">eduguru.tcc@gmail.com</a>, lido pelos integrantes
+          do grupo, que fazem nesta fase o papel de encarregado. Em uma implantação real, a
+          instituição indicaria o seu encarregado pelo tratamento de dados.
         </p>
 
         <h2>2. Quais dados pessoais tratamos</h2>
@@ -116,7 +120,7 @@ export default function Privacidade() {
             redefinição da verificação em duas etapas por um administrador, quizzes
             finalizados (acertos e pontos), criação/edição/exclusão de disciplinas,
             perguntas e materiais, alterações no perfil (apenas <em>quais</em> campos mudaram, não os
-            valores) e exclusões de conta — sempre associados a quem realizou a ação e
+            valores), downloads dos próprios dados em Minha conta (só a data, não o conteúdo) e exclusões de conta — sempre associados a quem realizou a ação e
             quando.
           </li>
         </ul>
@@ -265,6 +269,11 @@ export default function Privacidade() {
             GitHub, que tem a sua própria política de privacidade.
           </li>
         </ul>
+        <p>
+          As páginas do site são hospedadas no <strong>GitHub Pages</strong>, que as entrega ao seu
+          navegador. Como em qualquer site, o GitHub recebe o endereço IP da conexão ao carregar as
+          páginas, mas nenhum dado do seu cadastro passa por ele.
+        </p>
         <p>Nenhum outro serviço externo recebe dados pessoais nesta fase do projeto.</p>
 
         <h2>5. Transferência internacional e cookies</h2>
@@ -273,7 +282,7 @@ export default function Privacidade() {
           fora do Brasil, conforme a região configurada no projeto. O Brevo, que entrega
           os e-mails, também processa o endereço de e-mail em servidores fora do Brasil
           (na União Europeia), apenas para a entrega da mensagem. A verificação &quot;não sou um
-          robô&quot; é processada pela Cloudflare em servidores fora do Brasil. Não usamos cookies
+          robô&quot; é processada pela Cloudflare, e as páginas são entregues pelo GitHub Pages, ambos em servidores fora do Brasil. Não usamos cookies
           de rastreamento nem de publicidade. A sessão de login é mantida pelo Supabase
           Auth usando armazenamento local do navegador, estritamente necessário para
           você continuar logado — não é usado para te rastrear em outros sites. O
@@ -391,8 +400,9 @@ export default function Privacidade() {
         </ul>
         <p>
           <em>
-            Outras solicitações (ex.: dúvidas sobre compartilhamento) são feitas
-            diretamente aos integrantes do grupo ou ao orientador.
+            Outras solicitações (ex.: dúvidas sobre compartilhamento ou revisão de algo que
+            o sistema calculou, como as sugestões de áreas) são feitas pelo e-mail{' '}
+            <a href="mailto:eduguru.tcc@gmail.com">eduguru.tcc@gmail.com</a>, respondido em até 15 dias.
           </em>
         </p>
 
@@ -408,13 +418,16 @@ export default function Privacidade() {
           (Row Level Security), não apenas pela interface. Arquivos anexados não são
           públicos: só podem ser abertos por usuários logados, por links temporários
           que expiram em 1 hora. Ações relevantes ficam registradas em
-          log de auditoria. Em caso de incidente de segurança, a equipe irá: identificar
-          o problema, conter o acesso indevido, avaliar quais contas foram afetadas, e
-          comunicar o orientador e os usuários afetados assim que possível.
+          log de auditoria. Em caso de incidente de segurança, a equipe irá: (1) confirmar o
+          incidente; (2) conter o acesso indevido e guardar as evidências (os logs); (3) identificar
+          quais dados e quais contas foram afetados; (4) avaliar se há risco ou dano relevante aos
+          titulares; (5) havendo, comunicar os usuários afetados por e-mail e a Autoridade Nacional de
+          Proteção de Dados (ANPD), como pede o art. 48 da LGPD, além do orientador; e (6) corrigir a
+          causa e registrar o que foi feito.
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização desta Política de Privacidade: versão 2.0, 21/11/2026. Veja
+          Última atualização desta Política de Privacidade: versão 2.1, 22/11/2026. Veja
           também o <Link to="/termos">Termo de Aceite</Link>.
         </p>
       </div>

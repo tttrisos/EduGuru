@@ -118,7 +118,10 @@ export default function NovoAceite() {
             do banco; a sessão é encerrada sozinha depois de 30 minutos sem uso; cadastro não
             confirmado pelo e-mail em 24 horas é apagado; no ranking, o administrador vê quem escolheu
             aparecer como "Aluno anônimo" (os colegas continuam vendo só "Aluno anônimo"); e o arquivo
-            "Baixar meus dados", em Minha conta, traz também as respostas do quiz.
+            "Baixar meus dados", em Minha conta, traz também as respostas do quiz e passa a ficar
+            registrado no seu histórico. A Política agora traz o e-mail de contato para privacidade
+            (eduguru.tcc@gmail.com) e o que fazemos em caso de incidente de segurança, e o Termo deixa
+            claro que o EduGuru não é destinado a crianças.
           </p>
         </div>
 

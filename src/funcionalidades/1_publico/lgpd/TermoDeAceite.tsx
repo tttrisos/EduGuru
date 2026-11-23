@@ -9,7 +9,9 @@ import './lgpd.css'
 // Termo de Aceite, versão 2.0 (1.6: verificação em duas etapas opcional para alunos;
 // 1.7: código por e-mail ao entrar em aparelho novo; 1.8: notas e faltas retiradas;
 // 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado; 2.0: regra correta dos links de
-// materiais (site novo vai para análise), sessão de 30 min e admin vê quem é o "Aluno anônimo").
+// materiais (site novo vai para análise), sessão de 30 min e admin vê quem é o "Aluno anônimo";
+// 2.1: deixa clara a idade (público de graduação, menores de 18 com o conhecimento do responsável) e
+// acompanha a versão da Política, que ganhou o e-mail de contato).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">
@@ -19,7 +21,7 @@ export default function TermoDeAceite() {
         </Link>
 
         <p className="aviso">
-          Versão 2.0 — 21/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
+          Versão 2.1 — 22/11/2026. Projeto acadêmico (PFC) da Universidade de Mogi das
           Cruzes; numa implantação real, este documento passaria por revisão jurídica.
         </p>
 
@@ -53,7 +55,9 @@ export default function TermoDeAceite() {
           acima. Cada pessoa deve manter apenas uma conta, com informações verdadeiras. A conta
           só passa a valer depois que você abre o link enviado ao e-mail informado; se ele não
           for aberto em 24 horas (por exemplo, por um e-mail digitado errado), o cadastro é
-          apagado sozinho e você pode se cadastrar de novo.
+          apagado sozinho e você pode se cadastrar de novo. O EduGuru é feito para estudantes de
+          graduação e não é destinado a crianças; quem tiver menos de 18 anos deve usá-lo com o
+          conhecimento do seu responsável.
         </p>
 
         <h2>3. Contas e papéis de acesso</h2>
@@ -143,7 +147,7 @@ export default function TermoDeAceite() {
         </p>
 
         <p className="termos-rodape-nota">
-          Última atualização deste Termo de Aceite: versão 2.0, 21/11/2026. Veja também
+          Última atualização deste Termo de Aceite: versão 2.1, 22/11/2026. Veja também
           a <Link to="/privacidade">Política de Privacidade</Link>.
         </p>
       </div>
