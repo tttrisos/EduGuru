@@ -37,6 +37,11 @@ describe('categorias', () => {
   it('a limpeza dos cadastros não confirmados (script 31) fica em Sistema', () => {
     expect(categoriaDaAcao('limpeza_cadastros')).toBe('sistema')
   })
+
+  it('o download dos próprios dados (script 33) fica em Sistema, junto da exclusão de conta', () => {
+    expect(categoriaDaAcao('dados_exportados')).toBe('sistema')
+    expect(acoesDaCategoria('sistema')).toContain('conta_excluida')
+  })
 })
 
 describe('filtrarLogs', () => {

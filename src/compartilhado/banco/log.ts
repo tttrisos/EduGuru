@@ -35,6 +35,7 @@ export const ROTULO_ACAO: Record<string, string> = {
   senha_alterada: 'Senha alterada (logado)',
   senha_atual_incorreta: 'Senha atual incorreta ao trocar',
   conta_excluida: 'Conta excluída',
+  dados_exportados: 'Baixou os próprios dados (Minha conta)',
   criar: 'Criou',
   editar: 'Editou',
   excluir: 'Excluiu',
@@ -57,6 +58,7 @@ export type EventoAuth =
   | 'mfa_bloqueado'
   | 'senha_redefinida'
   | 'senha_alterada'
+  | 'dados_exportados'
 
 export async function registrarLogEvento(acao: EventoAuth, detalhes?: Record<string, unknown>) {
   try {

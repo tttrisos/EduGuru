@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { CURSOS, type LogAuditoria, type Material, type TentativaQuiz } from '../../compartilhado/tipos'
+import { registrarLogEvento } from '../../compartilhado/banco/log'
 import { removerArquivosDoUsuario } from './arquivosDoUsuario'
 import TrocarSenha from './TrocarSenha'
 import VerificacaoDuasEtapas from './VerificacaoDuasEtapas'
@@ -146,7 +147,7 @@ export default function MinhaConta() {
 
   // DIREITO DE OPOSIÇÃO (art. 18, § 2º): o ranking usa o legítimo interesse educacional, e o aluno
   // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para os colegas, mas continua pontuando.
-  // O administrador continua vendo quem é (supabase/27) — isso está escrito na tela e na Política 2.0.
+  // O administrador continua vendo quem é (supabase/27) — isso está escrito na tela e na Política (desde a 2.0).
   async function mudarRanking(aparecer: boolean) {
     setErro('')
     setMensagem('')
@@ -183,7 +184,8 @@ export default function MinhaConta() {
 
   // PORTABILIDADE / ACESSO (art. 18, II e V): baixa todos os dados da pessoa em um arquivo JSON.
   // O arquivo é montado no próprio navegador (Blob), com o que consultarDadosExtras já buscou;
-  // nada é enviado para fora.
+  // nada é enviado para fora. O download fica no log ('dados_exportados', supabase/33) só com a data,
+  // como pede o guia de LGPD (registrar exportações e o atendimento dos direitos do titular).
   function baixarMeusDados() {
     const conteudo = {
       gerado_em: new Date().toISOString(),
@@ -204,6 +206,7 @@ export default function MinhaConta() {
     link.download = 'eduguru-meus-dados.json'
     link.click()
     URL.revokeObjectURL(url)
+    void registrarLogEvento('dados_exportados')
   }
 
   // DIREITO DE ELIMINAÇÃO (art. 18, VI), RF15. Na ordem:
