@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { partesDoTexto } from '../../src/compartilhado/utilitarios/texto'
 
-// Testes do negrito nas perguntas (**texto**).
-
 describe('partesDoTexto', () => {
   it('texto sem marcação fica igual', () => {
     expect(partesDoTexto('Qual o resultado?')).toEqual([{ texto: 'Qual o resultado?', negrito: false }])

@@ -1,12 +1,3 @@
-// ============================================================
-// funcionalidades/5_carreira/bussola/Bussola.tsx
-// BÚSSOLA EDUGURU (endereço /bussola) — RF33. Autoavaliação de interesses (NÃO é teste vocacional).
-// Etapas: início (aviso) → 16 afirmações de 1 a 5 → resultado (pódio e afinidade por área).
-// Banco (supabase/18): lê bussola_afirmacoes; salva com salvar_bussola (que valida e CALCULA a afinidade);
-// lê o resultado com minha_bussola; apaga em bussola_resultados. Descrição das áreas: areas_carreira.
-// Regras de tela (progresso, pódio): afinidadeBussola.ts.
-// ============================================================
-
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Compass } from 'lucide-react'
@@ -29,7 +20,6 @@ import './bussola.css'
 
 type Etapa = 'carregando' | 'inicio' | 'perguntas' | 'resultado'
 
-// Bússola EduGuru: autoavaliação de interesses (RF33). Não é teste vocacional nem psicológico.
 export default function Bussola() {
   const { confirmar } = useDialogo()
   const [etapa, setEtapa] = useState<Etapa>('carregando')
@@ -39,7 +29,6 @@ export default function Bussola() {
   const [resultado, setResultado] = useState<AfinidadeBussola[]>([])
   const [erro, setErro] = useState('')
   const [salvando, setSalvando] = useState(false)
-  // Descrição de cada área ("Servidores, APIs e regras de negócio."), para o pódio do resultado.
   const [descricoes, setDescricoes] = useState<Record<number, string>>({})
 
   useEffect(() => {
@@ -87,7 +76,6 @@ export default function Bussola() {
     [afirmacoes, atual, respostas],
   )
 
-  // Atalho de teclado: 1 a 5 respondem a afirmação atual.
   useEffect(() => {
     if (etapa !== 'perguntas') return
     function tecla(e: KeyboardEvent) {
@@ -98,10 +86,7 @@ export default function Bussola() {
     return () => window.removeEventListener('keydown', tecla)
   }, [etapa, responder])
 
-  // "Ver meu resultado": a tela confere se respondeu tudo (conforto), mas QUEM CALCULA é o banco:
-  // salvar_bussola (supabase/18) valida de novo (todas as afirmações ativas, inteiros de 1 a 5), calcula a
-  // afinidade de cada área = (média das 2 respostas da área − 1) ÷ 4 × 100 e grava só o resultado
-  // mais recente (refazer substitui). Assim ninguém grava uma afinidade inventada pela API.
+  // A afinidade é calculada e gravada pelo banco (salvar_bussola), que valida as respostas de novo.
   async function verResultado() {
     if (!completas(afirmacoes, respostas)) {
       setAtual(proximaSemResposta(afirmacoes, respostas))

@@ -1,14 +1,4 @@
-// ============================================================
-// funcionalidades/5_carreira/carreiras/apiVagasGithub.ts
-// INTEGRAÇÃO COM A API DO GITHUB (vagas do Carreiras) — documentação em docs/INTEGRACAO_GITHUB_VAGAS.md.
-// FONTES = repositórios backend-br/vagas e frontendbr/vagas. Cada vaga é uma "issue" desses repositórios.
-// buscarVagas(): chama a API (limite de 10 s), converte as issues em vagas, guarda cache de 30 min no
-// navegador e, se o GitHub falhar, mostra a última lista salva. Testes: testes/5_carreira/carreiras/.
-// ============================================================
-
-// EduGuru Carreiras: leitura das vagas da API do GitHub, filtro por área e cache.
-// As vagas são issues públicas dos repositórios abaixo (comunidades brasileiras de tecnologia).
-// Documentação da integração: docs/INTEGRACAO_GITHUB_VAGAS.md.
+// Vagas: issues públicas de comunidades brasileiras no GitHub (docs/INTEGRACAO_GITHUB_VAGAS.md).
 
 export const FONTES = ['backend-br/vagas', 'frontendbr/vagas'] as const
 export type Fonte = (typeof FONTES)[number]
@@ -41,7 +31,6 @@ export const CHAVE_CACHE = 'eduguru-vagas-v1'
 export const VALIDADE_CACHE_MS = 30 * 60 * 1000
 export const TEMPO_LIMITE_MS = 10_000
 
-// Sem acento, minúsculo e com espaços simples.
 export function normalizar(texto: string) {
   return texto
     .toLowerCase()
@@ -74,7 +63,6 @@ function textoDaVaga(vaga: Pick<Vaga, 'titulo' | 'etiquetas'>) {
   return `${vaga.titulo} ${vaga.etiquetas.join(' ')}`
 }
 
-// Termos da área que aparecem na vaga (vazio = a vaga não é da área).
 export function termosEncontrados(vaga: Pick<Vaga, 'titulo' | 'etiquetas'>, area: AreaParaFiltro) {
   const texto = textoDaVaga(vaga)
   return area.palavras_chave.filter((p) => contemTermo(texto, p))
@@ -117,7 +105,6 @@ export function modalidadeDaVaga(titulo: string, etiquetas: string[]): Modalidad
   return null
 }
 
-// Formato da issue devolvida pela API do GitHub (só os campos lidos).
 export type IssueGitHub = {
   number: number
   title: string
@@ -127,7 +114,6 @@ export type IssueGitHub = {
   pull_request?: unknown
 }
 
-// Converte a issue em vaga; devolve null quando não é uma vaga válida.
 export function converterIssue(issue: IssueGitHub, fonte: Fonte, agora = Date.now()): Vaga | null {
   if (!issue || issue.pull_request) return null
   if (typeof issue.number !== 'number' || typeof issue.title !== 'string') return null
@@ -154,12 +140,10 @@ export function converterIssue(issue: IssueGitHub, fonte: Fonte, agora = Date.no
   }
 }
 
-// Mais recentes primeiro.
 export function ordenarVagas(vagas: Vaga[]) {
   return [...vagas].sort((a, b) => b.publicadaEm.localeCompare(a.publicadaEm))
 }
 
-// Filtros da tela: áreas (vazio = todas), nível e busca livre.
 export type FiltroVagas = {
   areas: AreaParaFiltro[]
   nivel: 'todos' | 'inicio' | NivelVaga
@@ -238,7 +222,6 @@ function horaCurta(ms: number) {
   return new Date(ms).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 }
 
-// Mensagem amigável para cada tipo de falha.
 export function mensagemDeErro(status: number | null, cabecalhos?: Pick<Headers, 'get'>) {
   if (status === 403 || status === 429) {
     const restante = cabecalhos?.get('x-ratelimit-remaining')

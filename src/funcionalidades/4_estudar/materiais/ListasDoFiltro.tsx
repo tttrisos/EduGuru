@@ -1,11 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/ListasDoFiltro.tsx
-// LISTAS DO FILTRO (admin, dentro de Materiais) — RF27. O admin inclui e remove sites
-// permitidos e termos bloqueados sem mexer no código, e testa o filtro com um exemplo.
-// Banco (supabase/22): tabelas filtro_sites e filtro_termos (só o admin altera; tudo vai
-// para o log), verificar_material (teste) e reanalisar_materiais_publicados.
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { Filter, X } from 'lucide-react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
@@ -49,7 +41,6 @@ export default function ListasDoFiltro({ versao, aoMudar }: { versao: number; ao
   const [busca, setBusca] = useState<Record<Lista, string>>({ filtro_sites: '', filtro_termos: '' })
   const [erro, setErro] = useState('')
   const [sucesso, setSucesso] = useState('')
-  // Teste do filtro
   const [testeTitulo, setTesteTitulo] = useState('')
   const [testeLink, setTesteLink] = useState('')
   const [testeResultado, setTesteResultado] = useState<{ tipo: 'erro' | 'sucesso' | 'alerta'; texto: string } | null>(null)

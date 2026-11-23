@@ -1,13 +1,7 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/comunidade.ts
-// BUSCA DOS MATERIAIS APROVADOS (com o autor). Banco: materiais_da_comunidade (supabase/15).
-// ============================================================
-
 import { supabase } from '../../../compartilhado/banco/supabase'
 import { gerarLinksArquivos } from '../../../compartilhado/banco/arquivos'
 import type { MaterialComunidade } from '../../../compartilhado/tipos'
 
-// Materiais aprovados de uma disciplina ou de um autor, com os links dos arquivos.
 export async function buscarMateriaisComunidade(filtro: { disciplinaId?: number | null; autorId?: string }) {
   const { data, error } = await supabase.rpc('materiais_da_comunidade', {
     p_disciplina_id: filtro.disciplinaId ?? null,

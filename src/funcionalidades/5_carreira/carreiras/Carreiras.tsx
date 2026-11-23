@@ -1,11 +1,3 @@
-// ============================================================
-// funcionalidades/5_carreira/carreiras/Carreiras.tsx
-// EDUGURU CARREIRAS (endereço /carreiras) — RF30 a RF32.
-// Banco (supabase/17): minhas_areas_carreira (áreas das disciplinas com 60%+), areas_carreira e
-// disciplinas_areas (8 áreas pré-cadastradas). Banco (supabase/18): minha_bussola (áreas por interesse).
-// Mostra as áreas sugeridas, materiais dessas disciplinas e a lista de vagas (ListaVagas.tsx).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase } from 'lucide-react'
@@ -28,14 +20,11 @@ type Dados = {
 
 const vazio = Promise.resolve({ data: [], error: null })
 
-// As áreas de carreira e a ligação disciplina → área vêm prontas do script 17
-// (8 áreas ligadas à grade); não há cadastro pela tela.
 async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string }> {
   const [areas, ligacoes, desempenho, bussola] = await Promise.all([
     supabase.from('areas_carreira').select('*').order('nome'),
     supabase.from('disciplinas_areas').select('*'),
     ehAdmin ? vazio : supabase.rpc('minhas_areas_carreira'),
-    // Antes do script 18 a função não existe: a tela segue só com o desempenho.
     ehAdmin ? vazio : supabase.rpc('minha_bussola'),
   ])
   const erro = areas.error?.message ?? ligacoes.error?.message ?? desempenho.error?.message ?? ''
@@ -44,7 +33,6 @@ async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string
   const sugeridas = combinarSugestoes((desempenho.data as AreaSugerida[]) ?? [], listaBussola)
   const listaLigacoes = (ligacoes.data as DisciplinaArea[]) ?? []
 
-  // Materiais aprovados das disciplinas das áreas sugeridas ("área sugerida → vagas e materiais").
   let materiais: MaterialComunidade[] = []
   let urlsArquivos: Record<string, string> = {}
   if (!ehAdmin && sugeridas.length > 0) {
@@ -67,8 +55,7 @@ async function consultar(ehAdmin: boolean): Promise<{ dados: Dados; erro: string
   }
 }
 
-// EduGuru Carreiras: vagas de tecnologia ligadas ao desempenho no quiz e à Bússola EduGuru.
-// A candidatura acontece no site de origem; o EduGuru não recebe currículo nem dados de candidatura.
+// A candidatura acontece no site de origem; o EduGuru não recebe currículo.
 export default function Carreiras() {
   const { ehAdmin } = useAuth()
   const [dados, setDados] = useState<Dados | null>(null)

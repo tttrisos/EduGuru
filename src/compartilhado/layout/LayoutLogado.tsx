@@ -23,17 +23,6 @@ import { useAuth } from '../sessao/ContextoSessao'
 import Rodape from './Rodape'
 import { aplicarTema, temaSalvo, type Tema } from '../utilitarios/tema'
 
-// ============================================================
-// Barra superior da área logada (aparece em todas as telas depois do login).
-// Quem usa: Rotas.tsx, que coloca todas as telas logadas "dentro" deste layout;
-// a tela da vez aparece no <Outlet /> lá embaixo.
-//
-// O menu do ALUNO segue a jornada de aprendizagem, não o quiz:
-//   Minha evolução (painel e disciplinas) → Estudar (quiz, ranking, materiais)
-//   → Bússola (interesses) → Carreiras (vagas).
-// O menu do ADMIN segue o trabalho de gestão.
-// ============================================================
-
 // "marca": item com a assinatura "EduGuru" em cima (produtos próprios: Bússola e Carreiras).
 // "filhos": submenu que abre ao passar o mouse (ou com Tab); no celular fica sempre aberto.
 type ItemMenu = { path: string; label: string; marca?: boolean; filhos?: SubItem[] }
@@ -90,24 +79,19 @@ export default function LayoutLogado() {
 
   const itens = ehAdmin ? itensAdmin : itensAluno
 
-  // No topo aparece o primeiro nome da pessoa (ex.: "Thiago"), no lugar do texto "Minha conta".
-  // Sem perfil carregado ainda, fica "Minha conta".
   const primeiroNome = perfil?.nome?.trim().split(/\s+/)[0] || 'Minha conta'
 
-  // Sair pede confirmação (janela do EduGuru, em compartilhado/Dialogo.tsx).
   async function aoSair() {
     if (!(await confirmar({ titulo: 'Sair da sua conta?', mensagem: temMfa ? 'Para entrar de novo, você vai precisar da senha e do código do aplicativo autenticador.' : 'Para entrar de novo, você vai precisar da sua senha.', textoConfirmar: 'Sair' }))) return
     await sair()
     navigate('/login', { replace: true })
   }
 
-  // Tema escuro/claro: salvo no navegador (compartilhado/tema.ts).
   function trocarTema(novo: Tema) {
     aplicarTema(novo)
     setTema(novo)
   }
 
-  // O item fica sublinhado quando a tela aberta começa com o endereço dele.
   function rotaAtiva(path: string) {
     return location.pathname.startsWith(path)
   }
@@ -121,7 +105,6 @@ export default function LayoutLogado() {
             <span>EduGuru</span>
           </Link>
 
-          {/* Botão "hambúrguer": só aparece no celular */}
           <button
             type="button"
             className="topo-menu-btn"
@@ -134,7 +117,6 @@ export default function LayoutLogado() {
           <nav className={`topo-nav${menuAberto ? ' aberto' : ''}`}>
             {itens.map((item) =>
               item.filhos ? (
-                // Item com submenu (ex.: Estudar → Quiz, Ranking, Materiais)
                 <div key={item.path} className="topo-grupo">
                   <Link
                     to={item.path}
@@ -158,7 +140,6 @@ export default function LayoutLogado() {
                   </div>
                 </div>
               ) : (
-                // Item simples (ex.: Logs, no menu do admin) ou com a assinatura EduGuru (Bússola, Carreiras)
                 <Link
                   key={item.path}
                   to={item.path}
@@ -177,7 +158,6 @@ export default function LayoutLogado() {
             )}
 
             <div className="topo-usuario">
-              {/* Menu da conta (mostra o primeiro nome): dados pessoais, privacidade, senha e tema */}
               <div className="topo-conta">
                 <Link
                   to="/minha-conta"
@@ -239,7 +219,6 @@ export default function LayoutLogado() {
         </div>
       </header>
 
-      {/* Aqui entra a tela aberta (Painel, Quiz, Carreiras...) */}
       <main className="content">
         <Outlet />
         <Rodape />

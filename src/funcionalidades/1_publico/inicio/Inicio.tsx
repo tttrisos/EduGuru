@@ -14,12 +14,7 @@ import { CURSOS } from '../../../compartilhado/tipos'
 import Rodape from '../../../compartilhado/layout/Rodape'
 import './inicio.css'
 
-// ============================================================
-// Página inicial pública (endereço "/", RF23): apresenta o EduGuru para quem não entrou.
-// A ordem dos recursos segue a jornada do aluno (evolução → revisar → descobrir →
-// direcionar); o quiz aparece como a ferramenta de prática, não como o centro.
-// "disponivel: false" mostraria o selo "Em breve".
-// ============================================================
+// "disponivel: false" mostra o selo "Em breve".
 const RECURSOS = [
   {
     icone: TrendingUp,

@@ -1,17 +1,6 @@
-// ============================================================
-// compartilhado/componentes/Captcha.tsx
-// CAPTCHA "NÃO SOU UM ROBÔ" (Cloudflare Turnstile, grátis) no login, no cadastro e no "esqueci a senha".
-// Impede robôs de testar senhas e de criar contas falsas em massa. Funciona assim:
-//   1) o navegador carrega o Turnstile e mostra a caixinha (quase sempre resolve sozinha);
-//   2) o Turnstile devolve um "token" de uso único → a tela manda junto para o Supabase Auth;
-//   3) o Supabase confere o token com a Cloudflare (chave secreta, configurada só no painel do Supabase).
-// Sem CHAVE_SITE_CAPTCHA preenchida, não aparece nada e o login funciona como antes.
-// ============================================================
-
 import { useEffect, useRef } from 'react'
 
-// Chave PÚBLICA do site (Cloudflare → Turnstile → o widget do EduGuru → "Site Key").
-// A chave secreta vai só no Supabase: Authentication → Attack Protection → Captcha.
+// Chave pública do site no Turnstile; a chave secreta fica só no Supabase.
 export const CHAVE_SITE_CAPTCHA: string = '0x4AAAAAAGBYJ0RlVQIDJtdS'
 
 export const captchaLigado = CHAVE_SITE_CAPTCHA !== ''
@@ -51,7 +40,6 @@ function carregarTurnstile(): Promise<Turnstile> {
 }
 
 type Props = {
-  // Recebe o token (ou null quando expira ou dá erro).
   aoMudar: (token: string | null) => void
   // Aumente este número para pedir um token novo (cada token vale para UMA tentativa).
   reiniciar?: number

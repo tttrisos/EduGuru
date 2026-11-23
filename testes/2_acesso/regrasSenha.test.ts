@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { REGRAS_SENHA, senhaAtendeTodasRegras } from '../../src/funcionalidades/2_acesso/regrasSenha'
 
-// Testes das regras de senha do cadastro (RF02).
-
 function regra(chave: string) {
   const encontrada = REGRAS_SENHA.find((r) => r.chave === chave)
   if (!encontrada) throw new Error(`Regra ${chave} não existe`)

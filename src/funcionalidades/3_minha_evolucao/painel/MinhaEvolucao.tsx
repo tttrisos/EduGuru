@@ -16,17 +16,6 @@ import type {
   TentativaQuiz,
 } from '../../../compartilhado/tipos'
 
-// ============================================================
-// Minha evolução (painel do aluno, RF25): o centro do EduGuru é a aprendizagem do aluno.
-// A tela mostra a JORNADA em 4 etapas, cada uma ligada a uma funcionalidade:
-//   1) Aprender   → desempenho por disciplina (quiz)          → banco: meu_desempenho()
-//   2) Revisar    → Guru indica materiais abaixo de 60%        → banco: recomendacoes_guru()
-//   3) Descobrir  → Bússola: áreas que combinam com o aluno    → banco: minha_bussola()
-//   4) Direcionar → Carreiras: áreas sugeridas e vagas         → banco: minhas_areas_carreira()
-// Depois vêm só 3 números, 1 gráfico (aproveitamento por disciplina) e o Guru; pontos e ranking
-// ficam numa linha curta no fim. A tela foi enxugada em 19/11 para não ficar poluída.
-// ============================================================
-
 type DadosAluno = {
   tentativas: TentativaQuiz[]
   desempenho: DesempenhoDisciplina[]
@@ -37,7 +26,6 @@ type DadosAluno = {
   areasDesempenho: AreaSugerida[]
 }
 
-// Todas as consultas ao banco de uma vez (Promise.all = em paralelo).
 async function consultarDadosAluno(): Promise<DadosAluno> {
   const [tentativas, desempenho, ranking, guru, bussola, areas] = await Promise.all([
     supabase
@@ -52,7 +40,6 @@ async function consultarDadosAluno(): Promise<DadosAluno> {
     supabase.rpc('minhas_areas_carreira'),
   ])
 
-  // Links temporários (1 hora) dos arquivos que o Guru indica.
   const listaGuru = (guru.data as RecomendacaoGuru[]) ?? []
   const caminhos = listaGuru.map((g) => g.arquivo_path).filter((p): p is string => !!p)
 
@@ -62,7 +49,7 @@ async function consultarDadosAluno(): Promise<DadosAluno> {
     ranking: (ranking.data as LinhaRanking[]) ?? [],
     guru: listaGuru,
     linksArquivos: await gerarLinksArquivos(caminhos),
-    // Bússola e Carreiras: se o script do banco ainda não foi rodado, a etapa só fica vazia.
+    // Se a consulta da Bússola ou do Carreiras falhar, a etapa só fica vazia.
     bussola: bussola.error ? [] : ((bussola.data as AfinidadeBussola[]) ?? []),
     areasDesempenho: areas.error ? [] : ((areas.data as AreaSugerida[]) ?? []),
   }
@@ -77,22 +64,18 @@ export default function MinhaEvolucao() {
 
   if (!dados) return <p className="status">Carregando...</p>
 
-  // ---- Cálculos da tela ----
   const resumo = resumirEvolucao(dados.desempenho)
   const disciplinasGuru = [...new Set(dados.guru.map((g) => g.disciplina_id))]
   const areaPrincipal = destaques(dados.bussola)[0] ?? null
   const areasSugeridas = combinarSugestoes(dados.areasDesempenho, dados.bussola)
 
-  // Gamificação (fica por último na tela)
   const pontos = dados.tentativas.reduce((soma, t) => soma + t.pontos, 0)
   const minhaPosicao = dados.ranking.find((l) => l.eh_voce)?.posicao
 
   return (
     <>
-      {/* 0) Segurança: convite para ativar a verificação em duas etapas (só para quem não tem) */}
       <AvisoAtivarMfa />
 
-      {/* 1) A jornada: as 4 etapas da aprendizagem */}
       <ol className="jornada">
         <li className="jornada-etapa">
           <span className="jornada-icone" aria-hidden="true">
@@ -152,7 +135,6 @@ export default function MinhaEvolucao() {
         </li>
       </ol>
 
-      {/* 2) Números da aprendizagem */}
       <div className="grade-big-numbers">
         <NumeroDestaque
           valor={resumo.aproveitamentoGeral !== null ? `${resumo.aproveitamentoGeral}%` : '—'}
@@ -163,7 +145,6 @@ export default function MinhaEvolucao() {
         <NumeroDestaque valor={resumo.paraRevisar} legenda="Disciplinas para revisar" detalhe="abaixo de 60%" />
       </div>
 
-      {/* 3) Gráfico: aproveitamento por disciplina */}
       <div className="cartao evolucao-grafico">
         <GraficoBarras
           titulo="Aproveitamento por disciplina (%)"
@@ -174,7 +155,6 @@ export default function MinhaEvolucao() {
         />
       </div>
 
-      {/* 4) Guru: materiais das disciplinas com aproveitamento abaixo de 60% */}
       <div className="cartao guru" id="guru">
         <h3>
           <Lightbulb size={20} color="#8257e5" /> Guru
@@ -220,7 +200,6 @@ export default function MinhaEvolucao() {
         )}
       </div>
 
-      {/* 5) Gamificação: motivação extra, não o centro */}
       <div className="cartao evolucao-gamificacao">
         <p>
           <strong>{pontos} pontos</strong>

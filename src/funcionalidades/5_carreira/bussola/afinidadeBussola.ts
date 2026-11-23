@@ -1,13 +1,4 @@
-// ============================================================
-// funcionalidades/5_carreira/bussola/afinidadeBussola.ts
-// REGRAS DA BÚSSOLA na tela: escala 1–5, progresso, áreas em destaque (60%+, até 3)
-// e a junção das sugestões do quiz com as da Bússola (usada no Carreiras e em Minha evolução).
-// O cálculo oficial da afinidade é feito no banco (salvar_bussola). Testes: testes/5_carreira/bussola/.
-// ============================================================
-
-// Bússola EduGuru: autoavaliação de interesses (não é teste vocacional nem psicológico).
-// O cálculo oficial da afinidade fica no banco (salvar_bussola, script 18); aqui ficam as regras
-// de tela: escala, progresso, destaques do resultado e a junção com o desempenho no quiz.
+// O cálculo oficial da afinidade fica no banco (salvar_bussola); aqui ficam só as regras de tela.
 import type { AreaSugerida } from '../../../compartilhado/tipos'
 
 export type Afirmacao = { id: number; texto: string; area_id: number; ordem: number }
@@ -37,7 +28,6 @@ export function completas(afirmacoes: Afirmacao[], respostas: Respostas) {
   return afirmacoes.length > 0 && respondidas(afirmacoes, respostas) === afirmacoes.length
 }
 
-// Primeira afirmação ainda sem resposta (para continuar de onde parou).
 export function proximaSemResposta(afirmacoes: Afirmacao[], respostas: Respostas) {
   const i = afirmacoes.findIndex((a) => !(respostas[a.id] >= 1))
   return i === -1 ? afirmacoes.length - 1 : i
@@ -52,7 +42,6 @@ export function destaques(resultado: AfinidadeBussola[]) {
   return ordenado.length > 0 && ordenado[0].afinidade > 0 ? [ordenado[0]] : []
 }
 
-// Sugestão de área no Carreiras: pelo quiz (desempenho), pela Bússola (interesse) ou pelos dois.
 export type SugestaoArea = {
   area_id: number
   area: string
@@ -76,7 +65,6 @@ export function combinarSugestoes(desempenho: AreaSugerida[], bussola: Afinidade
   return [...mapa.values()].sort((a, b) => nota(b) - nota(a) || a.area.localeCompare(b.area))
 }
 
-// Texto do selo de cada vaga: por que ela aparece para o aluno.
 export function motivoSugestao(s: SugestaoArea) {
   const quiz = s.aproveitamento !== null ? `você acerta ${s.aproveitamento}% em ${s.disciplinas.slice(0, 2).join(' e ')}` : ''
   const interesse = s.afinidade !== null ? `${s.afinidade}% de afinidade na Bússola` : ''

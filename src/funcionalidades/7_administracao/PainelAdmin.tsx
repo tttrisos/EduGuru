@@ -6,15 +6,7 @@ import NumeroDestaque from '../../compartilhado/componentes/NumeroDestaque'
 import GraficoBarras from '../../compartilhado/componentes/GraficoBarras'
 import type { EstatisticasAdmin, EstatisticasBussola, EstatisticasCarreiras } from '../../compartilhado/tipos'
 
-// ============================================================
-// Painel do administrador (RF25): números gerais da plataforma, nunca dados de um aluno.
-//   - estatisticas_admin()      → criada no supabase/12 e reescrita no 31 (versão atual: conta só alunos
-//                                 que confirmaram o e-mail; alunos, quizzes, acertos)
-//   - estatisticas_carreiras()  → supabase/17_carreiras.sql (cliques em "Candidatar-se")
-//   - estatisticas_bussola()    → supabase/18_bussola.sql (quantos responderam, área preferida)
-//   - total_alunos_com_mfa()    → supabase/23, reescrita no 31 (quantos alunos ativaram as duas etapas)
-// Todas conferem no banco se quem chama é admin com verificação em duas etapas.
-// ============================================================
+// Só totais da plataforma, nunca dados de um aluno; cada função confere no banco se quem chama é admin.
 
 export default function PainelAdmin() {
   const [dados, setDados] = useState<EstatisticasAdmin | null>(null)
@@ -94,13 +86,11 @@ export default function PainelAdmin() {
   )
 }
 
-// EduGuru Carreiras: cliques em "Candidatar-se" (sem identificar quem clicou).
 function PainelCarreiras() {
   const [dados, setDados] = useState<EstatisticasCarreiras | null>(null)
   const [bussola, setBussola] = useState<EstatisticasBussola | null>(null)
 
   useEffect(() => {
-    // Se os scripts 17 e 18 ainda não foram rodados, a seção (ou a parte da Bússola) não aparece.
     supabase.rpc('estatisticas_carreiras').then(({ data, error }) => {
       if (!error && data) setDados(data as EstatisticasCarreiras)
     })

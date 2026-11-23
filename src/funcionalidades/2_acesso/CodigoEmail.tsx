@@ -1,12 +1,3 @@
-// ============================================================
-// funcionalidades/2_acesso/CodigoEmail.tsx
-// CÓDIGO POR E-MAIL AO ENTRAR NUM APARELHO NOVO (aparece na tela /mfa) — quem não usa o aplicativo.
-// 1) ao abrir, pede ao banco para enviar o código de 6 números para o e-mail da conta (pelo Brevo);
-// 2) o aluno digita o código; certo → a sessão fica liberada no banco;
-// 3) "Lembrar este aparelho" (marcado): nos próximos 30 dias, neste navegador, só a senha basta.
-// Errar 5 vezes apaga o código (precisa pedir outro). Banco: supabase/25. Regras: regrasCodigoEmail.ts.
-// ============================================================
-
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GraduationCap, MailCheck } from 'lucide-react'
@@ -39,11 +30,8 @@ export default function CodigoEmail({ destino }: { destino: string }) {
   // Envia só uma vez ao abrir (o efeito roda duas vezes em desenvolvimento).
   const jaEnviou = useRef(false)
 
-  // Pede ao BANCO para gerar e enviar o código (enviar_codigo_email, supabase/25).
-  // Quem gera o código é o banco, e não a tela: assim o código nunca passa pelo navegador. O banco
-  // guarda só o hash do código e chama a API do Brevo para mandar o e-mail.
-  // Limites conferidos no banco: reenvio só depois de 60 s, 8 códigos por conta por dia e 150 no
-  // total por dia (cota gratuita do Brevo).
+  // O código é gerado e enviado pelo banco (enviar_codigo_email), que guarda só o hash; o reenvio
+  // e a quantidade diária são limitados lá (cota gratuita do Brevo).
   async function enviar() {
     setErro('')
     setInfo('')
@@ -75,18 +63,14 @@ export default function CodigoEmail({ destino }: { destino: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Contagem regressiva do "Reenviar".
   useEffect(() => {
     if (espera <= 0) return
     const id = setTimeout(() => setEspera((s) => s - 1), 1000)
     return () => clearTimeout(id)
   }, [espera])
 
-  // Botão "Confirmar": o BANCO compara o hash do que foi digitado com o hash guardado
-  // (confirmar_codigo_email). Certo → marca a sessão como verificada (o RLS passa a liberar os dados).
-  // Se "Lembrar este aparelho" estiver marcado, o banco devolve uma chave aleatória (token), que fica
-  // guardada no navegador; o banco guarda só o hash dela, por 30 dias.
-  // Errado → mostra quantas tentativas restam; na 5ª, o código é apagado e é preciso pedir outro.
+  // O banco compara os hashes. Com "Lembrar este aparelho", devolve um token aleatório que fica no
+  // navegador; o banco guarda só o hash dele, por 30 dias. Na 5ª tentativa errada, o código é apagado.
   async function aoConfirmar(e: React.FormEvent) {
     e.preventDefault()
     setErro('')

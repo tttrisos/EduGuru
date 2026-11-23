@@ -1,12 +1,3 @@
-// ============================================================
-// compartilhado/sessao/RotaProtegida.tsx
-// PORTEIRO DAS TELAS LOGADAS: antes de mostrar a tela, confere na ordem:
-// 1) está logado?  2) digitou o código das duas etapas, se a conta exige (quem ativou o MFA e todo
-//    admin; ver nivelSessao.ts) ou o código do e-mail, se é um aparelho novo (supabase/25)?  3) aceitou a versão atual dos termos?
-// 4) (somenteAdmin) é administrador?  Se faltar algo, manda para a tela certa (login, MFA, novo aceite).
-// A tela só esconde; quem garante de verdade é o RLS do banco.
-// ============================================================
-
 import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './ContextoSessao'
@@ -17,8 +8,7 @@ type Props = {
   somenteAdmin?: boolean
 }
 
-// Exige login, o código do MFA (quando a conta exige), aceite dos termos e, se somenteAdmin, papel de admin.
-// O banco (RLS) repete essas regras.
+// Proteção de navegação; o banco (RLS) aplica as mesmas regras.
 export default function RotaProtegida({ children, somenteAdmin = false }: Props) {
   const { usuario, perfil, carregando, ehAdmin, verificacaoOk, avisoSaida } = useAuth()
   const location = useLocation()

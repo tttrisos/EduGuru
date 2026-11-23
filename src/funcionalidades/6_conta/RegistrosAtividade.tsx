@@ -1,11 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/RegistrosAtividade.tsx
-// MEUS REGISTROS DE ATIVIDADE (cartão em Minha conta), com filtros (pedido da pré-banca de 13/11):
-// tipo de registro, período e busca. Filtra no navegador a lista do próprio usuário (o RLS do banco
-// só devolve os logs dele: política logs_select_proprio, supabase/07).
-// Regras dos filtros: compartilhado/utilitarios/filtroLogs.ts.
-// ============================================================
-
 import { useState } from 'react'
 import { rotuloDoLog } from '../../compartilhado/banco/log'
 import FiltrosLogs from '../../compartilhado/componentes/FiltrosLogs'

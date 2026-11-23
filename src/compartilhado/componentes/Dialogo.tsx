@@ -1,15 +1,5 @@
-// ============================================================
-// compartilhado/componentes/Dialogo.tsx
-// JANELA DE CONFIRMAÇÃO do EduGuru (no lugar do confirm/prompt do navegador).
-// confirmar(): sim/não.  pedirTexto(): pede um texto; com "exigir", só libera ao digitar o texto exato
-// (ex.: EXCLUIR, usado em exclusões e ações em massa).
-// ============================================================
-
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { AlertTriangle, HelpCircle } from 'lucide-react'
-
-// Janela de confirmação do EduGuru, no lugar do window.confirm / window.prompt do navegador.
-// Uso: const { confirmar } = useDialogo(); if (!(await confirmar({ titulo: '...' }))) return
 
 type OpcoesConfirmar = {
   titulo: string
@@ -72,7 +62,6 @@ function JanelaDialogo({ pedido, fechar }: { pedido: Pedido; fechar: (resposta: 
     else confirmarRef.current?.focus()
   }, [pedido])
 
-  // Esc fecha sem confirmar.
   useEffect(() => {
     function aoTeclar(e: KeyboardEvent) {
       if (e.key === 'Escape') fechar(null)

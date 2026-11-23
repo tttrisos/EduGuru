@@ -1,12 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/Materiais.tsx
-// MATERIAIS (endereço /materiais) — RF08. O aluno envia links ou PDF/DOCX ligados a uma disciplina.
-// Antes de enviar, pergunta ao banco se o material passa no filtro (verificar_material, supabase/22).
-// Site fora da lista não é recusado: vai para a análise da equipe. Arquivos vão para o Storage.
-// Banco: tabela materiais (supabase/01, 03, 15, 22). Para o admin, mostra também Moderacao,
-// TodosMateriais e ListasDoFiltro.
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
 import { Link } from 'react-router-dom'
@@ -19,9 +10,6 @@ import Moderacao from './Moderacao'
 import TodosMateriais from './TodosMateriais'
 import ListasDoFiltro from './ListasDoFiltro'
 import './materiais.css'
-
-// Materiais: cada um cadastra os seus; os aprovados aparecem para os colegas
-// no fim do quiz e no perfil de quem enviou.
 
 const LIMITE_MB = 5
 const LIMITE_BYTES = LIMITE_MB * 1024 * 1024
@@ -37,14 +25,10 @@ const SITUACAO: Record<StatusMaterial, string> = {
   recusado: 'Recusado',
 }
 
-// Busca, em paralelo, os materiais que ESTE usuário enviou, as disciplinas e a lista de sites
-// permitidos (mostrada no formulário). Os materiais dos colegas aparecem em outras telas
-// (fim do quiz e perfil do autor), por buscarMateriaisComunidade em comunidade.ts.
 async function consultarMateriais(usuarioId: string) {
   const [materiais, disciplinas, sites] = await Promise.all([
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId).order('id', { ascending: false }),
     supabase.from('disciplinas').select('*').order('nome'),
-    // Lista de sites permitidos (tabela filtro_sites, editada pelo admin)
     supabase.from('filtro_sites').select('dominio').order('dominio'),
   ])
   const listaDisciplinas = (disciplinas.data as Disciplina[]) ?? []
@@ -53,7 +37,6 @@ async function consultarMateriais(usuarioId: string) {
     return { lista: [] as Material[], disciplinas: listaDisciplinas, sites: listaSites, urls: {}, erro: materiais.error.message }
   }
 
-  // Arquivos privados: abrem por links temporários (1 hora).
   const lista = (materiais.data as Material[]) ?? []
   const caminhos = lista.map((m) => m.arquivo_path).filter((p): p is string => !!p)
   const urls = await gerarLinksArquivos(caminhos)
@@ -138,14 +121,8 @@ export default function Materiais() {
     setArquivo(selecionado)
   }
 
-  // COMPARTILHAR OU EDITAR UM MATERIAL (RF08). A ordem importa:
-  //  1) validações de conforto na tela (título, disciplina, link OU arquivo);
-  //  2) pergunta ao BANCO se o material passa no filtro (verificar_material), ANTES de subir o
-  //     arquivo — assim um material recusado nem chega a ocupar espaço no armazenamento;
-  //  3) site fora da lista de permitidos: avisa que vai para a análise (não é recusado);
-  //  4) sobe o arquivo (se houver) para o Storage privado, com nome sanitizado e prefixo aleatório;
-  //  5) grava a linha em "materiais". O gatilho do banco aplica o filtro DE NOVO e decide a situação
-  //     (publicado, em análise ou recusado) — mesmo quem chamar a API direto passa pelo filtro.
+  // O filtro é consultado no banco antes de subir o arquivo, para um material recusado nem ocupar
+  // espaço. Ao gravar, o gatilho do banco aplica o filtro de novo, então a API direta também passa por ele.
   async function salvar(e: React.FormEvent) {
     e.preventDefault()
     setErro('')
@@ -163,7 +140,6 @@ export default function Materiais() {
       setErro('Informe um link OU anexe um arquivo (PDF/DOCX).')
       return
     }
-    // Pergunta ao banco ANTES de enviar o arquivo: a regra fica só lá (supabase/22).
     const arquivoNome = editando ? editando.arquivo_nome : (arquivo?.name ?? null)
     setEnviando(true)
     const { data: filtro, error: erroFiltro } = await supabase.rpc('verificar_material', {
@@ -309,7 +285,6 @@ export default function Materiais() {
       perigo: true,
     })
     if (!ok) return
-    // Remove também o arquivo do Storage.
     if (item.arquivo_path) {
       await supabase.storage.from('materiais').remove([item.arquivo_path])
     }

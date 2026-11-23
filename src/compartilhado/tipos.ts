@@ -1,9 +1,3 @@
-// ============================================================
-// compartilhado/tipos.ts
-// TIPOS DE DADOS (TypeScript): o formato de cada coisa que vem do banco (Disciplina, Pergunta, Material...).
-// Ajudam o editor a apontar erros antes de rodar. Também guarda constantes como VERSAO_TERMOS e CURSOS.
-// ============================================================
-
 // "cursos" lista todos os cursos que têm a disciplina na grade (ex.: Banco de Dados é de
 // SI, ADS e ES); "curso" é o primeiro deles.
 export type Disciplina = {
@@ -13,7 +7,7 @@ export type Disciplina = {
   cursos: string[] | null
 }
 
-// Cursos da disciplina (antes do script 13 atualizado, só existe "curso").
+// Cursos da disciplina; registros antigos só têm o campo "curso".
 export function cursosDa(d: Disciplina) {
   return d.cursos?.length ? d.cursos : [d.curso]
 }
@@ -123,10 +117,7 @@ export type Perfil = {
   criado_em: string
 }
 
-// Versão vigente do Termo e da Política. Ao mudar, todos aceitam de novo (RotaProtegida → NovoAceite,
-// registrar_aceite no supabase/08). 2.0 (21/11/2026): Política diz que o admin vê o nome de quem está
-// como "Aluno anônimo" no ranking (supabase/27) e Termo corrige a regra dos links de materiais.
-// 2.1 (22/11/2026): Política com e-mail de contato real, log do "Baixar meus dados" e plano de incidentes.
+// Versão vigente do Termo e da Política; ao mudar, todos aceitam de novo (RF22).
 export const VERSAO_TERMOS = '2.1'
 
 // Linha devolvida pela função listar_usuarios_admin() (só admin).

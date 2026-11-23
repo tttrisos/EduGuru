@@ -1,11 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/quiz/Quiz.tsx
-// QUIZ (endereço /quiz) — RF16, RF17. A prática que alimenta a evolução, o Guru e o Carreiras.
-// Fluxo no banco (supabase/11 e 19): iniciar_quiz sorteia até 10 perguntas e EMBARALHA as alternativas
-// → responder_pergunta corrige uma por vez (o gabarito nunca vem antes) → finalizar_quiz soma os pontos.
-// Dica 50/50: pedir_dica (supabase/15 e 19). A tela só conhece as letras que mostra (A–D da tela).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
 import { Link } from 'react-router-dom'
@@ -33,9 +25,7 @@ import { guardarSomDesligado, mensagemSequencia, somDesligado, tocarSom } from '
 import { textoPerguntasDoCartao } from './regrasQuiz'
 import './quiz.css'
 
-// Quiz (RF16, RF17, RF19): uma pergunta por vez, com a correção logo depois de responder.
-// Sorteio, correção, pontos e dica são feitos no banco (iniciar_quiz, responder_pergunta,
-// pedir_dica e finalizar_quiz).
+// Sorteio, correção, pontos e dica ficam no banco; a tela só mostra o que ele devolve.
 
 // Abaixo deste aproveitamento o Guru indica materiais.
 const APROVEITAMENTO_MINIMO = 60
@@ -71,14 +61,9 @@ function tituloResultado(aproveitamento: number) {
   return 'Continue praticando!'
 }
 
-// POR QUE O ALUNO NÃO CONSEGUE TRAPACEAR (pergunta comum na banca):
-//  - a tela nunca recebe o gabarito antes de o aluno responder: iniciar_quiz devolve as perguntas
-//    sem a alternativa correta, e o gabarito fica numa tabela que o aluno não pode ler (RLS);
-//  - a resposta é gravada pelo banco antes de ele devolver se acertou, e não pode ser trocada;
-//  - os pontos são calculados pelo banco; o aluno não tem permissão de gravar nas tabelas do quiz;
-//  - as alternativas são embaralhadas a cada rodada, então decorar a letra não funciona.
-// A tela só mostra o que o banco devolve. O estado abaixo controla as 3 etapas:
-// 'escolher' (lista de disciplinas) → 'jogar' (uma pergunta por vez) → 'resultado'.
+// O gabarito nunca chega à tela antes da resposta: fica numa tabela que o aluno não lê (RLS).
+// A resposta é gravada pelo banco antes da correção e não pode ser trocada; os pontos são
+// calculados lá, e as alternativas são embaralhadas a cada rodada.
 export default function Quiz() {
   const { confirmar } = useDialogo()
   const { perfil } = useAuth()
@@ -127,7 +112,6 @@ export default function Quiz() {
     })
   }, [])
 
-  // Atalhos: 1 a 4 (ou A a D) escolhem a alternativa; Enter verifica ou continua; Esc fecha a imagem.
   useEffect(() => {
     if (etapa !== 'jogar') return
     function aoTeclar(e: KeyboardEvent) {
@@ -155,8 +139,7 @@ export default function Quiz() {
     setMudo(!mudo)
   }
 
-  // PASSO 1 — começar: o banco sorteia até 10 perguntas da disciplina (primeiro as que o aluno ainda
-  // não acertou), embaralha as alternativas e devolve SEM o gabarito. (iniciar_quiz, supabase/19)
+  // O banco sorteia até 10 perguntas (primeiro as ainda não acertadas) e as devolve sem o gabarito.
   async function comecar(id: number) {
     setErro('')
     setDisciplinaId(id)
@@ -210,9 +193,7 @@ export default function Quiz() {
     tocarSom('dica')
   }
 
-  // PASSO 2 — verificar: manda a letra escolhida; o banco grava (não dá para trocar), corrige,
-  // calcula os pontos (só no 1º acerto da pergunta) e só então devolve o gabarito e a explicação.
-  // (responder_pergunta, supabase/19)
+  // O banco grava a resposta, corrige e só então devolve o gabarito; pontos só no 1º acerto.
   async function verificar() {
     if (!escolhida || feedback || carregando) return
     const questao = questoes[atual]
@@ -241,8 +222,7 @@ export default function Quiz() {
     setFeedback({ ...resultado, mensagem: sortear(resultado.acertou ? ELOGIOS : INCENTIVOS) })
   }
 
-  // PASSO 3 — continuar: vai para a próxima pergunta; na última, fecha a rodada no banco, que soma
-  // acertos e pontos e registra no log. (finalizar_quiz, supabase/19)
+  // Na última pergunta, o banco fecha a rodada, soma acertos e pontos e registra no log.
   async function continuar() {
     if (carregando) return
     if (atual < questoes.length - 1) {
@@ -265,7 +245,6 @@ export default function Quiz() {
       return
     }
 
-    // Materiais que os colegas compartilharam nesta disciplina.
     const materiais = await buscarMateriaisComunidade({ disciplinaId })
     setMateriaisColegas(materiais.lista)
     setUrlsMateriais(materiais.urls)
@@ -291,7 +270,6 @@ export default function Quiz() {
 
   const nomeDisciplina = disciplinas.find((d) => d.id === disciplinaId)?.nome ?? ''
 
-  // 1) Escolher a disciplina, com filtro por curso (começa no curso do aluno) e busca pelo nome
   if (etapa === 'escolher') {
     const curso = filtroCurso ?? (CURSOS.some((c) => c.valor === perfil?.curso) ? (perfil?.curso as string) : '')
     const opcoesFiltro = [
@@ -371,8 +349,6 @@ export default function Quiz() {
                   {cursosDa(d).join(' · ')}
                 </span>
                 <strong>{d.nome}</strong>
-                {/* O cartão mostra quantas perguntas a RODADA terá (no máximo 10), e não o total do banco:
-                    com 15 cadastradas, a rodada sorteia 10, e o cartão mostra "10 perguntas". */}
                 <small>{textoPerguntasDoCartao(qtd)}</small>
               </button>
             )
@@ -383,7 +359,6 @@ export default function Quiz() {
     )
   }
 
-  // 2) Jogar: uma pergunta por vez
   if (etapa === 'jogar') {
     const questao = questoes[atual]
     const respondidas = atual + (feedback ? 1 : 0)
@@ -560,7 +535,6 @@ export default function Quiz() {
     )
   }
 
-  // 3) Resultado
   const acertos = correcao.filter((c) => c.acertou).length
   const pontos = correcao.reduce((soma, c) => soma + c.pontos, 0)
   const aproveitamento = Math.round((acertos / correcao.length) * 100)

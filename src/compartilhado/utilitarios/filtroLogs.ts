@@ -1,18 +1,9 @@
-// ============================================================
-// compartilhado/utilitarios/filtroLogs.ts
-// FILTROS DOS REGISTROS DE ATIVIDADE (logs), sem tela. Usado em dois lugares:
-// - administracao/Logs.tsx (admin): vira filtros da consulta ao banco (categoria, período, e-mail, tabela);
-// - conta/RegistrosAtividade.tsx (Minha conta): filtra no navegador a lista do próprio usuário.
-// Testes: testes/compartilhado/.
-// ============================================================
-
 import { semAcento } from '../../funcionalidades/4_estudar/materiais/filtroMateriais'
 import { rotuloDoLog } from '../banco/log'
 import type { LogAuditoria } from '../tipos'
 
 export type Categoria = 'todos' | 'acessos' | 'senha' | 'alteracoes' | 'quiz' | 'sistema'
 
-// Cada categoria reúne as ações (códigos gravados pelo banco) de um mesmo assunto.
 export const CATEGORIAS_LOG: { valor: Categoria; rotulo: string; acoes: string[] | null }[] = [
   { valor: 'todos', rotulo: 'Todos', acoes: null },
   {
@@ -54,18 +45,15 @@ export function categoriaDaAcao(acao: string): Categoria | null {
   return CATEGORIAS_LOG.find((c) => c.acoes?.includes(acao))?.valor ?? null
 }
 
-// Data (ISO) a partir da qual os logs entram no período escolhido.
 export function inicioDoPeriodo(dias: number, agora: Date) {
   return new Date(agora.getTime() - dias * 24 * 60 * 60 * 1000).toISOString()
 }
 
-// Texto em que a busca procura: nome da ação, tabela, e-mail e aparelho.
 export function textoDoLog(log: LogAuditoria) {
   const aparelho = typeof log.detalhes?.aparelho === 'string' ? log.detalhes.aparelho : ''
   return semAcento([rotuloDoLog(log), log.acao, log.tabela ?? '', log.usuario_email ?? '', aparelho].join(' '))
 }
 
-// Filtro no navegador (Minha conta).
 export function filtrarLogs(lista: LogAuditoria[], filtro: FiltroLogs, agora: Date) {
   const acoes = acoesDaCategoria(filtro.categoria)
   const inicio = inicioDoPeriodo(filtro.dias, agora)
@@ -78,7 +66,6 @@ export function filtrarLogs(lista: LogAuditoria[], filtro: FiltroLogs, agora: Da
   )
 }
 
-// Quantos logs há em cada categoria (para os números nos botões).
 export function totaisPorCategoria(lista: LogAuditoria[]) {
   const totais = Object.fromEntries(CATEGORIAS_LOG.map((c) => [c.valor, 0])) as Record<Categoria, number>
   for (const log of lista) {

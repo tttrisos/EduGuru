@@ -1,19 +1,9 @@
-// ============================================================
-// compartilhado/sessao/inatividade.ts
-// SESSÃO EXPIRADA POR INATIVIDADE: regra dos 30 minutos sem usar o site.
-// Usado por: compartilhado/sessao/ContextoSessao.tsx (que encerra a sessão e avisa no login).
-// Banco: nenhum. O horário do último uso fica só no navegador (localStorage), sem dado pessoal.
-// Testes: testes/compartilhado/inatividade.test.ts.
-// ============================================================
+// O Supabase só limita a duração da sessão nos planos pagos; por isso o próprio site encerra
+// a sessão depois de 30 minutos sem uso, contando a atividade em qualquer aba.
 
-// Para a banca: o Supabase só limita o tempo máximo de sessão nos planos pagos (monografia, 2.1).
-// Por isso o próprio site conta o tempo parado: qualquer clique, tecla, toque ou rolagem, em
-// qualquer aba do EduGuru, conta como uso. Passados 30 minutos sem nada, a sessão é encerrada
-// (inclusive se o aluno fechou o navegador e voltou depois) e o login avisa o motivo.
-
-export const LIMITE_INATIVIDADE_MS = 30 * 60 * 1000 // 30 minutos
-export const INTERVALO_GRAVACAO_MS = 15 * 1000 // grava o "último uso" no máximo a cada 15 s
-export const INTERVALO_CONFERENCIA_MS = 30 * 1000 // confere se expirou a cada 30 s
+export const LIMITE_INATIVIDADE_MS = 30 * 60 * 1000
+export const INTERVALO_GRAVACAO_MS = 15 * 1000
+export const INTERVALO_CONFERENCIA_MS = 30 * 1000
 export const CHAVE_ULTIMA_ATIVIDADE = 'eduguru_ultima_atividade'
 export const AVISO_SESSAO_EXPIRADA = 'Sua sessão expirou depois de 30 minutos sem uso. Entre de novo.'
 
@@ -24,12 +14,10 @@ export function sessaoExpirou(ultimaAtividade: number | null, agora: number, lim
   return agora - ultimaAtividade >= limite
 }
 
-// Evita gravar no navegador a cada movimento: só grava se já passou o intervalo.
 export function precisaGravar(ultimaGravacao: number, agora: number, intervalo = INTERVALO_GRAVACAO_MS) {
   return agora - ultimaGravacao >= intervalo
 }
 
-// Converte o texto guardado no navegador em número (ou null se não houver ou estiver estragado).
 export function interpretarRegistro(valor: string | null) {
   if (!valor) return null
   const numero = Number(valor)

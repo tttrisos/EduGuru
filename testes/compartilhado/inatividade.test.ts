@@ -1,4 +1,3 @@
-// Testes da sessão expirada por inatividade (src/compartilhado/sessao/inatividade.ts).
 import { describe, expect, it } from 'vitest'
 import {
   INTERVALO_GRAVACAO_MS,

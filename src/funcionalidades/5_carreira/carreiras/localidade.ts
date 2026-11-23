@@ -1,14 +1,5 @@
-// ============================================================
-// funcionalidades/5_carreira/carreiras/localidade.ts
-// LOCALIDADE DAS VAGAS: lê "[Remoto]", "[Híbrido em SP]", "[Joinville/SC]" no título e as etiquetas.
-// Filtro padrão: só remotas e no estado de SP (alunos da UMC). Alto Tietê ganha o selo "Perto da UMC".
-// ============================================================
-
-// Localidade das vagas do EduGuru Carreiras.
-// O público é de alunos da UMC (Mogi das Cruzes, SP), então o filtro padrão mostra só
-// vagas remotas ou no estado de São Paulo, e destaca as do Alto Tietê, perto da UMC.
-// O local vem do começo do título ("[Remoto]", "[Híbrido em SP]", "[Joinville/SC]") e das
-// etiquetas (o frontendbr usa etiquetas com o nome do estado, ex.: "São Paulo").
+// O público é da UMC (Mogi das Cruzes, SP): o filtro padrão mostra vagas remotas ou em SP.
+// O local vem do começo do título ("[Remoto]", "[Joinville/SC]") e das etiquetas.
 import { contemTermo, normalizar } from './apiVagasGithub'
 
 export type Localidade = {
@@ -18,7 +9,6 @@ export type Localidade = {
   pertoDaUmc: boolean
   // Algum lugar fora de SP foi citado (outro estado ou outro país)
   outroLugar: boolean
-  // Texto curto para o selo (ex.: "Mogi das Cruzes/SP", "São Paulo/SP", "Joinville/SC")
   rotulo: string
 }
 
@@ -134,7 +124,6 @@ function limparRotulo(trecho: string) {
   return semModalidade.length > 40 ? `${semModalidade.slice(0, 39)}…` : semModalidade
 }
 
-// A vaga entra no filtro de localidade?
 // "Remotas e no estado de SP" aceita vagas remotas (de qualquer lugar) e as que citam SP,
 // mesmo que também citem outra cidade ("Belo Horizonte ou São Paulo"). Local não informado fica de fora.
 export function vagaNoLocal(vaga: { titulo: string; etiquetas: string[] }, filtro: FiltroLocal) {

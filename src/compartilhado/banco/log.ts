@@ -1,17 +1,5 @@
-// ============================================================
-// compartilhado/banco/log.ts
-// LOG DE AUDITORIA do lado do site: registra eventos de acesso (login, logout, MFA, senha).
-// Banco: registrar_evento_auth (supabase/10 e 21), registrar_login_falhou (10), registrar_pedido_redefinicao (09).
-// Criar/editar/excluir cadastros é registrado sozinho por gatilhos do banco (supabase/02).
-// ROTULO_ACAO traduz o código da ação para o texto mostrado em Logs e Minha conta.
-// ============================================================
-
 import { supabase } from './supabase'
 
-// Logs de acesso (login, logout, MFA, senha). Criar/editar/excluir registros
-// é logado direto pelo banco.
-
-// Nome exibido de cada ação do log.
 export const ROTULO_ACAO: Record<string, string> = {
   login: 'Login',
   login_falhou: 'Login falhou',
@@ -41,8 +29,6 @@ export const ROTULO_ACAO: Record<string, string> = {
   excluir: 'Excluiu',
 }
 
-// Texto do log na tela: igual ao ROTULO_ACAO, mas o logout por inatividade aparece como
-// "Sessão expirada (30 min sem uso)" (ContextoSessao.tsx grava detalhes.motivo = "sessao_expirada").
 export function rotuloDoLog(log: { acao: string; detalhes?: Record<string, unknown> | null }) {
   if (log.acao === 'logout' && log.detalhes?.motivo === 'sessao_expirada') return 'Sessão expirada (30 min sem uso)'
   return ROTULO_ACAO[log.acao] ?? log.acao

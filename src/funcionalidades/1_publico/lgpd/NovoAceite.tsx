@@ -1,9 +1,3 @@
-// ============================================================
-// funcionalidades/1_publico/lgpd/NovoAceite.tsx
-// NOVO ACEITE (endereço /aceite) — RF22. Aparece quando o Termo/Política mudam de versão (VERSAO_TERMOS).
-// Banco: registrar_aceite (supabase/08). Quem não aceitar pode excluir a conta (excluir_minha_conta).
-// ============================================================
-
 import { useState } from 'react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
@@ -15,7 +9,6 @@ import Rodape from '../../../compartilhado/layout/Rodape'
 import { removerArquivosDoUsuario } from '../../6_conta/arquivosDoUsuario'
 import './lgpd.css'
 
-// Pede novo aceite quando o Termo/Política mudam de versão.
 export default function NovoAceite() {
   const { confirmar, pedirTexto } = useDialogo()
   const { usuario, perfil, carregando, verificacaoOk, temMfa, recarregarPerfil, sair } = useAuth()

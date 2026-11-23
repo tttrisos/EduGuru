@@ -1,10 +1,3 @@
-// ============================================================
-// compartilhado/utilitarios/tema.ts
-// TEMA ESCURO/CLARO: aplica e guarda no navegador a escolha do usuário (menu Minha conta).
-// ============================================================
-
-// Tema do site: escuro (padrão) ou claro. A escolha fica salva neste navegador.
-
 export type Tema = 'escuro' | 'claro'
 
 const CHAVE_TEMA = 'eduguru-tema'

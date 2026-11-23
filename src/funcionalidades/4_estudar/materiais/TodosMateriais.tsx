@@ -1,10 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/TodosMateriais.tsx
-// TODOS OS MATERIAIS (admin, dentro de Materiais) — RF27. Lista por situação, busca, filtros e ações
-// individuais ou em massa (com aviso e confirmação digitada). Regras: gestaoMateriais.ts.
-// Banco: materiais, denuncias_materiais, listar_usuarios_admin e moderar_material.
-// ============================================================
-
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, Library } from 'lucide-react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
@@ -58,8 +51,6 @@ async function consultar(disciplinas: Disciplina[]) {
   }
 }
 
-// Admin: todos os materiais do site (publicados, em análise e recusados), com busca,
-// filtros e as ações de retirar do ar, publicar e excluir.
 export default function TodosMateriais({
   disciplinas,
   versao,
@@ -78,7 +69,6 @@ export default function TodosMateriais({
   const [disciplina, setDisciplina] = useState('')
   const [busca, setBusca] = useState('')
   const [quantos, setQuantos] = useState(POR_PAGINA)
-  // Ações em massa: andamento ("Excluindo 3 de 10...") e resultado.
   const [processando, setProcessando] = useState('')
   const [sucesso, setSucesso] = useState('')
 

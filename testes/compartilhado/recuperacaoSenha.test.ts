@@ -1,5 +1,3 @@
-// Testes da trava da tela "Criar nova senha" (RF24-RN06): só quem chegou pelo link de recuperação
-// desta mesma conta pode trocar a senha por ali. Regra em src/compartilhado/sessao/recuperacaoSenha.ts.
 import { describe, expect, it } from 'vitest'
 import { podeRedefinirSenha } from '../../src/compartilhado/sessao/recuperacaoSenha'
 

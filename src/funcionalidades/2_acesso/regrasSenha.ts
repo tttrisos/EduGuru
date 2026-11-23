@@ -1,10 +1,3 @@
-// ============================================================
-// funcionalidades/2_acesso/regrasSenha.ts
-// REGRAS DE SENHA: 8+ caracteres, maiúscula, minúscula, número e especial.
-// Usadas no cadastro, na redefinição e na troca de senha. Testes: testes/2_acesso/regrasSenha.test.ts.
-// ============================================================
-
-// Regras de senha, usadas na lista da tela e na validação do formulário.
 export type RegraSenha = {
   chave: string
   descricao: string
@@ -26,8 +19,6 @@ export const REGRAS_SENHA: RegraSenha[] = [
 export function senhaAtendeTodasRegras(senha: string): boolean {
   return REGRAS_SENHA.every((regra) => regra.testar(senha))
 }
-// Validação da troca de senha estando logado (Minha conta → Trocar senha).
-// Devolve a mensagem de erro ou null se pode seguir para o banco.
 export function validarTrocaDeSenha(atual: string, nova: string, confirmacao: string): string | null {
   if (!atual) return 'Digite a sua senha atual.'
   if (!senhaAtendeTodasRegras(nova)) return 'A nova senha ainda não atende a todos os requisitos.'

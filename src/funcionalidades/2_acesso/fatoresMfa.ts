@@ -1,15 +1,7 @@
-// ============================================================
-// funcionalidades/2_acesso/fatoresMfa.ts
-// APLICATIVO AUTENTICADOR (MFA/TOTP): chamadas ao Supabase Auth usadas pela tela do código
-// (Mfa.tsx: login e cadastro obrigatório do admin) e por Minha conta (6_conta/VerificacaoDuasEtapas.tsx:
-// ativar e desativar).
-// ============================================================
-
 import { supabase } from '../../compartilhado/banco/supabase'
 
 export type CadastroTotp = { fatorId: string; qrCode: string; segredo: string }
 
-// Id do aplicativo já confirmado da conta, ou null se o MFA não está ativo.
 export async function fatorVerificado(): Promise<string | null> {
   const { data, error } = await supabase.auth.mfa.listFactors()
   if (error) throw error
@@ -37,7 +29,6 @@ export async function iniciarCadastroTotp(): Promise<CadastroTotp> {
   return { fatorId: data.id, qrCode: data.totp.qr_code, segredo: data.totp.secret }
 }
 
-// Confere o código de 6 dígitos. Se estiver certo, a sessão passa a ser aal2 (senha + código).
 export async function confirmarCodigo(fatorId: string, codigo: string) {
   const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: fatorId, code: codigo })
   return error

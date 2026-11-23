@@ -1,9 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/gestaoMateriais.ts
-// REGRAS DE "TODOS OS MATERIAIS": filtros, ordem e resumo das ações em massa. Testes: testes/4_estudar/materiais/.
-// ============================================================
-
-// Gestão de todos os materiais pelo admin: filtros da lista "Todos os materiais".
 import type { Material, StatusMaterial } from '../../../compartilhado/tipos'
 import { semAcento } from './filtroMateriais'
 
@@ -22,7 +16,6 @@ export const ROTULO_STATUS: Record<StatusMaterial, string> = {
   recusado: 'Recusado',
 }
 
-// Material com o que a tela do admin precisa: autor, disciplina e denúncias.
 export type MaterialAdmin = Material & {
   autor_nome: string
   autor_email: string
@@ -81,12 +74,10 @@ export const ROTULO_ACAO: Record<AcaoMassa, string> = {
   excluir: 'Excluir todos',
 }
 
-// Texto exato que o admin precisa digitar para confirmar (ex.: "EXCLUIR 5").
 export function textoConfirmacao(acao: AcaoMassa, quantidade: number) {
   return `${acao === 'excluir' ? 'EXCLUIR' : acao === 'publicar' ? 'PUBLICAR' : 'RETIRAR'} ${quantidade}`
 }
 
-// Resumo do que a ação em massa vai atingir, para o aviso ao admin.
 export function resumoAlvo(
   lista: MaterialAdmin[],
   filtro: { status: FiltroStatus; disciplina: string; busca: string },

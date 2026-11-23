@@ -1,13 +1,3 @@
-// ============================================================
-// funcionalidades/2_acesso/Mfa.tsx
-// VERIFICAÇÃO EM DUAS ETAPAS NO LOGIN (endereço /mfa) — RF03, RF04.
-// Só chega aqui quem precisa do código (ver compartilhado/sessao/nivelSessao.ts):
-// - quem ATIVOU o MFA em Minha conta: digita o código de 6 dígitos do aplicativo;
-// - administrador sem MFA: é obrigado a cadastrar o aplicativo (QR Code) antes de entrar;
-// - quem NÃO usa o aplicativo, entrando num aparelho novo: código por e-mail (CodigoEmail.tsx, supabase/25).
-// Código certo → sessão vira aal2. 5 códigos errados → sai da conta. Banco: supabase/05 e 23.
-// ============================================================
-
 import { useEffect, useRef, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
@@ -20,14 +10,10 @@ import { descreverAparelho } from '../../compartilhado/utilitarios/aparelho'
 import CodigoEmail from './CodigoEmail'
 import './acesso.css'
 
-// Depois de 5 códigos errados seguidos, a sessão é encerrada e o usuário volta ao login (RF04-RN04).
-// Limitação (dita na monografia): esse limite é contado pela tela, por sessão; o Supabase Auth também
-// limita as tentativas por endereço IP. Bloqueio por conta no servidor só existe nos planos pagos.
+// Limite contado pela tela, por sessão (RF04-RN04); o Supabase Auth também limita por IP.
+// Bloqueio por conta no servidor só existe nos planos pagos.
 const MAXIMO_TENTATIVAS = 5
 
-// O que esta tela vai mostrar:
-//  - 'verificar': a conta já tem o aplicativo → só pede o código de 6 dígitos;
-//  - 'cadastrar': administrador ainda sem aplicativo → mostra o QR Code para ele cadastrar agora.
 type Preparo =
   | { modo: 'verificar'; fatorId: string }
   | { modo: 'cadastrar'; fatorId: string; qrCode: string; segredo: string }
@@ -56,8 +42,6 @@ export default function Mfa() {
   // Evita gerar dois QR Codes (o efeito roda duas vezes em desenvolvimento).
   const jaPreparou = useRef(false)
 
-  // Ao abrir a tela: decide entre "pedir o código" e "cadastrar o aplicativo" (prepararMfa).
-  // Só roda quando a sessão já foi lida e ainda falta a verificação pelo aplicativo.
   useEffect(() => {
     if (carregando || !usuario || verificacaoOk || precisaCodigoEmail || jaPreparou.current) return
     jaPreparou.current = true
@@ -79,15 +63,12 @@ export default function Mfa() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carregando, usuario, verificacaoOk, precisaCodigoEmail, perfil])
 
-  // Desvios antes de desenhar a tela:
   if (carregando) return <p className="status">Carregando...</p>
   if (!usuario) return <Navigate to="/login" replace /> // ninguém logado
-  if (verificacaoOk) return <Navigate to={destino} replace /> // já está tudo verificado
-  if (precisaCodigoEmail) return <CodigoEmail destino={destino} /> // sem aplicativo, aparelho novo
+  if (verificacaoOk) return <Navigate to={destino} replace />
+  if (precisaCodigoEmail) return <CodigoEmail destino={destino} />
 
-  // Botão "Verificar": manda o código ao Supabase Auth (confirmarCodigo, em fatoresMfa.ts).
-  // Código certo → a sessão sobe para aal2 e o banco passa a liberar os dados (RLS).
-  // Código errado → grava "mfa_falhou" no log e conta a tentativa; na 5ª, "mfa_bloqueado" e sai.
+  // Código errado conta a tentativa no log; na 5ª, registra "mfa_bloqueado" e encerra a sessão.
   async function aoEnviar(e: React.FormEvent) {
     e.preventDefault()
     if (!preparo) return
@@ -126,7 +107,6 @@ export default function Mfa() {
       return
     }
 
-    // Deu certo: registra no log, relê a sessão (agora aal2) e segue para a tela de destino.
     if (preparo.modo === 'cadastrar') await registrarLogEvento('mfa_ativado')
     await registrarLogEvento('login', { mfa: 'totp', aparelho: descreverAparelho(navigator.userAgent) })
     await atualizarMfa()

@@ -1,9 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/arquivosDoUsuario.ts
-// APAGAR OS ARQUIVOS DE UM USUÁRIO no Storage antes de excluir a conta
-// (o banco apaga as linhas sozinho, mas não consegue apagar arquivos). Usado por Minha conta e Usuários.
-// ============================================================
-
 import { supabase } from '../../compartilhado/banco/supabase'
 
 // Antes de excluir uma conta, apaga do Storage os arquivos enviados por ela

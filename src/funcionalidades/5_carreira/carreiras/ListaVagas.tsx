@@ -1,10 +1,3 @@
-// ============================================================
-// funcionalidades/5_carreira/carreiras/ListaVagas.tsx
-// LISTA DE VAGAS do Carreiras: chips de área, filtros de nível, busca e localidade, e o botão "Candidatar-se".
-// Vagas: buscarVagas() de apiVagasGithub.ts (API do GitHub). Localidade: localidade.ts.
-// Banco: registrar_clique_vaga (supabase/17) conta um clique por aluno e vaga para o painel do admin.
-// ============================================================
-
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, MapPin, RefreshCw, Sparkles } from 'lucide-react'
 import { supabase } from '../../../compartilhado/banco/supabase'
@@ -31,7 +24,6 @@ const OPCOES_NIVEL: { valor: FiltroVagas['nivel']; label: string }[] = [
   { valor: 'Sênior', label: 'Sênior' },
 ]
 
-// Lista de vagas da API do GitHub, filtrada pelas áreas. "sugeridas" junta o quiz e a Bússola.
 export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]; sugeridas: SugestaoArea[] }) {
   const [resultado, setResultado] = useState<ResultadoVagas | null>(null)
   const [erro, setErro] = useState('')
@@ -90,7 +82,6 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
     setQuantas(POR_PAGINA)
   }
 
-  // Por que a vaga aparece: a área (sugerida, de preferência) e o termo encontrado.
   function motivo(vaga: Vaga) {
     const candidatas = areasDoFiltro.length > 0 ? areasDoFiltro : areas
     const ordem = [...candidatas].sort((a, b) => Number(idsSugeridos.has(b.id)) - Number(idsSugeridos.has(a.id)))
@@ -116,7 +107,6 @@ export default function ListaVagas({ areas, sugeridas }: { areas: AreaCarreira[]
     })
   }
 
-  // Chips de área com o total de vagas de cada uma (já com nível, busca e localidade aplicados).
   const vagasNoLocal = useMemo(
     () => filtrarVagas(resultado?.vagas ?? [], { areas: [], nivel, busca }).filter((v) => vagaNoLocal(v, local)),
     [resultado, nivel, busca, local],

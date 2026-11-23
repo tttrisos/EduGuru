@@ -52,7 +52,6 @@ function vaga(parcial: Partial<Vaga> = {}): Vaga {
 const backend = { id: 1, nome: 'Back-end', palavras_chave: ['back-end', 'java', 'node.js', 'c#', '.net'] }
 const frontend = { id: 2, nome: 'Front-end', palavras_chave: ['front-end', 'react', 'javascript'] }
 
-// Armazenamento falso (no lugar do localStorage).
 function memoria(inicial: Record<string, string> = {}) {
   const dados = { ...inicial }
   return {

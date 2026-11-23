@@ -3,11 +3,6 @@ import MinhaEvolucao from './MinhaEvolucao'
 import PainelAdmin from '../../7_administracao/PainelAdmin'
 import './painel.css'
 
-// ============================================================
-// Painel (endereço /painel, RF25). Escolhe a tela pelo papel de quem entrou:
-//   - aluno → MinhaEvolucao.tsx (jornada de aprendizagem)
-//   - admin → PainelAdmin.tsx (números gerais da plataforma)
-// ============================================================
 export default function Painel() {
   const { ehAdmin, perfil } = useAuth()
 

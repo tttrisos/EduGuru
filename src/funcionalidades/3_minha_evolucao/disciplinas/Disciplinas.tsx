@@ -1,9 +1,3 @@
-// ============================================================
-// funcionalidades/3_minha_evolucao/disciplinas/Disciplinas.tsx
-// DISCIPLINAS (endereço /disciplinas) — RF06. Aluno: consulta por curso. Admin: cadastra, edita e exclui.
-// Banco: tabela disciplinas (supabase/01 e 13; grade real de SI, ADS e ES).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
 import { supabase } from '../../../compartilhado/banco/supabase'
@@ -19,10 +13,8 @@ export default function Disciplinas() {
   const { ehAdmin, perfil } = useAuth()
   const [lista, setLista] = useState<Disciplina[]>([])
   const [nome, setNome] = useState('')
-  // Cursos que têm a disciplina na grade (pode ser mais de um).
   const [cursos, setCursos] = useState<string[]>(['SI'])
   const [erro, setErro] = useState('')
-  // Id da disciplina em edição (null = cadastrando uma nova).
   const [editandoId, setEditandoId] = useState<number | null>(null)
   const [carregando, setCarregando] = useState(true)
   // Filtro por curso: o aluno começa vendo as disciplinas do próprio curso.

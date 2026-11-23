@@ -1,14 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/VerificacaoDuasEtapas.tsx
-// ATIVAR / DESATIVAR A VERIFICAÇÃO EM DUAS ETAPAS (cartão em Minha conta) — RF03, RF21.
-// Para o aluno é opcional. Passo a passo:
-//   ATIVAR:    gera o QR Code (fatoresMfa.ts) → o aluno confirma um código do aplicativo →
-//              a sessão vira aal2 e, a partir daí, todo login pede o código (o banco exige: supabase/23).
-//   DESATIVAR: só com a sessão que digitou o código (o Supabase exige) E a senha atual
-//              (conferir_senha_atual, supabase/21) → remove o aplicativo → log 'mfa_desativado'.
-// Administrador: obrigatório, não aparece o botão de desativar.
-// ============================================================
-
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import '../2_acesso/acesso.css'
@@ -53,7 +42,6 @@ export default function VerificacaoDuasEtapas() {
     setSucesso('')
   }
 
-  // ---------- Ativar ----------
   async function comecarAtivacao() {
     limparMensagens()
     setEnviando(true)
@@ -93,7 +81,6 @@ export default function VerificacaoDuasEtapas() {
     setSucesso('Verificação em duas etapas ativada! A partir de agora, todo login pede o código do aplicativo.')
   }
 
-  // ---------- Desativar ----------
   async function desativar(e: React.FormEvent) {
     e.preventDefault()
     limparMensagens()
@@ -126,7 +113,6 @@ export default function VerificacaoDuasEtapas() {
       setEnviando(false)
       return setErro('Não foi possível desativar. Saia, entre de novo com o código do aplicativo e tente outra vez.')
     }
-    // 3) Log e sessão atualizada
     await registrarLogEvento('mfa_desativado')
     await supabase.auth.refreshSession()
     await atualizarMfa()
@@ -160,7 +146,6 @@ export default function VerificacaoDuasEtapas() {
       {erro ? <p className="aviso erro">{erro}</p> : null}
       {sucesso ? <p className="aviso sucesso">{sucesso}</p> : null}
 
-      {/* Ativar: botão → QR Code → código */}
       {!temMfa && !cadastro ? (
         <button type="button" className="btn btn-primario" onClick={comecarAtivacao} disabled={enviando}>
           {enviando ? 'Gerando...' : 'Ativar verificação em duas etapas'}
@@ -200,7 +185,6 @@ export default function VerificacaoDuasEtapas() {
         </form>
       ) : null}
 
-      {/* Desativar: só aluno, com a senha atual */}
       {temMfa && ehAdmin ? (
         <p className="item-meta">Para administradores, a verificação em duas etapas é obrigatória.</p>
       ) : null}

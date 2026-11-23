@@ -1,18 +1,9 @@
-// ============================================================
-// funcionalidades/7_administracao/Perguntas.tsx
-// BANCO DE PERGUNTAS (endereço /perguntas, só admin) — RF07.
-// Banco: criar_pergunta (supabase/11) e editar_pergunta (supabase/16) gravam pergunta + gabarito + explicação
-// juntos e validam tudo; imagens vão para o bucket privado "perguntas".
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { supabase } from '../../compartilhado/banco/supabase'
 import TextoRico from '../../compartilhado/componentes/TextoRico'
 import { LETRAS, NIVEIS, cursosDa, type Disciplina, type Letra, type Nivel, type Pergunta } from '../../compartilhado/tipos'
 import './perguntas.css'
-
-// Banco de perguntas do quiz (só admin): cadastrar, editar e excluir. O gabarito e a explicação ficam na tabela "gabaritos".
 
 type Gabarito = { pergunta_id: number; correta: Letra; explicacao: string | null }
 
@@ -55,7 +46,6 @@ export default function Perguntas() {
   const [explicacao, setExplicacao] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
   const [salvando, setSalvando] = useState(false)
-  // Edição: id da pergunta, imagem que ela já tem e se o admin pediu para tirá-la.
   const [editandoId, setEditandoId] = useState<number | null>(null)
   const [imagemAtual, setImagemAtual] = useState<string | null>(null)
   const [removerImagem, setRemoverImagem] = useState(false)

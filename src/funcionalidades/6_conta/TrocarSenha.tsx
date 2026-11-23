@@ -1,20 +1,9 @@
-// ============================================================
-// funcionalidades/6_conta/TrocarSenha.tsx
-// TROCAR SENHA JÁ LOGADO (cartão em Minha conta). Passo a passo nos comentários abaixo.
-// ============================================================
-
 import { useState } from 'react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { registrarLogEvento } from '../../compartilhado/banco/log'
 import { REGRAS_SENHA, validarTrocaDeSenha } from '../2_acesso/regrasSenha'
 import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 
-// Trocar a senha estando logado (cartão da tela Minha conta).
-// Passo a passo:
-//   1) confere no navegador: regras da senha nova, confirmação igual e nova ≠ atual;
-//   2) confere a senha ATUAL no banco: rpc conferir_senha_atual (supabase/21_trocar_senha.sql);
-//   3) grava a nova pelo Supabase Auth: supabase.auth.updateUser({ password });
-//   4) registra 'senha_alterada' no log e desconecta os OUTROS aparelhos (este continua logado).
 export default function TrocarSenha() {
   const [atual, setAtual] = useState('')
   const [nova, setNova] = useState('')
@@ -28,13 +17,11 @@ export default function TrocarSenha() {
     setErro('')
     setSucesso('')
 
-    // 1) Validações rápidas, sem ir ao servidor (regras em 2_acesso/regrasSenha.ts, com testes em testes/2_acesso/)
     const problema = validarTrocaDeSenha(atual, nova, confirmar)
     if (problema) return setErro(problema)
 
     setEnviando(true)
 
-    // 2) A senha atual está certa? (o banco compara com o hash guardado)
     const conferencia = await supabase.rpc('conferir_senha_atual', { p_senha: atual })
     if (conferencia.error) {
       setEnviando(false)
@@ -56,7 +43,6 @@ export default function TrocarSenha() {
       )
     }
 
-    // 4) Log e saída dos outros aparelhos
     await registrarLogEvento('senha_alterada')
     await supabase.auth.signOut({ scope: 'others' })
 
@@ -97,7 +83,6 @@ export default function TrocarSenha() {
           />
         </label>
 
-        {/* As mesmas 5 regras do cadastro (2_acesso/regrasSenha.ts), marcadas enquanto digita */}
         <ul className="lista-regras-senha">
           {REGRAS_SENHA.map((regra) => {
             const ok = regra.testar(nova)

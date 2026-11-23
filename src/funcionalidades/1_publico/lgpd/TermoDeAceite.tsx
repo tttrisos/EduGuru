@@ -1,17 +1,6 @@
-// ============================================================
-// funcionalidades/1_publico/lgpd/TermoDeAceite.tsx
-// TERMO DE ACEITE (endereço /termos) — RF11. Regras de uso da plataforma.
-// ============================================================
-
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Termo de Aceite, versão 2.0 (1.6: verificação em duas etapas opcional para alunos;
-// 1.7: código por e-mail ao entrar em aparelho novo; 1.8: notas e faltas retiradas;
-// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado; 2.0: regra correta dos links de
-// materiais (site novo vai para análise), sessão de 30 min e admin vê quem é o "Aluno anônimo";
-// 2.1: deixa clara a idade (público de graduação, menores de 18 com o conhecimento do responsável) e
-// acompanha a versão da Política, que ganhou o e-mail de contato).
 export default function TermoDeAceite() {
   return (
     <div className="termos-tela">

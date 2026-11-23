@@ -83,7 +83,6 @@ describe('banco de perguntas', () => {
       expect(p.explicacao.length, p.enunciado).toBeGreaterThan(0)
       expect(p.explicacao.length, p.enunciado).toBeLessThanOrEqual(600)
     }
-    // Nenhum enunciado repetido na mesma disciplina
     const chaves = todas.map((p) => `${p.disciplina}|${p.enunciado}`)
     expect(new Set(chaves).size).toBe(chaves.length)
   })

@@ -1,15 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/AcessosEAparelhos.tsx
-// ACESSOS E APARELHOS (cartão em Minha conta). Ajuda o usuário a perceber um acesso estranho:
-//   - últimos logins, com o tipo de aparelho (ex.: "Chrome no Windows") e como foi verificado
-//     (só a senha, código do e-mail, aparelho lembrado ou código do aplicativo);
-//   - aparelhos lembrados (onde o código do e-mail não é pedido por 30 dias);
-//   - quantas vezes alguém errou a senha da conta nos últimos 30 dias;
-//   - "Sair dos outros aparelhos": encerra todas as outras sessões e esquece os outros aparelhos lembrados
-//     (este aparelho continua logado).
-// Banco: meus_acessos (supabase/24 e 25), esquecer_outros_aparelhos (25) e o evento 'sessoes_encerradas'.
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { MonitorSmartphone } from 'lucide-react'
 import { supabase } from '../../compartilhado/banco/supabase'

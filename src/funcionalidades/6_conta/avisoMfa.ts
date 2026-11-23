@@ -1,10 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/avisoMfa.ts
-// REGRA DO AVISO "ATIVE A VERIFICAÇÃO EM DUAS ETAPAS" (em Minha evolução), sem tela.
-// Aparece para aluno sem MFA. "Agora não" esconde por 30 dias (guardado só neste navegador).
-// Testes: testes/6_conta/.
-// ============================================================
-
 export const DIAS_ADIAMENTO = 30
 export const CHAVE_ADIAMENTO = 'eduguru.aviso-mfa-adiado-ate'
 

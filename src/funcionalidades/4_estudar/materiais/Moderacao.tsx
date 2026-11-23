@@ -1,11 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/Moderacao.tsx
-// MODERAÇÃO (admin, dentro de Materiais) — RF27. Arquivos e links de sites novos em análise,
-// e materiais denunciados.
-// Banco: materiais_em_moderacao lista e moderar_material aprova ou recusa com motivo (supabase/15);
-// aprovar_e_liberar_site aprova e coloca o site na lista de permitidos (supabase/22).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../../compartilhado/componentes/Dialogo'
 import { ShieldAlert } from 'lucide-react'
@@ -21,7 +13,6 @@ async function consultarModeracao() {
   return { lista, urls: await gerarLinksArquivos(caminhos), erro: error?.message ?? '' }
 }
 
-// Moderação (admin): arquivos novos e materiais denunciados esperam aprovação.
 export default function Moderacao({
   disciplinas,
   versao,

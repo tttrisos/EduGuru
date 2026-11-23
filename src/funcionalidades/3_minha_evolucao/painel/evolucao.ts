@@ -1,17 +1,5 @@
-// ============================================================
-// funcionalidades/3_minha_evolucao/painel/evolucao.ts
-// REGRAS DE "MINHA EVOLUÇÃO" (detalhes no comentário abaixo). Testes: testes/3_minha_evolucao/painel/.
-// ============================================================
-
-// Regras da tela "Minha evolução" (painel do aluno). Ficam aqui, separadas da tela,
-// para poderem ser testadas (testes/evolucao.test.ts).
-//
-// De onde vêm os dados: a função do banco meu_desempenho() (supabase/11_quiz_ranking_guru.sql)
-// devolve, por disciplina, quantas perguntas o aluno respondeu e quantas acertou.
-// Os cortes são os mesmos do resto do sistema:
-//   - 5 respostas ou mais = já dá para avaliar a disciplina;
-//   - 60% ou mais = "dominada" (vira área sugerida no Carreiras);
-//   - abaixo de 60% = "para revisar" (o Guru indica materiais).
+// Cortes usados em todo o sistema: com 5 respostas ou mais a disciplina já pode ser avaliada;
+// 60% ou mais é "dominada" e abaixo disso é "para revisar".
 import type { DesempenhoDisciplina } from '../../../compartilhado/tipos'
 
 export const MINIMO_RESPOSTAS = 5
@@ -38,7 +26,6 @@ export function resumirEvolucao(desempenho: DesempenhoDisciplina[]): ResumoEvolu
   }
 }
 
-// Frase da etapa "Aprender" da jornada, conforme o momento do aluno.
 export function fraseAprender(r: ResumoEvolucao) {
   if (r.praticadas === 0) return 'Comece praticando uma disciplina do seu curso.'
   if (r.dominadas === 0 && r.paraRevisar === 0) return 'Continue praticando: com 5 respostas a disciplina já é avaliada.'

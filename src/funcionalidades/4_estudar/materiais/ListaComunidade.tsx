@@ -1,9 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/ListaComunidade.tsx
-// MATERIAIS DOS COLEGAS (fim do quiz e perfil do autor) — RF28, RF29.
-// Lista os aprovados (comunidade.ts) e permite denunciar (denunciar_material, supabase/15).
-// ============================================================
-
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ExternalLink, Flag, Paperclip } from 'lucide-react'
@@ -20,7 +14,6 @@ type Props = {
   mostrarAutor?: boolean
 }
 
-// Materiais aprovados dos colegas, com o autor (abre o perfil) e o botão de denunciar.
 export default function ListaComunidade({ materiais, urls, mostrarAutor = true }: Props) {
   const { usuario } = useAuth()
   const [denunciando, setDenunciando] = useState<number | null>(null)

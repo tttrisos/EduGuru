@@ -1,19 +1,6 @@
-// ============================================================
-// funcionalidades/1_publico/lgpd/Privacidade.tsx
-// POLÍTICA DE PRIVACIDADE (endereço /privacidade) — RF12. Texto da versão atual (VERSAO_TERMOS).
-// ============================================================
-
 import { Link } from 'react-router-dom'
 import './lgpd.css'
 
-// Política de Privacidade, versão 2.0 (1.6: Brevo, MFA opcional, captcha da Cloudflare e aparelho no log de login;
-// 1.7: código por e-mail ao entrar em aparelho novo e aparelhos lembrados;
-// 1.8: notas e faltas retiradas do sistema e apagadas do banco; sessão expira após 30 min sem uso;
-// 1.9: cadastro não confirmado pelo e-mail em 24 horas é apagado sozinho;
-// 2.0: diz que o administrador vê quem está como "Aluno anônimo" no ranking (supabase/27) e que o
-// arquivo "Baixar meus dados" traz também as respostas do quiz;
-// 2.1: e-mail de contato real (eduguru.tcc@gmail.com), download dos próprios dados fica no log
-// e o plano de incidentes diz quando a ANPD e os titulares são comunicados; GitHub Pages na lista de serviços).
 export default function Privacidade() {
   return (
     <div className="termos-tela">

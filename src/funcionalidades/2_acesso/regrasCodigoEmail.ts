@@ -1,11 +1,3 @@
-// ============================================================
-// funcionalidades/2_acesso/regrasCodigoEmail.ts
-// CÓDIGO POR E-MAIL EM APARELHO NOVO — regras sem tela (testes em testes/2_acesso/regrasCodigoEmail.test.ts).
-// - Aparelho lembrado: depois do código certo, o banco devolve um token aleatório; o navegador guarda
-//   aqui (localStorage, um por conta) e manda nos próximos logins. O banco guarda só o hash (supabase/25).
-// - Textos: mensagem de cada resposta do banco e como cada login foi verificado (Minha conta).
-// ============================================================
-
 const PREFIXO = 'eduguru.aparelho.'
 
 // Navegação privada ou armazenamento bloqueado: sem token, o aluno só recebe o código de novo.
@@ -33,7 +25,6 @@ export function esquecerTokenAparelho(usuarioId: string) {
   }
 }
 
-// Respostas do banco (enviar_codigo_email / confirmar_codigo_email) → texto para o aluno.
 export function mensagemCodigoEmail(motivo: string | undefined, extra?: { restantes?: number; segundos?: number }): string {
   switch (motivo) {
     case 'errado':

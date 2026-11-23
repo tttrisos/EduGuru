@@ -1,18 +1,9 @@
-// ============================================================
-// funcionalidades/4_estudar/ranking/Ranking.tsx
-// RANKING (endereço /ranking) — RF18. Geral ou por disciplina: top 10 + a posição do aluno.
-// Banco: ranking (supabase/11, recriada no 27). Nome abreviado ou "Aluno anônimo" (opção em Minha
-// conta). Só o administrador vê quem é o anônimo: "Aluno anônimo (Nome Completo)".
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Trophy } from 'lucide-react'
 import { supabase } from '../../../compartilhado/banco/supabase'
 import { cursosDa, type Disciplina, type LinhaRanking } from '../../../compartilhado/tipos'
 import './ranking.css'
-
-// Ranking (RF18): top 10 geral ou por disciplina, calculado no banco.
 
 async function consultarRanking(disciplinaId: string) {
   return await supabase.rpc('ranking', {

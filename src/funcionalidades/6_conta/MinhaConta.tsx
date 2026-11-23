@@ -1,13 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/MinhaConta.tsx
-// MINHA CONTA (endereço /minha-conta) — direitos do titular pela LGPD (RF15, RF21).
-// Ver os dados, corrigir, trocar a senha (TrocarSenha.tsx), ativar ou desativar a verificação em duas
-// etapas (VerificacaoDuasEtapas.tsx), ver os últimos acessos e sair dos outros aparelhos
-// (AcessosEAparelhos.tsx), filtrar os registros de atividade (RegistrosAtividade.tsx), sair do ranking, revogar a localização,
-// baixar tudo em JSON e excluir a conta (excluir_minha_conta, supabase/07).
-// Banco: lê perfis, materiais, tentativas_quiz, cliques_vagas, bussola_resultados e logs_auditoria.
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../compartilhado/banco/supabase'
@@ -21,25 +11,19 @@ import AcessosEAparelhos from './AcessosEAparelhos'
 import RegistrosAtividade from './RegistrosAtividade'
 import './conta.css'
 
-// Direitos do titular (LGPD, art. 18): acesso, correção, revogação e exclusão.
-
 const TEXTO_CONFIRMACAO = 'EXCLUIR'
 
 type DadosExtras = {
   logs: LogAuditoria[]
   materiais: Material[]
   tentativas: TentativaQuiz[]
-  // Respostas de cada pergunta das rodadas (letra escolhida, se acertou e os pontos). A Política de
-  // Privacidade diz que guardamos as "respostas escolhidas", então elas também vão no arquivo baixado.
   respostas: Record<string, unknown>[]
   cliquesVagas: Record<string, unknown>[]
   bussola: Record<string, unknown> | null
   mfaAtivoDesde: string | null
 }
 
-// DIREITO DE ACESSO (LGPD, art. 18, II): junta TUDO o que o EduGuru guarda sobre o usuário, para
-// mostrar na tela e para o arquivo "Baixar meus dados". Cada consulta só devolve as linhas do
-// próprio usuário, porque o RLS do banco filtra (mesmo onde não há ".eq(usuarioId)").
+// Cada consulta só devolve as linhas do próprio usuário, porque o RLS filtra no banco.
 async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
   const [logs, materiais, tentativas, respostas, fatores, cliques, bussola] = await Promise.all([
     supabase
@@ -50,19 +34,16 @@ async function consultarDadosExtras(usuarioId: string): Promise<DadosExtras> {
       .limit(1000), // 90 dias de registros: na prática, todos (também vão no arquivo baixado)
     supabase.from('materiais').select('*').eq('enviado_por', usuarioId),
     supabase.from('tentativas_quiz').select('*').order('iniciada_em', { ascending: false }),
-    // RLS "respostas_select_propria" (supabase/11): o aluno lê só as respostas das próprias rodadas.
-    // ordem_alternativas = em que ordem as alternativas apareceram para ele naquela rodada (supabase/19).
+    // ordem_alternativas: em que ordem as alternativas apareceram naquela rodada.
     supabase
       .from('respostas_quiz')
       .select('tentativa_id, pergunta_id, ordem_alternativas, resposta, correta, pontos')
       .order('tentativa_id', { ascending: false }),
     supabase.auth.mfa.listFactors(),
-    // Vagas abertas em Carreiras (só a vaga e a data; vazio antes do script 17).
     supabase
       .from('cliques_vagas')
       .select('fonte, vaga_numero, vaga_titulo, clicado_em')
       .order('clicado_em', { ascending: false }),
-    // Resultado da Bússola EduGuru (vazio antes do script 18 ou se não respondeu).
     supabase.from('bussola_resultados').select('respostas, afinidades, respondida_em').maybeSingle(),
   ])
   return {
@@ -109,10 +90,7 @@ export default function MinhaConta() {
 
   if (!usuario || !perfil) return <p className="status">Carregando...</p>
 
-  // DIREITO DE CORREÇÃO (art. 18, III): nome, curso, cidade e estado.
-  // O banco só permite ao usuário alterar estas colunas do próprio perfil; "papel" (aluno/admin)
-  // e o aceite dos termos ficam de fora (falha corrigida na 2ª etapa, ver monografia 2.1).
-  // O gatilho de auditoria registra QUAIS campos mudaram, sem os valores.
+  // O banco só deixa o usuário alterar estas colunas do próprio perfil (papel e aceite ficam de fora).
   async function salvarCorrecao(e: React.FormEvent) {
     e.preventDefault()
     setErro('')
@@ -145,9 +123,7 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
-  // DIREITO DE OPOSIÇÃO (art. 18, § 2º): o ranking usa o legítimo interesse educacional, e o aluno
-  // pode se opor. Desmarcado, ele aparece como "Aluno anônimo" para os colegas, mas continua pontuando.
-  // O administrador continua vendo quem é (supabase/27) — isso está escrito na tela e na Política (desde a 2.0).
+  // Oposição ao ranking (LGPD, art. 18, § 2º): os colegas veem "Aluno anônimo"; o admin continua vendo o nome.
   async function mudarRanking(aparecer: boolean) {
     setErro('')
     setMensagem('')
@@ -163,8 +139,6 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
-  // REVOGAÇÃO DO CONSENTIMENTO (art. 18, IX): cidade e estado são opcionais (base: consentimento),
-  // então o aluno pode apagá-los a qualquer momento com um clique.
   async function revogarLocalizacao() {
     setErro('')
     setMensagem('')
@@ -182,10 +156,7 @@ export default function MinhaConta() {
     await recarregarPerfil()
   }
 
-  // PORTABILIDADE / ACESSO (art. 18, II e V): baixa todos os dados da pessoa em um arquivo JSON.
-  // O arquivo é montado no próprio navegador (Blob), com o que consultarDadosExtras já buscou;
-  // nada é enviado para fora. O download fica no log ('dados_exportados', supabase/33) só com a data,
-  // como pede o guia de LGPD (registrar exportações e o atendimento dos direitos do titular).
+  // O arquivo é montado no navegador; o log registra só que houve o download (supabase/33).
   function baixarMeusDados() {
     const conteudo = {
       gerado_em: new Date().toISOString(),
@@ -209,13 +180,8 @@ export default function MinhaConta() {
     void registrarLogEvento('dados_exportados')
   }
 
-  // DIREITO DE ELIMINAÇÃO (art. 18, VI), RF15. Na ordem:
-  //  1) exige digitar EXCLUIR (evita exclusão por engano);
-  //  2) apaga os arquivos dos materiais no Storage (o banco não apaga arquivos sozinho);
-  //  3) excluir_minha_conta (supabase/07): função do banco que registra a exclusão no log e apaga a
-  //     conta; perfil, materiais, rodadas, Bússola e cliques saem junto (on delete cascade).
-  //     A chave administrativa do Supabase nunca fica no navegador: quem apaga é a função do banco.
-  //  4) os logs já existentes ficam até completar 90 dias (segurança) e depois somem sozinhos.
+  // Os arquivos do Storage são apagados antes, porque o banco não remove arquivos sozinho.
+  // A conta é excluída por uma função do banco; os logs ficam até completar 90 dias.
   async function excluirConta() {
     setErroExclusao('')
     if (confirmacao !== TEXTO_CONFIRMACAO) {

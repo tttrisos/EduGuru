@@ -1,12 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/filtroMateriais.ts
-// AJUDAS DO FILTRO DE MATERIAIS: textos de links e o formato da resposta do banco.
-// O filtro em si (sites permitidos, termos bloqueados, dados pessoais) fica SÓ no banco,
-// em tabelas que o admin edita: supabase/22 (verificar_material, filtro_sites, filtro_termos).
-// Testes: testes/4_estudar/materiais/.
-// ============================================================
-
-// Resposta de verificar_material(): motivo para recusar (ou null) e se o site ainda não está na lista.
 export type ResultadoFiltro = { motivo: string | null; site_novo: boolean }
 
 // Motivo gravado pelo banco quando o link é de um site fora da lista (supabase/22).

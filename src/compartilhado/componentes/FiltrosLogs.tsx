@@ -1,10 +1,3 @@
-// ============================================================
-// compartilhado/componentes/FiltrosLogs.tsx
-// CONTROLES DE FILTRO DOS LOGS: categoria (botões), período e busca.
-// Usado em administracao/Logs.tsx (admin) e conta/RegistrosAtividade.tsx (Minha conta).
-// As regras ficam em compartilhado/utilitarios/filtroLogs.ts.
-// ============================================================
-
 import { CATEGORIAS_LOG, PERIODOS_LOG, type Categoria, type FiltroLogs } from '../utilitarios/filtroLogs'
 
 type Props = {
@@ -13,7 +6,6 @@ type Props = {
   // Números ao lado de cada categoria (opcional: só quando a lista inteira está na tela).
   totais?: Record<Categoria, number>
   textoBusca?: string
-  // Conteúdo extra na linha dos campos (ex.: filtro por tabela, só para o admin).
   children?: React.ReactNode
 }
 

@@ -1,12 +1,3 @@
-// ============================================================
-// funcionalidades/2_acesso/RedefinirSenha.tsx
-// NOVA SENHA PELO LINK DO E-MAIL (endereço /redefinir-senha) — RF24.
-// Só funciona para quem chegou pelo link de recuperação aberto NESTE navegador (RF24-RN06, regra em
-// compartilhado/sessao/recuperacaoSenha.ts). Se a conta tem duas etapas, pede o código antes.
-// Grava a senha (updateUser) e desconecta todos os aparelhos.
-// Para trocar a senha JÁ LOGADO, veja 6_conta/TrocarSenha.tsx.
-// ============================================================
-
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
@@ -18,8 +9,6 @@ import { REGRAS_SENHA, senhaAtendeTodasRegras } from './regrasSenha'
 import Rodape from '../../compartilhado/layout/Rodape'
 import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 import './acesso.css'
-
-// Aberta pelo link do e-mail. Se a conta tem MFA, pede o código antes da nova senha.
 
 type Etapa = 'mfa' | 'senha'
 
@@ -114,8 +103,6 @@ export default function RedefinirSenha() {
     })
   }
 
-  // O que mostrar, na ordem: carregando → link inválido (sem sessão ou sessão que não veio do link)
-  // → código do aplicativo (se a conta tem MFA) → campos da nova senha.
   let conteudo
   if (carregando || (usuario && veioDoLink && !etapa)) {
     conteudo = <p className="status">Carregando...</p>

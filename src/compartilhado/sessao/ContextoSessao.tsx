@@ -1,19 +1,3 @@
-// ============================================================
-// compartilhado/sessao/ContextoSessao.tsx
-// SESSÃO DO USUÁRIO: guarda quem está logado e deixa isso disponível para todas as telas (useAuth()).
-// Supabase Auth: login (signInWithPassword), cadastro (signUp), sair (signOut) e nível da sessão
-// (aal1 = só senha; aal2 = senha + código de duas etapas). A regra de quando o código é exigido
-// (MFA opcional para aluno, obrigatório para admin) está em nivelSessao.ts.
-// Código por e-mail em aparelho novo (quem não usa o aplicativo): o banco responde se esta sessão
-// precisa dele (situacao_codigo_email, supabase/25); a tela é 2_acesso/CodigoEmail.tsx.
-// Sessão encerrada em outro aparelho ("Sair dos outros aparelhos"): a cada minuto e ao voltar para a
-// aba, pergunta ao Supabase Auth se a sessão ainda existe; se não, sai e avisa no login (supabase/26).
-// Sessão expirada: 30 minutos sem usar o site (regra em inatividade.ts) encerram a sessão e o login
-// avisa "Sua sessão expirou". Vale também para quem fechou o navegador e voltou depois.
-// Banco: lê o perfil na tabela perfis (nome, papel aluno/admin, curso, aceite dos termos).
-// Usado por: quase todas as telas (ex.: ehAdmin decide o que mostrar).
-// ============================================================
-
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../banco/supabase'
@@ -40,7 +24,6 @@ type AuthContextValor = {
   // true quando a sessão cumpre a verificação que a conta exige (nivelSessao.ts):
   // aluno sem MFA = só a senha; quem ativou o MFA (e todo admin) = senha + código.
   verificacaoOk: boolean
-  // a conta tem o MFA (aplicativo autenticador) ativo?
   temMfa: boolean
   // aparelho novo sem o aplicativo: falta o código enviado por e-mail (tela /mfa mostra CodigoEmail)
   precisaCodigoEmail: boolean
@@ -93,15 +76,9 @@ type SituacaoCodigoEmail = {
   token_invalido?: boolean
 }
 
-// O CORAÇÃO DO LOGIN: descobre em que ponto está a sessão e o que ainda falta. Passo a passo:
-//  1) Sem sessão → ninguém logado.
-//  2) Pergunta ao Supabase Auth o nível da sessão: aal1 (só senha) ou aal2 (senha + código do
-//     aplicativo). Se a conta tem o aplicativo e a sessão ainda é aal1, PARA aqui: o banco não
-//     devolveria nada mesmo (RLS), então nem tenta ler o perfil. A RotaProtegida manda para /mfa.
-//  3) Conta SEM o aplicativo: pergunta ao banco (situacao_codigo_email) se este aparelho é novo.
-//     Aparelho novo → falta o código enviado por e-mail (tela CodigoEmail.tsx).
-//  4) Tudo certo → lê o perfil (nome, papel, curso, aceite) e confere de novo com o papel em mãos,
-//     porque administrador SEMPRE precisa do aplicativo, mesmo que ainda não tenha cadastrado.
+// Descobre o que ainda falta para liberar a sessão: código do aplicativo (aal2), código do e-mail
+// em aparelho novo ou nada. Administrador sempre precisa do aplicativo, por isso a situação
+// é conferida de novo depois de ler o papel no perfil.
 async function lerDadosSessao(session: Session | null): Promise<DadosSessao> {
   if (!session?.user) return SEM_SESSAO
 
@@ -109,8 +86,7 @@ async function lerDadosSessao(session: Session | null): Promise<DadosSessao> {
   const antes = situacaoDaSessao(nivel?.currentLevel, nivel?.nextLevel, null)
   if (!antes.liberada) return { ...SEM_SESSAO, temMfa: antes.temMfa }
 
-  // Sem o aplicativo: pergunta ao banco se este aparelho precisa do código do e-mail.
-  // Se o script 25 ainda não foi rodado (erro), segue como antes.
+  // Sem o aplicativo, o banco diz se este aparelho precisa do código do e-mail.
   let aparelhoLembrado = false
   if (!antes.temMfa) {
     const { data: sit, error } = await supabase.rpc('situacao_codigo_email', {
@@ -128,12 +104,10 @@ async function lerDadosSessao(session: Session | null): Promise<DadosSessao> {
 
   const { data } = await supabase.from('perfis').select('*').eq('id', session.user.id).single()
   const perfil = (data as Perfil) ?? null
-  // Com o papel em mãos: administrador sem o código não é liberado (precisa cadastrar o MFA).
   const depois = situacaoDaSessao(nivel?.currentLevel, nivel?.nextLevel, perfil?.papel ?? null)
   return { ...SEM_SESSAO, verificacaoOk: depois.liberada, temMfa: depois.temMfa, perfil, aparelhoLembrado }
 }
 
-// Guarda quem está logado e o papel (aluno/admin). As páginas usam useAuth().
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null)
   const [perfil, setPerfil] = useState<Perfil | null>(null)
@@ -164,9 +138,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await carregarDadosSessao(data.session)
   }
 
-  // Ao abrir o site: lê a sessão guardada no navegador (o usuário pode já estar logado de antes).
-  // Depois, fica "ouvindo" o Supabase Auth: qualquer login, logout ou renovação do token dispara
-  // onAuthStateChange, e a situação da sessão é lida de novo.
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
       // Chegou por um link do e-mail: é um acesso novo, então o relógio de inatividade começa agora.
@@ -263,9 +234,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [usuario])
 
-  // Confere a senha. Quem não tem MFA já entra aqui (ou, em aparelho novo, vai para o código do e-mail);
-  // quem tem o aplicativo (e o admin) termina na tela /mfa.
-  // captcha = token do "não sou um robô" (Captcha.tsx); o Supabase confere quando a proteção está ligada.
   async function entrar(email: string, senha: string, captcha?: string | null) {
     setAvisoSaida(null)
     expirando.current = false
@@ -295,7 +263,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     // Lê a situação ANTES de voltar, para a próxima tela já saber se precisa do código.
     setUsuario(data.user)
-    marcarAtividade() // login novo: o relógio de inatividade começa agora
+    marcarAtividade()
     const dados = await carregarDadosSessao(data.session)
     // O login só vai para o log quando a sessão já está liberada. Quem ainda precisa do código
     // (aplicativo ou e-mail) tem o login registrado depois, na tela que confere o código.
@@ -317,10 +285,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     estado: string | null,
     captcha?: string | null,
   ) {
-    // CADASTRO (RF02): o Supabase Auth cria a conta e guarda a senha só como hash (bcrypt).
-    // Os dados extras vão em "options.data"; um gatilho do banco (supabase/04) lê esses dados e cria
-    // a linha em perfis com papel "aluno", registrando o aceite com a versão dos termos (RF13).
-    // O CEP não está aqui de propósito: só cidade e estado (LGPD, minimização).
+    // O perfil é criado por um gatilho do banco (supabase/04) a partir de options.data.
+    // O CEP não é enviado: só cidade e estado (minimização, LGPD).
     const { error } = await supabase.auth.signUp({
       email,
       password: senha,
@@ -345,12 +311,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { erro: null }
   }
 
-  // BOTÃO "SAIR": encerra só a sessão DESTE navegador.
-  // Atenção ao "scope": sem ele, o Supabase usa 'global' por padrão, que encerra a conta em TODOS os
-  // aparelhos (sair no celular derrubaria o computador também). Os três escopos usados no EduGuru:
-  //   'local'  → só este navegador (Sair, sessão expirada, sessão encerrada em outro aparelho);
-  //   'others' → todos os outros, menos este ("Sair dos outros aparelhos" e troca de senha logado);
-  //   'global' → todos, inclusive este (só depois de redefinir a senha pelo link do e-mail).
+  // Sem o scope, o Supabase usa 'global' e encerraria a sessão em todos os aparelhos.
   async function sair() {
     await registrarLogEvento('logout')
     await supabase.auth.signOut({ scope: 'local' })

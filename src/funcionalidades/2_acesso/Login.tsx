@@ -1,12 +1,3 @@
-// ============================================================
-// funcionalidades/2_acesso/Login.tsx
-// TELA DE LOGIN E CADASTRO (endereço /login) — RF01, RF02, RF05.
-// Login: e-mail e senha → quem ativou a verificação em duas etapas (e todo admin) vai para Mfa.tsx.
-// Cadastro: nome, curso, e-mail, senha (regras em regrasSenha.ts), aceite dos termos e CEP opcional.
-// API externa: ViaCEP (busca cidade/UF pelo CEP) — documentação em docs/INTEGRACAO_VIACEP.md.
-// Sessão: usa entrar/cadastrar de compartilhado/sessao/ContextoSessao.tsx.
-// ============================================================
-
 import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { GraduationCap } from 'lucide-react'
@@ -18,20 +9,12 @@ import Captcha, { captchaLigado } from '../../compartilhado/componentes/Captcha'
 import CampoSenha from '../../compartilhado/componentes/CampoSenha'
 import './acesso.css'
 
-// A MESMA tela serve para entrar e para criar conta: o estado "modo" troca o formulário.
-// Esta tela só faz validações de conforto (campo vazio, senhas diferentes). Quem decide de verdade é o
-// Supabase Auth: confere a senha (hash bcrypt), o captcha e se o e-mail já existe.
+// As validações desta tela são só de conforto; quem decide é o Supabase Auth.
 export default function Login() {
-  // entrar() e cadastrar() vêm do contexto de sessão (ContextoSessao.tsx), que conversa com o Supabase.
   const { entrar, cadastrar } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Quem chega aqui pode trazer um "recado" da tela anterior (location.state):
-  //  - rotaOrigem: a tela protegida que o usuário tentou abrir (RotaProtegida manda para cá e,
-  //    depois do login, ele volta para ela);
-  //  - modo: 'cadastrar' quando o botão "Criar conta" da página inicial foi clicado;
-  //  - aviso: mensagem para mostrar (ex.: "sessão encerrada em outro aparelho").
   const estadoRota = location.state as { rotaOrigem?: string; modo?: 'cadastrar'; aviso?: string } | null
   const [modo, setModo] = useState<'entrar' | 'cadastrar'>(estadoRota?.modo ?? 'entrar')
   const [nome, setNome] = useState('')
@@ -52,7 +35,6 @@ export default function Login() {
   const [avisoCadastro, setAvisoCadastro] = useState(
     estadoRota?.aviso ?? (veioDaConfirmacao ? 'E-mail confirmado! Agora entre com seu e-mail e senha.' : ''),
   )
-  // Captcha 'não sou um robô' (Captcha.tsx): cada token vale uma tentativa; depois pede outro.
   const [captcha, setCaptcha] = useState<string | null>(null)
   const [reiniciarCaptcha, setReiniciarCaptcha] = useState(0)
 
@@ -75,11 +57,8 @@ export default function Login() {
     limparCamposCadastro()
   }
 
-  // INTEGRAÇÃO COM API EXTERNA (ViaCEP, RF05). Roda quando o campo CEP perde o foco.
-  // 1) Tira tudo que não é número; 2) confere se tem 8 dígitos; 3) chama a API pública do ViaCEP
-  //    direto do navegador; 4) preenche cidade e estado.
-  // LGPD (minimização): o CEP NÃO é enviado ao nosso banco — só cidade e estado vão para o cadastro.
-  // Se o CEP não existir ou o ViaCEP estiver fora do ar, o cadastro continua (o CEP é opcional).
+  // ViaCEP (RF05): o CEP não é enviado ao banco, só a cidade e o estado (minimização, LGPD).
+  // Se a consulta falhar, o cadastro continua: o CEP é opcional.
   async function aoSairDoCep() {
     const cepLimpo = cep.replace(/\D/g, '')
     setErroCep('')
@@ -111,9 +90,8 @@ export default function Login() {
     }
   }
 
-  // Botão "Entrar" ou "Criar conta".
   async function aoEnviar(e: React.FormEvent) {
-    e.preventDefault() // impede o navegador de recarregar a página ao enviar o formulário
+    e.preventDefault()
     setErro('')
     setAvisoCadastro('')
 
@@ -122,10 +100,7 @@ export default function Login() {
       return
     }
 
-    // ENTRAR (RF01): manda e-mail, senha e o token do captcha para o Supabase Auth.
-    // Se der certo, vai para a tela de origem (ou /painel). Quem precisa de mais uma etapa
-    // (código do aplicativo ou código por e-mail) é desviado pela RotaProtegida para /mfa.
-    // A mensagem de erro é sempre genérica, para não revelar se o e-mail existe (RF01-CA02).
+    // Mensagem de erro genérica, para não revelar se o e-mail existe (RF01-CA02).
     if (modo === 'entrar') {
       setEnviando(true)
       const { erro } = await entrar(email.trim(), senha, captcha)
@@ -137,9 +112,7 @@ export default function Login() {
       return
     }
 
-    // CADASTRAR (RF02): as validações abaixo são só de conforto, para avisar antes de enviar.
-    // A senha também é conferida pelo Supabase Auth, e o perfil é criado por um gatilho no banco
-    // (supabase/04) com papel "aluno" — o usuário nunca escolhe ser administrador.
+    // O perfil é criado no banco sempre com o papel "aluno".
     if (!nome.trim()) {
       setErro('Digite seu nome.')
       return
@@ -167,8 +140,6 @@ export default function Login() {
       return
     }
 
-    // cidade/estado vão como null quando o CEP não foi informado (campo opcional, LGPD).
-    // O aceite dos termos é gravado com data e versão (RF13) dentro de cadastrar().
     setEnviando(true)
     const { erro } = await cadastrar(
       nome.trim(),
@@ -184,7 +155,6 @@ export default function Login() {
     if (erro) {
       setErro(erro)
     } else {
-      // A conta só passa a valer depois que o usuário clica no link enviado ao e-mail (Brevo).
       setAvisoCadastro(
         'Conta criada! Abra o link que enviamos para o seu e-mail para confirmar o cadastro e depois faça login. ' +
           'Se o link não for aberto em 24 horas (por exemplo, com o e-mail digitado errado), o cadastro é apagado e você pode criar a conta de novo.',
@@ -347,7 +317,6 @@ export default function Login() {
           <button
             type="submit"
             className="btn btn-primario login-botao"
-            // Desabilitado enquanto envia, sem o captcha resolvido ou com o CEP ainda em consulta.
             disabled={enviando || buscandoCep || (captchaLigado && !captcha)}
           >
             {enviando ? 'Aguarde...' : modo === 'entrar' ? 'Entrar' : 'Criar conta'}

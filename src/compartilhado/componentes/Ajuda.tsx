@@ -1,13 +1,6 @@
-// ============================================================
-// compartilhado/componentes/Ajuda.tsx
-// CAIXA DE AJUDA: ícone + regras em tópicos curtos, usada nos formulários e telas.
-// ============================================================
-
 import type { ReactNode } from 'react'
 import { Info } from 'lucide-react'
 
-// Caixa de ajuda dos formulários: um ícone e as regras em tópicos curtos, fáceis de ler.
-// Uso: <Ajuda titulo="Como funciona" itens={['Regra 1', 'Regra 2']} />
 export default function Ajuda({ titulo, itens }: { titulo?: string; itens: ReactNode[] }) {
   return (
     <div className="ajuda">

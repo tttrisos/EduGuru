@@ -1,13 +1,3 @@
-// ============================================================
-// funcionalidades/7_administracao/Logs.tsx
-// LOGS DE AUDITORIA (endereço /logs, só admin) — RF09, RF10.
-// Filtros (pedido da pré-banca de 13/11): tipo de registro, período, e-mail e tabela. Os filtros vão
-// na própria consulta ao banco, então valem para TODOS os logs guardados, não só para os da tela.
-// Regras dos filtros: compartilhado/utilitarios/filtroLogs.ts. Índices: supabase/24.
-// Banco: lê logs_auditoria (supabase/02) e chama limpar_logs_antigos (supabase/10).
-// A limpeza automática de 90 dias roda sozinha no banco (pg_cron, supabase/06).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { supabase } from '../../compartilhado/banco/supabase'
 import type { LogAuditoria } from '../../compartilhado/tipos'
@@ -32,7 +22,6 @@ function formatarData(iso: string) {
 
 type Filtro = FiltroLogs & { tabela: string }
 
-// Monta a consulta com os filtros. A busca procura no e-mail de quem fez a ação.
 async function consultarLogs(filtro: Filtro, quantos: number) {
   let consulta = supabase
     .from('logs_auditoria')

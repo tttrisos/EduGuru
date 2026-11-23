@@ -1,8 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/quiz/efeitos.ts
-// EFEITOS DO QUIZ: sons, sequência de acertos e frases de comemoração. Testes: testes/4_estudar/quiz/.
-// ============================================================
-
 // Efeitos do quiz: sons curtos gerados pelo navegador (sem arquivos de áudio) e comemorações.
 type Som = 'acerto' | 'erro' | 'dica' | 'fim'
 
@@ -53,7 +48,6 @@ export function tocarSom(som: Som) {
   }
 }
 
-// Mensagem especial ao chegar em 3, 5 e 10 acertos seguidos.
 export function mensagemSequencia(sequencia: number) {
   if (sequencia === 10) return 'Lendário! 10 seguidas!'
   if (sequencia === 5) return 'Imparável! 5 seguidas!'

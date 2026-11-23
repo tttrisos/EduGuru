@@ -1,9 +1,3 @@
-// ============================================================
-// funcionalidades/6_conta/AvisoAtivarMfa.tsx
-// AVISO NO TOPO DE "MINHA EVOLUÇÃO": convida o aluno sem MFA a ativar a verificação em duas etapas.
-// "Ativar agora" abre Minha conta já no cartão certo; "Agora não" esconde por 30 dias (avisoMfa.ts).
-// ============================================================
-
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ShieldAlert } from 'lucide-react'

@@ -1,8 +1,3 @@
-// ============================================================
-// funcionalidades/4_estudar/materiais/PerfilAutor.tsx
-// PERFIL PÚBLICO DE QUEM COMPARTILHA (endereço /perfil/:id) — RF29. Banco: perfil_publico (supabase/15).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../../../compartilhado/banco/supabase'
@@ -11,7 +6,6 @@ import { buscarMateriaisComunidade } from './comunidade'
 import ListaComunidade from './ListaComunidade'
 import './materiais.css'
 
-// Perfil público de quem compartilha materiais: só nome abreviado, curso e os materiais aprovados.
 export default function PerfilAutor() {
   const { id = '' } = useParams()
   const [perfil, setPerfil] = useState<PerfilPublico | null>(null)

@@ -1,20 +1,9 @@
-// ============================================================
-// funcionalidades/7_administracao/Usuarios.tsx
-// USUÁRIOS (endereço /usuarios, só admin) — RF26 e exclusão de contas.
-// Banco: listar_usuarios_admin e redefinir_mfa_usuario (supabase/10), excluir_conta_usuario (supabase/07 e 20).
-// Conta de administrador é protegida: o botão não aparece e o banco também recusa.
-// Só aparecem contas confirmadas pelo link do e-mail; as não confirmadas em 24 h são apagadas sozinhas
-// (listar_usuarios_admin e limpar_cadastros_nao_confirmados, supabase/31).
-// ============================================================
-
 import { useEffect, useState } from 'react'
 import { useDialogo } from '../../compartilhado/componentes/Dialogo'
 import { supabase } from '../../compartilhado/banco/supabase'
 import { useAuth } from '../../compartilhado/sessao/ContextoSessao'
 import { CURSOS, type UsuarioAdmin } from '../../compartilhado/tipos'
 import { removerArquivosDoUsuario } from '../6_conta/arquivosDoUsuario'
-
-// Gestão de contas pelo admin: excluir conta (RF15) e redefinir o MFA (RF26).
 
 async function consultarUsuarios() {
   return await supabase.rpc('listar_usuarios_admin')
@@ -152,7 +141,6 @@ export default function Usuarios() {
                         Redefinir MFA
                       </button>
                     ) : null}
-                    {/* Admin não exclui conta de admin: no lugar do botão aparece um aviso. */}
                     {u.papel === 'admin' ? (
                       <span className="item-meta">Conta de administrador protegida</span>
                     ) : (
